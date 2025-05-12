@@ -1,8 +1,9 @@
 package object;
 
+import entity.OBject;
 import main.GamePanel;
 
-public class OBJ_Door_Iron extends Entity {
+public class OBJ_Door_Iron extends OBject {
 
     GamePanel gp;
     public static final String objName = "Iron Door";
@@ -23,13 +24,13 @@ public class OBJ_Door_Iron extends Entity {
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
         price = 35;
-        setDialogue();
+//        setDialogue();
     }
-    public void setDialogue()
-    {
-        dialogues[0][0] = "It won't budge.";
-    }
-    public void interact() {
-        startDialogue(this,0);
-    }
+//    public void setDialogue()
+//    {
+//        dialogues[0][0] = "It won't budge.";
+//    }
+//    public void interact() {
+//        startDialogue(this,0);
+//    }
 }

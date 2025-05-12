@@ -1,8 +1,10 @@
 package object;
 
+import entity.Character;
+import entity.OBject;
 import main.GamePanel;
 
-public class OBJ_Potion_Red extends Entity {
+public class OBJ_Potion_Red extends OBject {
 
     GamePanel gp;
     public static final String objName = "Red Potion";
@@ -20,15 +22,15 @@ public class OBJ_Potion_Red extends Entity {
         price = 50;
         stackable = true;
 
-        setDialogue();
+//        setDialogue();
     }
-    public void setDialogue()
+//    public void setDialogue()
+//    {
+//        dialogues[0][0] = "You drink the " + name + "!\n" + "Your life has been recovered by " + value + ".";
+//    }
+    public boolean use(Character entity)
     {
-        dialogues[0][0] = "You drink the " + name + "!\n" + "Your life has been recovered by " + value + ".";
-    }
-    public boolean use(Entity entity)
-    {
-        startDialogue(this,0);
+//        startDialogue(this,0);
         entity.life += value;
         gp.playSE(2);
         return true;

@@ -1,8 +1,9 @@
 package object;
 
+import entity.OBject;
 import main.GamePanel;
 
-public class OBJ_Shield_Wood extends Entity {
+public class OBJ_Shield_Wood extends OBject {
 
     public static final String objName = "Wood Shield";
 

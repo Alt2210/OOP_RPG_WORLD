@@ -1,8 +1,9 @@
 package object;
 
+import entity.OBject;
 import main.GamePanel;
 
-public class OBJ_Boots extends Entity {
+public class OBJ_Boots extends OBject {
     public static final String objName = "Boots";
     public OBJ_Boots(GamePanel gp)
     {

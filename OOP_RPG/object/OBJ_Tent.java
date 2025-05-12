@@ -1,8 +1,9 @@
 package object;
 
+import entity.OBject;
 import main.GamePanel;
 
-public class OBJ_Tent extends Entity {
+public class OBJ_Tent extends OBject {
 
     GamePanel gp;
     public static final String objName = "Tent";
@@ -20,7 +21,7 @@ public class OBJ_Tent extends Entity {
         stackable = true;
     }
 
-    public boolean use(Entity entity) {
+    public boolean use(OBject entity) {
         gp.gameState = gp.sleepState;
         gp.playSE(14);
         gp.player.life = gp.player.maxLife;

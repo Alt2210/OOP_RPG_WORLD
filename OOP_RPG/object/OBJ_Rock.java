@@ -1,5 +1,6 @@
 package object;
 
+import entity.Character;
 import entity.Projectile;
 import main.GamePanel;
 
@@ -18,7 +19,7 @@ public class OBJ_Rock extends Projectile {
         speed = 5;
         maxLife = 60;   //after 80 frames, projectile disappears
         life = maxLife;
-        attack = 2;
+        attackValue = 2;
         useCost = 1; //spend 1 mana
         alive = false;
         getImage();
@@ -36,7 +37,7 @@ public class OBJ_Rock extends Projectile {
         right1 = setup("/projectile/rock_down_1", gp.tileSize,gp.tileSize);
         right2 = setup("/projectile/rock_down_1", gp.tileSize,gp.tileSize);
     }
-    public boolean haveResource(Entity user)
+    public boolean haveResource(Character user)
     {
         boolean haveResource = false;
         if(user.ammo >= useCost)
@@ -45,7 +46,7 @@ public class OBJ_Rock extends Projectile {
         }
         return haveResource;
     }
-    public void subtractResource(Entity user)
+    public void subtractResource(Character user)
     {
         user.ammo -= useCost;
     }

@@ -21,20 +21,18 @@ public abstract class OBject extends GameObject { // Renamed to avoid conflict
     public int defenseValue; // For shields
     public int motion1_duration; // For weapon animation
     public int motion2_duration; // For weapon animation
-
-
-    public boolean opened = false; // For doors, chests
-    public GameObject loot; // Object this item might drop or contain
-
+    public boolean temp = false;
+    public OBject loot;
+    public boolean opened = false; // For doors, chests    public GameObject loot; // Object this item might drop or contain
+    public int coin;
     public OBject(GamePanel gp) {
         super(gp);
     }
 
     // Methods specific to objects
-    public void setLoot(GameObject lootItem) {
+    public void setLoot(OBject lootItem) {
         this.loot = lootItem;
     }
-
     public void checkDrop() {
         // Logic to drop loot if applicable
         if (loot != null) {
@@ -44,7 +42,7 @@ public abstract class OBject extends GameObject { // Renamed to avoid conflict
         }
     }
 
-    public void dropItem(GameObject droppedItem) {
+    public void dropItem(OBject droppedItem) {
         if (droppedItem == null) return;
         for (int i = 0; i < gp.obj[gp.currentMap].length; i++) { // Assuming gp.obj is GameObject[][]
             if (gp.obj[gp.currentMap][i] == null) {

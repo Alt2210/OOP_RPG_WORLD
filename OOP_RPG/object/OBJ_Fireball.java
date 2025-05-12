@@ -1,5 +1,6 @@
 package object;
 
+import entity.Character;
 import entity.Projectile;
 import main.GamePanel;
 
@@ -18,7 +19,7 @@ public class OBJ_Fireball extends Projectile {
         speed = 5;
         maxLife = 80;   //after 80 frames, projectile disappears
         life = maxLife;
-        attack = 1;
+        attackValue = 1;
         knockBackPower = 5;
         useCost = 1; //spend 1 mana
         alive = false;
@@ -37,7 +38,7 @@ public class OBJ_Fireball extends Projectile {
         right1 = setup("/projectile/fireball_right_1", gp.tileSize,gp.tileSize);
         right2 = setup("/projectile/fireball_right_2", gp.tileSize,gp.tileSize);
     }
-    public boolean haveResource(Entity user)
+    public boolean haveResource(Character user)
     {
         boolean haveResource = false;
         if(user.mana >= useCost)
@@ -46,7 +47,7 @@ public class OBJ_Fireball extends Projectile {
         }
         return haveResource;
     }
-    public void subtractResource(Entity user)
+    public void subtractResource(Character user)
     {
         user.mana -= useCost;
     }

@@ -1,8 +1,9 @@
 package object;
 
+import entity.OBject;
 import main.GamePanel;
 
-public class OBJ_Coin_Bronze extends Entity {
+public class OBJ_Coin_Bronze extends OBject {
 
     GamePanel gp;
     public static final String objName = "Bronze Coin";
@@ -16,7 +17,7 @@ public class OBJ_Coin_Bronze extends Entity {
         down1 = setup("/objects/coin_bronze", gp.tileSize, gp.tileSize);
         price = 25;
     }
-    public boolean use(Entity entity)
+    public boolean use(OBject entity)
     {
         gp.playSE(1);
         gp.ui.addMessage("Coin +" + value);

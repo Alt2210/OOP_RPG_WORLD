@@ -1,14 +1,13 @@
 package main;
 import ai.PathFinder;
 import data.SaveLoad;
+import entity.*;
 import entity.Character;
-import entity.GameObject;
-import entity.Player;
 import environment.EnvironmentManager;
 import tile.Map;
 import tile.TileManager;
 import tile_interactive.InteractiveTile;
-import entity.OBject;
+
 import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -65,13 +64,13 @@ public class GamePanel extends JPanel implements Runnable{
 
     //ENTITY AND OBJECT
     public Player player = new Player(this,keyH);
-    public Character obj[][] = new Character[maxMap][20]; // display 10 objects same time
+    public OBject obj[][] = new OBject[maxMap][20]; // display 10 objects same time
     public Character npc[][] = new Character[maxMap][10];
     public Character monster[][] = new Character[maxMap][20];
     public InteractiveTile iTile[][] = new InteractiveTile[maxMap][50];
     public OBject projectile[][] = new OBject[maxMap][20]; // cut projectile
     //public ArrayList<OBject> projectileList = new ArrayList<>();
-    public ArrayList<OBject> particleList = new ArrayList<>();
+    public ArrayList<Particle> particleList = new ArrayList<>();
     ArrayList<GameObject> entityList = new ArrayList<>();
 
 

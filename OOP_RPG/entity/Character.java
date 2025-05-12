@@ -58,13 +58,13 @@ public abstract class Character extends GameObject {
     public int coin;
     public int motion1_duration;
     public int motion2_duration;
-
+    public int knockBackPower = 1;
     // Equipment & Items
-    public GameObject currentWeapon; // Will be an Object type, e.g., Weapon
-    public GameObject currentShield; // Will be an Object type, e.g., Shield
+    public OBject currentWeapon; // Will be an Object type, e.g., Weapon
+    public OBject currentShield; // Will be an Object type, e.g., Shield
     public GameObject currentLight;  // Will be an Object type, e.g., LightSource
     public Projectile projectile; // Specific projectile type this creature uses
-
+    public OBject loot;
     public ArrayList<GameObject> inventory = new ArrayList<>(); // Inventory holds Objects
     public final int maxInventorySize = 20;
 
@@ -95,7 +95,45 @@ public abstract class Character extends GameObject {
         // Default reaction to damage
     }
 
+    public void resetCounter() {
+        spriteCounter = 0;
+        actionLockCounter = 0;
+        invincibleCounter = 0;
+        shotAvailableCounter = 0;
+        dyingCounter = 0;
+        hpBarCounter = 0;
+        knockBackCounter = 0;
+        guardCounter = 0;
+        offBalanceCounter = 0;
+    }
+    public void checkDrop() {
+        // Logic để quyết định có drop 'loot' hay không
+        // Ví dụ: có tỉ lệ drop, hoặc luôn drop nếu loot != null
+        if (this.loot != null) {
+            // Có thể thêm logic tỉ lệ ở đây
+            dropItem(this.loot);
+        }
+        // Hoặc nếu Character có thể drop nhiều loại item từ một danh sách:
+        // for (OBject itemToDrop : potentialLootList) {
+        //     if (Math.random() < itemToDrop.dropRate) { // Giả sử OBject có dropRate
+        //         dropItem(gp.eGenerator.getObject(itemToDrop.name)); // Tạo instance mới của item
+        //     }
+        // }
+    }
 
+    public void dropItem(OBject droppedItem) { // Phương thức này đã có trong Entity gốc
+        if (droppedItem == null) return;
+        for (int i = 0; i < gp.obj[gp.currentMap].length; i++) {
+            if (gp.obj[gp.currentMap][i] == null) {
+                gp.obj[gp.currentMap][i] = droppedItem; // Thêm item vào mảng obj của GamePanel
+                // Đặt vị trí của item là vị trí của Character đã chết
+                gp.obj[gp.currentMap][i].worldX = this.worldX;
+                gp.obj[gp.currentMap][i].worldY = this.worldY;
+                // Nếu item là stackable và đã có trong túi người chơi gần đó, có thể xử lý khác
+                break;
+            }
+        }
+    }
     @Override
     public void speak() {
         // Default speak action

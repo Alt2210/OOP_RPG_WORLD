@@ -1,8 +1,9 @@
 package object;
 
+import entity.OBject;
 import main.GamePanel;
 
-public class OBJ_Door extends Entity {
+public class OBJ_Door extends OBject {
 
     GamePanel gp;
     public static final String objName = "Door";
@@ -23,13 +24,13 @@ public class OBJ_Door extends Entity {
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
         price = 35;
-        setDialogue();
+//        setDialogue();
     }
-    public void setDialogue()
-    {
-        dialogues[0][0] = "You need a key to open this.";
-    }
-    public void interact() {
-        startDialogue(this,0);
-    }
+//    public void setDialogue()
+//    {
+//        dialogues[0][0] = "You need a key to open this.";
+//    }
+//    public void interact() {
+//        startDialogue(this,0);
+//    }
 }

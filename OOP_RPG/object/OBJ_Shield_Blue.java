@@ -1,8 +1,10 @@
 package object;
 
+import entity.Character;
+import entity.OBject;
 import main.GamePanel;
 
-public class OBJ_Shield_Blue extends Entity {
+public class OBJ_Shield_Blue extends OBject {
 
     public static final String objName = "Blue Shield";
 

@@ -15,14 +15,14 @@ public abstract class Projectile extends OBject { // Kế thừa từ OBject
     public int maxLife;      // Thời gian tồn tại tối đa (số frame)
     public int speed;        // Tốc độ di chuyển
     public String direction;  // Hướng di chuyển của Projectile (QUAN TRỌNG)
-    // public int attackValue;    // Sát thương - Kế thừa từ OBject
-    // public int knockBackPower; // Lực đẩy lùi - Kế thừa từ OBject
-    // public int useCost;        // Chi phí sử dụng (mana, ammo) - Kế thừa từ OBject
+     public int attackValue;    // Sát thương - Kế thừa từ OBject
+     public int knockBackPower; // Lực đẩy lùi - Kế thừa từ OBject
+     public int useCost;        // Chi phí sử dụng (mana, ammo) - Kế thừa từ OBject
 
-    // spriteNum và spriteCounter được kế thừa từ GameObject,
-    // chúng sẽ được dùng nếu projectile có animation.
-    // public int spriteNum = 1;
-    // public int spriteCounter = 0;
+//     spriteNum và spriteCounter được kế thừa từ GameObject,
+//     chúng sẽ được dùng nếu projectile có animation.
+     public int spriteNum = 1;
+     public int spriteCounter = 0;
 
     public Projectile(GamePanel gp) {
         super(gp);

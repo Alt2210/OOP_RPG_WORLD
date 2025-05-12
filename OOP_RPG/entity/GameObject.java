@@ -87,7 +87,10 @@ public abstract class GameObject {
                 worldY + gp.tileSize * 5 > gp.player.worldY - gp.player.screenY &&
                 worldY - gp.tileSize < gp.player.worldY + gp.player.screenY;
     }
-
+    public void interact(Character character) {
+        // Hành vi tương tác mặc định (có thể không làm gì)
+        System.out.println("Interacted with " + this.name);
+    }
     public BufferedImage setup(String imagePath, int width, int height) {
         UtilityTool uTool = new UtilityTool();
         BufferedImage scaledImage = null;

@@ -1,8 +1,10 @@
 package object;
 
+import entity.Character;
+import entity.OBject;
 import main.GamePanel;
 
-public class OBJ_ManaCrystal extends Entity {
+public class OBJ_ManaCrystal extends OBject {
 
     GamePanel gp;
     public static final String objName = "Mana Crystal";
@@ -21,7 +23,7 @@ public class OBJ_ManaCrystal extends Entity {
         image2 = setup("/objects/manacrystal_blank", gp.tileSize,gp.tileSize);
         price = 105;
     }
-    public boolean use(Entity entity)
+    public boolean use(Character entity)
     {
         gp.playSE(2);
         gp.ui.addMessage("Mana +" + value);

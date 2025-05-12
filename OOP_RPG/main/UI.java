@@ -1,5 +1,8 @@
 package main;
 
+import entity.Character;
+import entity.GameObject;
+import entity.OBject;
 import object.OBJ_Coin_Bronze;
 import object.OBJ_Heart;
 import object.OBJ_ManaCrystal;
@@ -32,7 +35,7 @@ public class UI {
 
     int subState = 0;
     int counter = 0; // transition
-    public Entity npc;
+    public Character npc;
     int charIndex = 0;
     String combinedText = "";
 
@@ -54,14 +57,14 @@ public class UI {
         }
 
         //CREATE HUD OBJECT
-        Entity heart = new OBJ_Heart(gp);
+        OBject heart = new OBJ_Heart(gp);
         heart_full = heart.image;
         heart_half = heart.image2;
         heart_blank = heart.image3;
-        Entity crystal = new OBJ_ManaCrystal(gp);
+        OBject crystal = new OBJ_ManaCrystal(gp);
         crystal_full = crystal.image;
         crystal_blank = crystal.image2;
-        Entity bronzeCoin = new OBJ_Coin_Bronze(gp);
+        OBject bronzeCoin = new OBJ_Coin_Bronze(gp);
         coin = bronzeCoin.down1;
     }
     public void drawPauseScreen()
@@ -240,16 +243,14 @@ public class UI {
             g2.drawImage(gp.player.currentShield.down1, tailX - gp.tileSize + 5, textY - 24, null);
         }
     }
-    public void drawInventory(Entity entity, boolean cursor)
-    {
+    public void drawInventory(Character entity, boolean cursor) {
         int frameX = 0;
         int frameY = 0;
         int frameWidth = 0;
         int frameHeight = 0;
         int slotCol = 0;
         int slotRow = 0;
-        if(entity == gp.player)
-        {
+        if (entity == gp.player) {
             //FRAME
             frameX = gp.tileSize * 12;
             frameY = gp.tileSize;
@@ -257,9 +258,7 @@ public class UI {
             frameHeight = gp.tileSize * 5;
             slotCol = playerSlotCol;
             slotRow = playerSlotRow;
-        }
-        else
-        {
+        } else {
             //FRAME
             frameX = gp.tileSize * 2;
             frameY = gp.tileSize;
@@ -269,9 +268,8 @@ public class UI {
             slotRow = npcSlotRow;
         }
 
-
         //DRAW FRAME
-        drawSubWindow(frameX,frameY,frameWidth,frameHeight);
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 
         //SLOT
         final int slotXstart = frameX + 20;
@@ -280,55 +278,67 @@ public class UI {
         int slotY = slotYstart;
         int slotSize = gp.tileSize + 3;
 
+        //DRAW PLAYER'S OR NPC'S ITEMS
+        for (int i = 0; i < entity.inventory.size(); i++) {
+            GameObject itemInInventory = entity.inventory.get(i); // itemInInventory là GameObject
 
-        //DRAW PLAYER'S ITEMS
-        for(int i = 0; i < entity.inventory.size(); i++)
-        {
+            if (itemInInventory != null) { // Luôn kiểm tra null cho mỗi item
+                //EQUIP CURSOR
+                if (itemInInventory == entity.currentWeapon ||
+                        itemInInventory == entity.currentShield ||
+                        itemInInventory == entity.currentLight) {
+                    g2.setColor(new Color(240, 190, 90));
+                    g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
+                }
 
-            //EQUIP CURSOR
-            if(entity.inventory.get(i) == entity.currentWeapon ||
-                    entity.inventory.get(i) == entity.currentShield || entity.inventory.get(i) == entity.currentLight)
-            {
-                g2.setColor(new Color(240,190,90));
-                g2.fillRoundRect(slotX,slotY, gp.tileSize, gp.tileSize,10,10 );
-            }
+                // Vẽ hình ảnh item (down1 hoặc image từ GameObject)
+                // Giả sử GameObject có public BufferedImage down1; và public BufferedImage image;
+                // Và chúng được load đúng cách trong các lớp con (OBJ_Key, OBJ_Potion, ...)
+                if (itemInInventory.down1 != null) {
+                    g2.drawImage(itemInInventory.down1, slotX, slotY, gp.tileSize, gp.tileSize, null); // Thêm width, height cho drawImage
+                } else if (itemInInventory.image != null) {
+                    g2.drawImage(itemInInventory.image, slotX, slotY, gp.tileSize, gp.tileSize, null); // Thêm width, height
+                } else {
+                    // Vẽ placeholder nếu không có ảnh
+                    g2.setColor(Color.DARK_GRAY);
+                    g2.fillRect(slotX, slotY, gp.tileSize, gp.tileSize);
+                    g2.setColor(Color.WHITE);
+                    g2.drawString("?", slotX + gp.tileSize/2 - 5, slotY + gp.tileSize/2 + 5); // Ví dụ
+                }
 
-            g2.drawImage(entity.inventory.get(i).down1, slotX,slotY,null);  //draw item
 
-            //DISPLAY AMOUNT
-            if(entity == gp.player && entity.inventory.get(i).amount > 1)  //merchant npc's inventory cannot stack items
-            {
-                g2.setFont(g2.getFont().deriveFont(32f));
-                int amountX;
-                int amountY;
+                //DISPLAY AMOUNT
+                if (entity == gp.player && itemInInventory instanceof OBject) {
+                    OBject obItem = (OBject) itemInInventory; // Ép kiểu item sang OBject
+                    if (obItem.amount > 1) {  // SỬ DỤNG obItem.amount
+                        g2.setFont(g2.getFont().deriveFont(32f));
+                        int amountX;
+                        int amountY;
 
-                String s = "" + entity.inventory.get(i).amount;
-                amountX = getXforAlignToRight(s, slotX + 44);
-                amountY = slotY + gp.tileSize;
+                        String s = "" + obItem.amount; // SỬ DỤNG obItem.amount
+                        amountX = getXforAlignToRight(s, slotX + 44); // Hoặc slotX + gp.tileSize - 5 (căn phải trong slot)
+                        amountY = slotY + gp.tileSize; // Vị trí y cho số lượng (ở dưới item)
 
-                //SHADOW
-                g2.setColor(new Color(60,60,60));
-                g2.drawString(s,amountX,amountY);
-                //NUMBER
-                g2.setColor(Color.white);
-                g2.drawString(s,amountX-3,amountY-3);
+                        //SHADOW
+                        g2.setColor(new Color(60, 60, 60));
+                        g2.drawString(s, amountX, amountY);
+                        //NUMBER
+                        g2.setColor(Color.white);
+                        g2.drawString(s, amountX - 3, amountY - 3); // Vẽ số lượng (có thể điều chỉnh offset cho đẹp hơn)
+                    }
+                }
 
-            }
+                slotX += slotSize;
 
-            slotX += slotSize;
-
-            if(i == 4 || i == 9 || i == 14)
-            {
-                //reset slotX
-                slotX = slotXstart;
-                //next row
-                slotY += slotSize;
+                if (i == 4 || i == 9 || i == 14) { // Giả sử mỗi hàng có 5 slot
+                    slotX = slotXstart;
+                    slotY += slotSize;
+                }
             }
         }
 
         //CURSOR
-        if(cursor == true)
-        {
+        if (cursor == true) {
             int cursorX = slotXstart + (slotSize * slotCol);
             int cursorY = slotYstart + (slotSize * slotRow);
             int cursorWidth = gp.tileSize;
@@ -337,28 +347,38 @@ public class UI {
             //DRAW CURSOR
             g2.setColor(Color.white);
             g2.setStroke(new BasicStroke(3));
-            g2.drawRoundRect(cursorX,cursorY,cursorWidth,cursorHeight,10,10);
+            g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
 
             //DESCRIPTION FRAME
             int dFrameX = frameX;
-            int dFrameY = frameY + frameHeight;
+            int dFrameY = frameY + frameHeight; // Khung mô tả nằm ngay dưới khung inventory
             int dFrameWidth = frameWidth;
-            int dFrameHeight = gp.tileSize * 3;
+            int dFrameHeight = gp.tileSize * 3; // Chiều cao khung mô tả
 
             //DRAW DESCRIPTION TEXT
             int textX = dFrameX + 20;
-            int textY = dFrameY + gp.tileSize;
+            int textY = dFrameY + gp.tileSize; // Dòng đầu tiên của mô tả
             g2.setFont(g2.getFont().deriveFont(28F));
 
             int itemIndex = getItemIndexOnSlot(slotCol, slotRow);
-            if(itemIndex < entity.inventory.size())
-            {
-                drawSubWindow(dFrameX,dFrameY,dFrameWidth,dFrameHeight);
-                for(String line : entity.inventory.get(itemIndex).description.split("\n"))
-                {
-                    g2.drawString(line,textX,textY);
-                    textY += 32;
+            if (itemIndex < entity.inventory.size()) {
+                GameObject selectedItem = entity.inventory.get(itemIndex);
+
+                if (selectedItem instanceof OBject) { // Chỉ hiển thị description nếu là OBject
+                    OBject selectedOBject = (OBject) selectedItem;
+                    drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight); // Vẽ khung mô tả
+
+                    if (selectedOBject.description != null && !selectedOBject.description.isEmpty()) {
+                        for (String line : selectedOBject.description.split("\n")) {
+                            g2.drawString(line, textX, textY);
+                            textY += 32; // Khoảng cách giữa các dòng
+                        }
+                    } else {
+                        g2.drawString("No description.", textX, textY); // Nếu không có mô tả
+                    }
                 }
+                // Nếu selectedItem không phải là OBject, có thể không vẽ khung description
+                // hoặc vẽ một thông báo "Không có thông tin".
             }
         }
     }
@@ -437,84 +457,91 @@ public class UI {
             }
         }
     }
-    public void trade_buy()
-    {
+    public void trade_buy() {
         // DRAW PLAYER INVENTORY
-        drawInventory(gp.player, false); // i want to move cursor on merchant's inventory so cursor = false.
-        // DRAW PLAYER INVENTORY
+        drawInventory(gp.player, false);
+        // DRAW NPC INVENTORY
         drawInventory(npc, true);
 
         // DRAW HINT WINDOW
-        int x = gp.tileSize * 2;
-        int y = gp.tileSize * 9;
-        int width = gp.tileSize * 6;
-        int height = gp.tileSize * 2;
-        drawSubWindow(x,y,width,height);
-        g2.drawString("[ESC] Back", x+24,y+60);
+        int x_hint = gp.tileSize * 2;
+        int y_hint = gp.tileSize * 9;
+        int width_hint = gp.tileSize * 6;
+        int height_hint = gp.tileSize * 2;
+        drawSubWindow(x_hint, y_hint, width_hint, height_hint);
+        g2.drawString("[ESC] Back", x_hint + 24, y_hint + 60);
 
         // DRAW PLAYER COIN WINDOW
-        x = gp.tileSize * 12;
-        y = gp.tileSize * 9;
-        width = gp.tileSize * 6;
-        height = gp.tileSize * 2;
-        drawSubWindow(x,y,width,height);
-        g2.drawString("Your Coin: " + gp.player.coin, x+24,y+60);
+        int x_coin = gp.tileSize * 12;
+        int y_coin = gp.tileSize * 9;
+        int width_coin = gp.tileSize * 6;
+        int height_coin = gp.tileSize * 2;
+        drawSubWindow(x_coin, y_coin, width_coin, height_coin);
+        g2.drawString("Your Coin: " + gp.player.coin, x_coin + 24, y_coin + 60);
 
         // DRAW PRICE WINDOW
-        int itemIndex = getItemIndexOnSlot(npcSlotCol,npcSlotRow);
-        if(itemIndex < npc.inventory.size())
-        {
-            x = (int)(gp.tileSize * 5.5);
-            y = (int)(gp.tileSize * 5.5);
-            width = (int)(gp.tileSize * 2.5);
-            height = gp.tileSize;
-            drawSubWindow(x,y,width,height);
-            g2.drawImage(coin, x+10, y+8, 32,32,null );
+        int itemIndex = getItemIndexOnSlot(npcSlotCol, npcSlotRow);
+        if (itemIndex < npc.inventory.size()) {
+            GameObject itemFromNpc = npc.inventory.get(itemIndex); // itemFromNpc là kiểu GameObject
 
-            int price = npc.inventory.get(itemIndex).price;
-            String text = String.valueOf(price);
-            x = getXforAlignToRight(text,(gp.tileSize * 8) - 20);
-            g2.drawString(text, x, y+34);
+            if (itemFromNpc instanceof OBject) { // Kiểm tra xem có phải là OBject không
+                OBject obItemToBuy = (OBject) itemFromNpc; // Ép kiểu sang OBject
 
-            //BUY AN ITEM
-            if(gp.keyH.enterPressed == true)
-            {
-                if(npc.inventory.get(itemIndex).price > gp.player.coin) //not enough coin
-                {
-                    subState = 0;
-                    npc.startDialogue(npc,2);
-                }
-                else
-                {
-                    if(gp.player.canObtainItem(npc.inventory.get(itemIndex)) == true)
-                    {
-                        gp.player.coin -= npc.inventory.get(itemIndex).price;  //-price
-                    }
-                    else
+                // Vẽ cửa sổ giá chỉ khi nó là OBject và có thể có giá
+                int x_price_win = (int) (gp.tileSize * 5.5);
+                int y_price_win = (int) (gp.tileSize * 5.5);
+                int width_price_win = (int) (gp.tileSize * 2.5);
+                int height_price_win = gp.tileSize;
+                drawSubWindow(x_price_win, y_price_win, width_price_win, height_price_win);
+                g2.drawImage(coin, x_price_win + 10, y_price_win + 8, 32, 32, null);
+
+                int price = obItemToBuy.price; // SỬA: Truy cập price từ obItemToBuy
+                String text = String.valueOf(price);
+                int x_price_text = getXforAlignToRight(text, (gp.tileSize * 8) - 20);
+                g2.drawString(text, x_price_text, y_price_win + 34);
+
+                //BUY AN ITEM
+                if (gp.keyH.enterPressed == true) {
+                    if (obItemToBuy.price > gp.player.coin) //not enough coin
                     {
                         subState = 0;
-                        npc.startDialogue(npc,3);
+                        // Giả sử Character.startDialogue(Character character, int setNum)
+                        // Nếu bạn đã sửa thành Character.startDialogue(int setNum) thì dùng:
+                        // npc.startDialogue(2);
+                        npc.startDialogue(npc, 2);
+                    } else {
+                        // Player.canObtainItem() nhận tham số kiểu OBject
+                        if (gp.player.canObtainItem(obItemToBuy)) { // SỬA: Truyền obItemToBuy
+                            gp.player.coin -= obItemToBuy.price;  //-price
+                            // Cân nhắc xóa item khỏi inventory của NPC nếu cần (nếu NPC có số lượng giới hạn)
+                            // Hoặc nếu NPC bán vô hạn thì không cần xóa.
+//                             Nếu item là stackable và NPC có nhiều, giảm amount của NPC:
+                             if (obItemToBuy.stackable && obItemToBuy.amount > 1) {
+                                 obItemToBuy.amount--;
+                             } else if (!obItemToBuy.stackable || obItemToBuy.amount == 1) {
+                                 // Xóa item khỏi inventory của NPC nếu không stackable hoặc hết hàng
+                                 // npc.inventory.remove(itemIndex); // Cẩn thận khi xóa khỏi list đang duyệt
+                             }
+
+                        } else { // Người chơi không thể nhận thêm item (ví dụ: túi đầy)
+                            subState = 0;
+                            // npc.startDialogue(3); // Hoặc npc.startDialogue(npc, 3);
+                            npc.startDialogue(npc, 3);
+                        }
                     }
                 }
-//                else if(gp.player.inventory.size() == gp.player.maxInventorySize) //full inventory
-//                {
-//                    subState = 0;
-//                    gp.gameState = gp.dialogueState;
-//                    currentDialogue = "You can not carry any more!";
-//                }
-//                else
-//                {
-//                    gp.player.coin -= npc.inventory.get(itemIndex).price;  //-price
-//                    gp.player.inventory.add(npc.inventory.get(itemIndex)); //add item to player's inventory
-//                }
+            } else { // if (itemFromNpc instanceof OBject) là false
+                // Xử lý trường hợp item trong inventory của NPC không phải là OBject
+                // (Có thể không vẽ giá hoặc hiển thị thông báo lỗi)
+                // Bạn có thể chọn không làm gì ở đây, hoặc hiển thị một thông báo "Không thể mua"
+                 System.err.println("UI Warning: Item in NPC inventory at index " + itemIndex + " is not a tradeable OBject.");
             }
-        }
+        } // Đóng if(itemIndex < npc.inventory.size())
     }
-    public void trade_sell()
-    {
+    public void trade_sell() {
         //DRAW PLAYER INVENTORY
-        drawInventory(gp.player, true);
-        int x;
+        drawInventory(gp.player, true); // gp.player là Character, drawInventory nhận Character
+        int x; // Khai báo lại ở đây để tránh nhầm lẫn phạm vi
         int y;
         int width;
         int height;
@@ -524,58 +551,64 @@ public class UI {
         y = gp.tileSize * 9;
         width = gp.tileSize * 6;
         height = gp.tileSize * 2;
-        drawSubWindow(x,y,width,height);
-        g2.drawString("[ESC] Back", x+24,y+60);
+        drawSubWindow(x, y, width, height);
+        g2.drawString("[ESC] Back", x + 24, y + 60);
 
         // DRAW PLAYER COIN WINDOW
         x = gp.tileSize * 12;
         y = gp.tileSize * 9;
         width = gp.tileSize * 6;
         height = gp.tileSize * 2;
-        drawSubWindow(x,y,width,height);
-        g2.drawString("Your Coin: " + gp.player.coin, x+24,y+60);
+        drawSubWindow(x, y, width, height);
+        g2.drawString("Your Coin: " + gp.player.coin, x + 24, y + 60);
 
         // DRAW PRICE WINDOW
-        int itemIndex = getItemIndexOnSlot(playerSlotCol,playerSlotRow);
-        if(itemIndex < gp.player.inventory.size())
-        {
-            x = (int)(gp.tileSize * 15.5);
-            y = (int)(gp.tileSize * 5.5);
-            width = (int)(gp.tileSize * 2.5);
-            height = gp.tileSize;
-            drawSubWindow(x,y,width,height);
-            g2.drawImage(coin, x+10, y+8, 32,32,null );
+        int itemIndex = getItemIndexOnSlot(playerSlotCol, playerSlotRow);
+        if (itemIndex < gp.player.inventory.size()) { // gp.player.inventory là ArrayList<GameObject>
+            GameObject itemFromPlayerInventory = gp.player.inventory.get(itemIndex); // Lấy ra là GameObject
 
-            int price = gp.player.inventory.get(itemIndex).price / 2;
-            String text = String.valueOf(price);
-            x = getXforAlignToRight(text,(gp.tileSize * 18) - 20);
-            g2.drawString(text, x, y+34);
+            if (itemFromPlayerInventory instanceof OBject) { // << KIỂM TRA INSTANCEOF OBject
+                OBject obItemToSell = (OBject) itemFromPlayerInventory; // << ÉP KIỂU sang OBject
 
-            //SELL AN ITEM
-            if(gp.keyH.enterPressed == true)
-            {
-                if(gp.player.inventory.get(itemIndex) == gp.player.currentWeapon ||
-                        gp.player.inventory.get(itemIndex) == gp.player.currentShield) //equipped items cant sell
-                {
-                    commandNum = 0;
-                    subState = 0;
-                    npc.startDialogue(npc,4);
-                }
-                else
-                {
-                    if(gp.player.inventory.get(itemIndex).amount > 1)
-                    {
-                        gp.player.inventory.get(itemIndex).amount--;
+                // Vẽ cửa sổ giá bán
+                x = (int) (gp.tileSize * 15.5);
+                y = (int) (gp.tileSize * 5.5);
+                width = (int) (gp.tileSize * 2.5);
+                height = gp.tileSize;
+                drawSubWindow(x, y, width, height);
+                g2.drawImage(coin, x + 10, y + 8, 32, 32, null);
+
+                int price = obItemToSell.price / 2; // << SỬA: Truy cập price từ obItemToSell
+                String text = String.valueOf(price);
+                x = getXforAlignToRight(text, (gp.tileSize * 18) - 20);
+                g2.drawString(text, x, y + 34);
+
+                //SELL AN ITEM
+                if (gp.keyH.enterPressed == true) {
+                    // So sánh với item đang trang bị (currentWeapon/Shield là kiểu OBject trong Character)
+                    if (obItemToSell == gp.player.currentWeapon ||
+                            obItemToSell == gp.player.currentShield) { //equipped items cant sell
+                        commandNum = 0;
+                        subState = 0;
+                        // npc.startDialogue(npc, 4); // Giả sử Character.startDialogue nhận (Character, int)
+                        // Hoặc npc.startDialogue(4) nếu đã sửa
+                        npc.startDialogue(npc,4); // Gọi startDialogue của npc (là Character)
+                    } else {
+                        if (obItemToSell.amount > 1) { // << SỬA: Truy cập amount từ obItemToSell
+                            obItemToSell.amount--;     // << SỬA: Truy cập amount từ obItemToSell
+                        } else {
+                            gp.player.inventory.remove(itemIndex); // Xóa item khỏi túi người chơi
+                            // (Hoặc gp.player.inventory.remove(obItemToSell); nếu list hỗ trợ)
+                        }
+                        gp.player.coin += price; // price đã được tính từ obItemToSell.price
                     }
-                    else
-                    {
-                        gp.player.inventory.remove(itemIndex);
-                    }
-                    gp.player.coin += price;
                 }
+            } else {
+                // Item trong túi người chơi không phải là OBject? (Khó xảy ra nếu logic thêm item vào inventory là đúng)
+                // Có thể không vẽ gì ở phần giá nếu item không phải là OBject
+                // System.err.println("UI Warning: Item in Player inventory for selling at index " + itemIndex + " is not an OBject with a price/amount.");
             }
         }
-
     }
     public void drawSleepScreen()
     {
@@ -692,7 +725,7 @@ public class UI {
         //Monster HP Bar
         for(int i = 0; i < gp.monster[1].length; i++)
         {
-            Entity monster = gp.monster[gp.currentMap][i];
+            Character monster = gp.monster[gp.currentMap][i];
 
             if(monster != null && monster.inCamera() == true)
             {

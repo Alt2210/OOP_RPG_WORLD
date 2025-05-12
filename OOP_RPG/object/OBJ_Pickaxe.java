@@ -1,8 +1,9 @@
 package object;
 
+import entity.OBject;
 import main.GamePanel;
 
-public class OBJ_Pickaxe extends Entity {
+public class OBJ_Pickaxe extends OBject {
     public static final String objName = "Pickaxe";
 
     public OBJ_Pickaxe(GamePanel gp)

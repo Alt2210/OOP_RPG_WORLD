@@ -1,8 +1,9 @@
 package object;
 
+import entity.OBject;
 import main.GamePanel;
 
-public class OBJ_Lantern extends Entity {
+public class OBJ_Lantern extends OBject {
 
     public static final String objName = "Lantern";
 

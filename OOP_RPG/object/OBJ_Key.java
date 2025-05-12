@@ -1,8 +1,9 @@
 package object;
 
+import entity.OBject;
 import main.GamePanel;
 
-public class OBJ_Key extends Entity {
+public class OBJ_Key extends OBject {
 
     GamePanel gp;
     public static final String objName = "Key";
@@ -18,28 +19,28 @@ public class OBJ_Key extends Entity {
         price = 350;
         stackable = true;
 
-        setDialogue();
+//        setDialogue();
     }
-    public void setDialogue()
-    {
-        dialogues[0][0] = "You use the " + name + " and open the door.";
-
-        dialogues[1][0] = "What are you doing?";
-    }
-    public boolean use(Entity entity)
-    {
-        int objIndex = getDetected(entity, gp.obj, "Door"); //user, target, name
-        if(objIndex != 999)
-        {
-            startDialogue(this,0);
-            gp.playSE(3);
-            gp.obj[gp.currentMap][objIndex] = null;
-            return true;
-        }
-        else
-        {
-            startDialogue(this,1);
-            return false;
-        }
-    }
+//    public void setDialogue()
+//    {
+//        dialogues[0][0] = "You use the " + name + " and open the door.";
+//
+//        dialogues[1][0] = "What are you doing?";
+//    }
+//    public boolean use(Entity entity)
+//    {
+//        int objIndex = getDetected(entity, gp.obj, "Door"); //user, target, name
+//        if(objIndex != 999)
+//        {
+//            startDialogue(this,0);
+//            gp.playSE(3);
+//            gp.obj[gp.currentMap][objIndex] = null;
+//            return true;
+//        }
+//        else
+//        {
+//            startDialogue(this,1);
+//            return false;
+//        }
+//    }
 }
