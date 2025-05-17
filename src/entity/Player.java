@@ -61,8 +61,8 @@ public class Player extends Character {
     public void setDefaultValues() {
         // Vị trí ban đầu của Player trong thế giới game (worldX, worldY).
         // Sử dụng gp.tileSize để đặt vị trí theo hệ lưới ô vuông.
-        worldX = gp.tileSize * 30; // Ví dụ: Bắt đầu ở cột 22
-        worldY = gp.tileSize * 30; // Ví dụ: Bắt đầu ở hàng 24
+        worldX = gp.tileSize * 30; // Ví dụ: Bắt đầu ở cột 30
+        worldY = gp.tileSize * 30; // Ví dụ: Bắt đầu ở hàng 30
         speed = 4; // Tốc độ di chuyển của Player
         direction = "down"; // Hướng ban đầu của Player khi game bắt đầu
     }
