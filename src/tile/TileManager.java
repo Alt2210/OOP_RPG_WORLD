@@ -31,25 +31,25 @@ public class TileManager {
         try {
 
             tile[0] = new Tile();
-            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/00_TX Tileset Grass.png"));
+            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/001.png"));
 
             tile[1] = new Tile();
-            tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/wall1.png"));
+            tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/018.png"));
             tile[1].collision = true;
 
             tile[2] = new Tile();
-            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/water1.png"));
+            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/032.png"));
             tile[2].collision = true;
 
             tile[3] = new Tile();
-            tile[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/40_TX Tileset Grass.png"));
+            tile[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/003.png"));
 
             tile[4] = new Tile();
-            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/tree1.png"));
+            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/016.png"));
             tile[4].collision = true;
 
             tile[5] = new Tile();
-            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/tiles/00_TX Tileset Grass.png"));
+            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/tiles/002.png"));
 
 
         } catch (IOException e) {
