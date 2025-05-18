@@ -36,6 +36,7 @@ public abstract class Character {
     public Rectangle solidArea; // Định nghĩa vùng va chạm của nhân vật (offset so với góc trên bên trái sprite)
     public int solidAreaDefaultX, solidAreaDefaultY; // Lưu lại offset mặc định của solidArea
     public boolean collisionOn = false; // Cờ báo hiệu có va chạm trong lần cập nhật này
+    public int actionLockCounter = 0;
 
     // --- Constructor ---
     // Mọi lớp con khi được tạo phải gọi constructor này và truyền GamePanel.
@@ -50,7 +51,7 @@ public abstract class Character {
     // Phương thức trừu tượng để các lớp con tải hình ảnh hoạt ảnh CỤ THỂ của chúng.
     // Lớp Character cần các biến BufferedImage (up1...right5) nhưng không biết ảnh trông như thế nào.
     protected abstract void getImages();
-
+    public abstract void setAction();
     // Phương thức trừu tượng để vẽ nhân vật lên màn hình.
     // Cách tính toán vị trí vẽ trên màn hình khác nhau giữa Player và Monster.
     public abstract void draw(Graphics2D g2);
@@ -80,6 +81,11 @@ public abstract class Character {
         // Gọi hệ thống kiểm tra va chạm của GamePanel để xem nhân vật có đụng độ với tile không.
         // CollisionChecker sẽ sử dụng worldX, worldY, speed, direction, solidArea của 'this'.
         gp.cChecker.checkTile(this);
+        if (!(this instanceof Player)) { // Quan trọng: Chỉ NPC/Monster mới checkPlayer theo cách này
+            boolean contactWithPlayer = gp.cChecker.checkPlayer(this);
+            // Phương thức checkPlayer(Character entity) trong CollisionChecker sẽ đặt
+            // entity.collisionOn = true nếu entity (NPC) sắp va chạm Player.
+        }
 
         // Nếu không có va chạm (sau khi checkTile), cho phép nhân vật di chuyển thực sự.
         if(!collisionOn) {
@@ -88,7 +94,7 @@ public abstract class Character {
                 case "down": worldY += speed; break;
                 case "left": worldX -= speed; break;
                 case "right": worldX += speed; break;
-                // Các case khác như "standing", hoặc direction = null sẽ không làm thay đổi worldX/worldY.
+                // Các case khác như "standing", hoặc  direction = null sẽ không làm thay đổi worldX/worldY.
             }
         }
 

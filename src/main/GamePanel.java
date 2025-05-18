@@ -33,6 +33,7 @@ public class GamePanel extends JPanel implements Runnable {
     public AssetSetter aSetter = new AssetSetter(this);
     public Player player = new Player(this,keyH);
     public SuperItem item[] = new SuperItem[10];
+    public entity.Character npc[] = new entity.Character[10];
 
     public GamePanel() {
 
@@ -45,6 +46,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setupGame() {
         aSetter.setItem();
+        aSetter.setNPC();
     }
 
     public void startGameThread() {
@@ -85,6 +87,12 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
 
         player.update();
+        for (int i = 0; i < npc.length; i++) {
+            if (npc[i] != null) {
+                npc[i].setAction(); // NPC quyết định hành động (ví dụ: đổi hướng)
+                npc[i].update();    // NPC thực hiện cập nhật (di chuyển, animation)
+            }
+        }
     }
     public void paintComponent(Graphics g) {
 
@@ -99,7 +107,11 @@ public class GamePanel extends JPanel implements Runnable {
                 item[i].draw(g2, this);
             }
         }
-
+        for(int i=0; i< npc.length; i++){
+            if(npc[i] != null){
+                npc[i].draw(g2);
+            }
+        }
         player.draw(g2);
 
         g2.dispose();

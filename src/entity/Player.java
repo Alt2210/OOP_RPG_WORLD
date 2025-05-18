@@ -57,6 +57,8 @@ public class Player extends Character {
 
     // Ghi đè phương thức setDefaultValues() từ lớp Character.
     // Thiết lập các giá trị khởi tạo riêng cho Player khi bắt đầu game.
+    @Override
+    public void setAction(){}
     @Override // Sử dụng annotation @Override là một cách tốt để kiểm tra lỗi nếu phương thức ở lớp cha bị đổi tên hoặc xóa.
     public void setDefaultValues() {
         // Vị trí ban đầu của Player trong thế giới game (worldX, worldY).
@@ -105,15 +107,9 @@ public class Player extends Character {
     // Thêm logic xử lý input riêng của Player trước khi gọi logic cập nhật chung.
     @Override
     public void update() {
-
-        // --- Player-specific Logic: Xử lý Input từ KeyHandler ---
-        // Chỉ xử lý input để đặt hướng di chuyển (direction) nếu có phím di chuyển được nhấn.
-        // Điều này giúp nhân vật đứng yên và dừng hoạt ảnh khi không nhấn phím nào.
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
-
-            // Xác định hướng di chuyển dựa trên phím được nhấn.
-            // Sử dụng 'else if' để ưu tiên phím được kiểm tra sau nếu nhiều phím nhấn cùng lúc.
-            if (keyH.upPressed){
+            // 1. Xác định hướng di chuyển dựa trên input
+            if (keyH.upPressed) {
                 direction = "up";
             } else if (keyH.downPressed) {
                 direction = "down";
@@ -123,22 +119,67 @@ public class Player extends Character {
                 direction = "right";
             }
 
-            // --- Gọi Logic Cập nhật chung của Lớp cha ---
-            // Sau khi đã xác định được hướng di chuyển (direction) từ input,
-            // gọi phương thức update() của lớp cha Character để thực hiện logic:
-            // 1. Kiểm tra va chạm với tile (sử dụng direction, speed)
-            // 2. Cập nhật vị trí thế giới (worldX, worldY) nếu không có va chạm.
-            // 3. Cập nhật bộ đếm và số frame hoạt ảnh (spriteCounter, spriteNum).
-            super.update();
+            // 2. Reset cờ va chạm cho frame hiện tại của Player
+            collisionOn = false;
+
+            // 3. Thực hiện tất cả các kiểm tra va chạm CẦN THIẾT cho Player
+            //    Thứ tự kiểm tra có thể quan trọng tùy theo logic game của bạn.
+            //    Ở đây, chúng ta kiểm tra tile trước, sau đó đến NPC.
+
+            // 3a. Kiểm tra va chạm với Tile
+            gp.cChecker.checkTile(this); // Phương thức này sẽ đặt this.collisionOn = true nếu có va chạm tile
+
+            // 3b. Kiểm tra va chạm với Objects (nếu có) - ví dụ:
+            // int objectIndex = gp.cChecker.checkObject(this, true); // true nghĩa là Player có thể tương tác
+            // if (objectIndex != 999) {
+            //     pickUpObject(objectIndex); // Phương thức riêng của Player
+            //     // Có thể không cần đặt collisionOn = true nếu player có thể nhặt và đi qua
+            // }
+
+            // 3c. Kiểm tra va chạm với NPCs
+            int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
+            if (npcIndex != 999) {
+                // Nếu va chạm NPC, đặt collisionOn của Player là true để ngăn di chuyển
+                // và sau đó xử lý tương tác.
+                this.collisionOn = true;
+                interactWithNPC(npcIndex);
+            }
+
+            // 3d. Kiểm tra va chạm với Monsters (tương tự NPCs)
+            // int monsterIndex = gp.cChecker.checkEntity(this, gp.monsters); // Giả sử có mảng gp.monsters
+            // if (monsterIndex != 999) {
+            //     this.collisionOn = true;
+            //     // interactWithMonster(monsterIndex); // Phương thức riêng của Player
+            // }
+
+
+            // 4. Di chuyển Player NẾU KHÔNG có bất kỳ va chạm nào (từ tile, NPC, monster, object...)
+            if (!collisionOn) {
+                switch (direction) {
+                    case "up": worldY -= speed; break;
+                    case "down": worldY += speed; break;
+                    case "left": worldX -= speed; break;
+                    case "right": worldX += speed; break;
+                }
+            }
+
+            // 5. Cập nhật hoạt ảnh (animation)
+            // Logic này có thể được lấy từ Character.update() hoặc bạn có thể tạo
+            // một phương thức protected updateAnimation() trong Character để Player gọi.
+            spriteCounter++;
+            if (spriteCounter > gp.FPS / 10) { // Ví dụ: 10 frames animation / giây (FPS/số frame hoạt ảnh mong muốn mỗi giây)
+                spriteNum++;
+                if (spriteNum > 5) { // Giả sử bạn có 5 frame cho mỗi hướng
+                    spriteNum = 1;
+                }
+                spriteCounter = 0;
+            }
 
         } else {
-            // --- Xử lý khi không có phím di chuyển nào được nhấn ---
-            // Nếu không có phím di chuyển nào, chúng ta không cập nhật direction dựa trên input mới.
-            // Đồng thời, chúng ta KHÔNG gọi super.update(). Điều này có tác dụng:
-            // 1. Vị trí thế giới của player không thay đổi (dừng lại).
-            // 2. Logic hoạt ảnh trong super.update() không chạy, làm hoạt ảnh dừng lại ở frame cuối cùng.
-            // Nếu bạn muốn nhân vật quay về frame đứng yên cụ thể khi dừng, bạn cần thêm logic ở đây,
-            // ví dụ: spriteNum = 1; hoặc đặt direction về "standing" và trong getCurrentFrame() xử lý case "standing".
+            // Người chơi không nhấn phím di chuyển -> xử lý animation đứng yên
+            spriteNum = 1; // Đặt về frame đầu tiên (hoặc frame đứng yên cụ thể)
+            // Hoặc bạn có thể không làm gì ở đây để giữ nguyên frame cuối cùng của hành động trước.
+            // Tùy thuộc vào hiệu ứng bạn muốn.
         }
     }
 
@@ -165,5 +206,12 @@ public class Player extends Character {
         // g2.setColor(Color.red); // Đặt màu vẽ là đỏ
         // g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height); // Vẽ hình chữ nhật
     }
-
+    public void interactWithNPC(int npcIndex) {
+        if (npcIndex != 999) {
+            // Logic khi Player tương tác với NPC: ví dụ mở hội thoại
+            System.out.println("Interacting with NPC: " + gp.npc[npcIndex].toString());
+            // gp.gameState = gp.dialogueState;
+            // gp.npc[npcIndex].speak(); // Giả sử NPC có phương thức speak()
+        }
+    }
 }
