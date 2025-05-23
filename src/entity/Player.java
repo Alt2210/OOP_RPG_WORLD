@@ -21,6 +21,9 @@ public class Player extends Character {
     public final int screenX;
     public final int screenY;
 
+    // Số lợng chìa khóa là 0
+    int hasKey = 0;
+
     // --- Constructor ---
     // Được gọi từ lớp GamePanel khi tạo đối tượng Player.
     // Nhận tham chiếu đến GamePanel và KeyHandler.
@@ -129,12 +132,9 @@ public class Player extends Character {
             // 3a. Kiểm tra va chạm với Tile
             gp.cChecker.checkTile(this); // Phương thức này sẽ đặt this.collisionOn = true nếu có va chạm tile
 
-            // 3b. Kiểm tra va chạm với Objects (nếu có) - ví dụ:
-            // int objectIndex = gp.cChecker.checkObject(this, true); // true nghĩa là Player có thể tương tác
-            // if (objectIndex != 999) {
-            //     pickUpObject(objectIndex); // Phương thức riêng của Player
-            //     // Có thể không cần đặt collisionOn = true nếu player có thể nhặt và đi qua
-            // }
+            // 3b. Kiểm tra va chạm với Item (nếu có) - ví dụ:
+            int itemIndex = gp.cChecker.checkItem(this, true);
+            pickUpItem(itemIndex);
 
             // 3c. Kiểm tra va chạm với NPCs
             int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
@@ -212,6 +212,29 @@ public class Player extends Character {
             System.out.println("Interacting with NPC: " + gp.npc[npcIndex].toString());
             // gp.gameState = gp.dialogueState;
             // gp.npc[npcIndex].speak(); // Giả sử NPC có phương thức speak()
+        }
+    }
+
+    // Nhặt item
+    public void pickUpItem(int i) {
+        // the object array's index
+        if (i != 999) {
+            String itemName = gp.item[i].name;
+
+            switch (itemName) {
+                case "Key":
+                    hasKey++;
+                    gp.item[i] = null;
+                    System.out.println("Key:" + hasKey);
+                    break;
+                case "Door":
+                    if (hasKey > 0) {
+                        gp.item[i] = null;
+                        hasKey--;
+                    }
+                    System.out.println("Key:" + hasKey);
+                    break;
+            }
         }
     }
 }

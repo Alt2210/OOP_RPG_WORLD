@@ -189,4 +189,72 @@ public class CollisionChecker {
 
         return contactPlayer;
     }
+
+    // Kiem tra va cham co phai la nguoi choi khong
+    public int checkItem(Character character, boolean player) {
+        int index = 999;
+
+        for (int i = 0; i < gp.item.length; i++) {
+            if (gp.item[i] != null) {
+                // vi tri solid Area cua nhan vat
+                character.solidArea.x = character.worldX + character.solidArea.x;
+                character.solidArea.y = character.worldY + character.solidArea.y;
+                // vi tri solid area cua item
+                gp.item[i].solidArea.x = gp.item[i].worldX + gp.item[i].solidArea.x;
+                gp.item[i].solidArea.y = gp.item[i].worldY + gp.item[i].solidArea.y;
+
+                switch (character.direction) {
+                    case "up":
+                        character.solidArea.y -= character.speed;
+                        if (character.solidArea.intersects(gp.item[i].solidArea)) {
+                            if (gp.item[i].collision == true) {
+                                character.collisionOn = true;
+                            }
+                            if (player == true) {
+                                index = i;
+                            }
+                        }
+                        break;
+                    case "down":
+                        character.solidArea.y += character.speed;
+                        if (character.solidArea.intersects(gp.item[i].solidArea)) {
+                            if (gp.item[i].collision == true) {
+                                character.collisionOn = true;
+                            }
+                            if (player == true) {
+                                index = i;
+                            }
+                        }
+                        break;
+                    case "left":
+                        character.solidArea.x -= character.speed;
+                        if (character.solidArea.intersects(gp.item[i].solidArea)) {
+                            if (gp.item[i].collision == true) {
+                                character.collisionOn = true;
+                            }
+                            if (player == true) {
+                                index = i;
+                            }
+                        }
+                        break;
+                    case "right":
+                        character.solidArea.x += character.speed;
+                        if (character.solidArea.intersects(gp.item[i].solidArea)) {
+                            if (gp.item[i].collision == true) {
+                                character.collisionOn = true;
+                            }
+                            if (player == true) {
+                                index = i;
+                            }
+                        }
+                        break;
+                }
+                character.solidArea.x = character.solidAreaDefaultX;
+                character.solidArea.y = character.solidAreaDefaultY;
+                gp.item[i].solidArea.x = gp.item[i].solidAreaDefaultX;
+                gp.item[i].solidArea.y = gp.item[i].solidAreaDefaultY;
+            }
+        }
+        return index;
+    }
 }
