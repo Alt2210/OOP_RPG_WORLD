@@ -1,38 +1,22 @@
-package item;
+package worldObject;
 
 import main.GamePanel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class SuperItem {
+public class WorldObject {
     public BufferedImage image;
     public String name;
     public int id;
     public boolean collision = false;
     public int worldX, worldY;
 
+    protected int pickable = 0;
+
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX = 0;
     public int solidAreaDefaultY = 0;
-
-    public SuperItem( int id, String name) {
-        this.name = name;
-        this.id = id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SuperItem item = (SuperItem) o;
-        return id == item.id; // Ví dụ: coi 2 item giống nhau nếu cùng id
-    }
-
-    @Override
-    public int hashCode() {
-        return Integer.hashCode(id); // Ví dụ: hashCode dựa trên id
-    }
 
     public void draw(Graphics2D g2, GamePanel gp) {
         int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;

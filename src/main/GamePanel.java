@@ -1,8 +1,11 @@
 package main;
 
-import entity.Player;
+import character.Character;
+import character.Player;
+import item.Item;
 import item.SuperItem;
 import tile.TileManager;
+import worldObject.WorldObject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,30 +13,118 @@ import java.awt.*;
 public class GamePanel extends JPanel implements Runnable {
 
     // sreen settings
-    final int originalTileSize = 16; // 16x16 tile
-    final int scale = 3;
-    public final int tileSize = originalTileSize * scale; // 48x48 tile
-    public final int maxScreenCol = 16;
-    public final int maxScreenRow = 12;
-    public final int ScreenWidth = tileSize * maxScreenCol; // 768 pixel
-    public final int ScreenHeight = tileSize * maxScreenRow; // 576 pixel
+    private final int originalTileSize = 16; // 16x16 tile
+    private final int scale = 3;
+    private final int tileSize = originalTileSize * scale; // 48x48 tile
+    private final int maxScreenCol = 16;
+    private final int maxScreenRow = 12;
+    private final int ScreenWidth = tileSize * maxScreenCol; // 768 pixel
+    private final int ScreenHeight = tileSize * maxScreenRow; // 576 pixel
 
     // WORLD SETTINGS
-    public final int maxWorldCol = 50;
-    public final int maxWorldRow = 50;
-    public final int worldWidth = tileSize * maxWorldCol;
-    public final int worldHeight = tileSize * maxWorldRow;
+    private final int maxWorldCol = 50;
+    private final int maxWorldRow = 50;
+    private final int worldWidth = tileSize * maxWorldCol;
+    private final int worldHeight = tileSize * maxWorldRow;
 
-    public int FPS = 60;
+    private int FPS = 60;
 
-    TileManager tileM = new TileManager(this);;
-    KeyHandler keyH = new KeyHandler();
-    Thread gameThread;
-    public CollisionChecker cChecker = new CollisionChecker(this);
-    public AssetSetter aSetter = new AssetSetter(this);
-    public Player player = new Player(this,keyH);
-    public SuperItem item[] = new SuperItem[10];
-    public entity.Character npc[] = new entity.Character[10];
+    public int getOriginalTileSize() {
+        return originalTileSize;
+    }
+
+    public int getScale() {
+        return scale;
+    }
+
+    public int getTileSize() {
+        return tileSize;
+    }
+
+    public int getMaxScreenCol() {
+        return maxScreenCol;
+    }
+
+    public int getMaxScreenRow() {
+        return maxScreenRow;
+    }
+
+    public int getScreenWidth() {
+        return ScreenWidth;
+    }
+
+    public int getScreenHeight() {
+        return ScreenHeight;
+    }
+
+    public int getMaxWorldCol() {
+        return maxWorldCol;
+    }
+
+    public int getMaxWorldRow() {
+        return maxWorldRow;
+    }
+
+    public int getWorldWidth() {
+        return worldWidth;
+    }
+
+    public int getWorldHeight() {
+        return worldHeight;
+    }
+
+    public int getFPS() {
+        return FPS;
+    }
+
+    public void setFPS(int FPS) {
+        this.FPS = FPS;
+    }
+
+    public TileManager getTileM() {
+        return tileM;
+    }
+
+    public KeyHandler getKeyH() {
+        return keyH;
+    }
+
+    public Thread getGameThread() {
+        return gameThread;
+    }
+
+    public CollisionChecker getcChecker() {
+        return cChecker;
+    }
+
+    public AssetSetter getaSetter() {
+        return aSetter;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public WorldObject[] getwObjects() {
+        return wObjects;
+    }
+
+    public void setwObjects(WorldObject[] wObjects) {
+        this.wObjects = wObjects;
+    }
+
+    public Character[] getNpc() {
+        return npc;
+    }
+
+    private TileManager tileM = new TileManager(this);;
+    private KeyHandler keyH = new KeyHandler();
+    private Thread gameThread;
+    private CollisionChecker cChecker = new CollisionChecker(this);
+    private AssetSetter aSetter = new AssetSetter(this);
+    private Player player = new Player(this,keyH);
+    private WorldObject wObjects[] = new WorldObject[10];
+    private character.Character npc[] = new character.Character[10];
 
     public GamePanel() {
 
@@ -45,7 +136,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void setupGame() {
-        aSetter.setItem();
+        aSetter.setWObjects();
         aSetter.setNPC();
     }
 
@@ -102,9 +193,9 @@ public class GamePanel extends JPanel implements Runnable {
 
         tileM.draw(g2);
 
-        for (int i = 0; i < item.length; i++) {
-            if (item[i] != null) {
-                item[i].draw(g2, this);
+        for (int i = 0; i < wObjects.length; i++) {
+            if (wObjects[i] != null) {
+                wObjects[i].draw(g2, this);
             }
         }
         for(int i=0; i< npc.length; i++){
