@@ -72,6 +72,7 @@ public class Player extends Character {
 
         maxHealth = 100;
         currentHealth = maxHealth;
+        name = "Đạt đẹp trai";
     }
 
     // Ghi đè phương thức update() từ lớp Character.
@@ -171,6 +172,7 @@ public class Player extends Character {
         g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
 
 
+        drawHealthBar(g2, screenX, screenY); // Truyền screenX và screenY vào
         drawHealthBar(g2, screenX, screenY); // Truyền screenX và screenY vào
         // --- Tùy chọn: Vẽ vùng va chạm (solidArea) để debug ---
         // Điều này giúp bạn thấy rõ vùng va chạm của nhân vật trên màn hình.

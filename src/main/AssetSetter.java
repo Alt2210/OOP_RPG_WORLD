@@ -1,6 +1,8 @@
 package main;
 
 import character.NPC_OldMan;
+import character.monster.MON_GreenSlime;
+import character.monster.Monster;
 import item.Item_Key;
 import worldObject.pickableObject.OBJ_Key;
 import worldObject.unpickableObject.OBJ_Chest;
@@ -44,6 +46,11 @@ public class AssetSetter {
         gp.getNpc()[0] = new NPC_OldMan(gp);
         gp.getNpc()[0].worldX = gp.getTileSize()*21;
         gp.getNpc()[0].worldY = gp.getTileSize()*21;
+    }
+    public void setGreenSlime(){
+        gp.getMON_GreenSlime()[0] = new MON_GreenSlime(gp);
+        gp.getMON_GreenSlime()[0].worldX = gp.getTileSize()*33;
+        gp.getMON_GreenSlime()[0].worldY = gp.getTileSize()*33;
     }
 
 }

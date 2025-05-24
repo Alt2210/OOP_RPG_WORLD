@@ -27,6 +27,7 @@ public class NPC_OldMan extends Character {
         solidArea.width = 32; // Ví dụ: 32x32 pixels
         solidArea.height = 32;
         cip.getImage("/npc","oldman_"); // Tải ảnh ở đây
+        name = "Old Man";
     }
 
     public void setAction(){
