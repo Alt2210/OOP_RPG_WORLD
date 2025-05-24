@@ -1,12 +1,13 @@
 package worldObject.pickableObject;
 
 import item.Item_Key;
+import main.GamePanel;
 import worldObject.WorldObject;
 
 public class OBJ_Key extends WorldObject {
-    Item_Key key = new Item_Key();
 
-    public OBJ_Key() {
+    public OBJ_Key(GamePanel gp) {
+        Item_Key key = new Item_Key(gp);
         name = "Key";
         image = key.getItp().getCurFrame();
     }

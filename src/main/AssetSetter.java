@@ -14,11 +14,11 @@ public class AssetSetter {
     }
 
     public void setWObjects() {
-        gp.getwObjects()[0] = new OBJ_Key();
+        gp.getwObjects()[0] = new OBJ_Key(gp);
         gp.getwObjects()[0].worldX = 35 * gp.getTileSize();
         gp.getwObjects()[0].worldY = 35 * gp.getTileSize();
 
-        gp.getwObjects()[1] = new OBJ_Key();
+        gp.getwObjects()[1] = new OBJ_Key(gp);
         gp.getwObjects()[1].worldX = 35 * gp.getTileSize();
         gp.getwObjects()[1].worldY = 38 * gp.getTileSize();
 
@@ -45,4 +45,5 @@ public class AssetSetter {
         gp.getNpc()[0].worldX = gp.getTileSize()*21;
         gp.getNpc()[0].worldY = gp.getTileSize()*21;
     }
+
 }
