@@ -69,6 +69,9 @@ public class Player extends Character {
         worldY = gp.getTileSize() * 30; // Ví dụ: Bắt đầu ở hàng 30
         speed = 4; // Tốc độ di chuyển của Player
         direction = "down"; // Hướng ban đầu của Player khi game bắt đầu
+
+        maxHealth = 100;
+        currentHealth = maxHealth;
     }
 
     // Ghi đè phương thức update() từ lớp Character.
@@ -154,6 +157,7 @@ public class Player extends Character {
     @Override
     public void draw(Graphics2D g2) {
 
+
         // --- Logic Vẽ Player ---
         // Lấy hình ảnh (BufferedImage) của frame hoạt ảnh hiện tại.
         // Phương thức getCurrentFrame() từ lớp cha Character sẽ trả về ảnh phù hợp
@@ -166,12 +170,15 @@ public class Player extends Character {
         // null là tham số ImageObserver, thường dùng null khi vẽ trực tiếp lên Graphics.
         g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
 
+
+        drawHealthBar(g2, screenX, screenY); // Truyền screenX và screenY vào
         // --- Tùy chọn: Vẽ vùng va chạm (solidArea) để debug ---
         // Điều này giúp bạn thấy rõ vùng va chạm của nhân vật trên màn hình.
         // Vị trí vẽ vùng va chạm: Tọa độ màn hình của Player + offset của solidArea.
         // g2.setColor(Color.red); // Đặt màu vẽ là đỏ
         // g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height); // Vẽ hình chữ nhật
     }
+
     public void interactWithNPC(int npcIndex) {
         if (npcIndex != 999) {
             // Logic khi Player tương tác với NPC: ví dụ mở hội thoại
@@ -180,6 +187,7 @@ public class Player extends Character {
             // gp.npc[npcIndex].speak(); // Giả sử NPC có phương thức speak()
         }
     }
+
 
 
 
@@ -204,5 +212,7 @@ public class Player extends Character {
             }
         }
     }
+
+
 
 }

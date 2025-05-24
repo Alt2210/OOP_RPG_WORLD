@@ -58,6 +58,7 @@ public class CharacterImageProcessor extends ImageProcessor{
     }
 
     public void getImage(String folder, String name){
+
         for(int i = 0; i < numSprite; i++){
             BufferedImage image;
             String UP_IMAGE_PATH = folder + "/" + name + "right" + String.valueOf(i+1) + ".png";
