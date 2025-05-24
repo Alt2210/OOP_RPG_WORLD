@@ -1,9 +1,10 @@
 package main;
 
-import entity.NPC_OldMan;
-import item.Item_Chest;
-import item.Item_Door;
+import character.NPC_OldMan;
 import item.Item_Key;
+import worldObject.pickableObject.OBJ_Key;
+import worldObject.unpickableObject.OBJ_Chest;
+import worldObject.unpickableObject.OBJ_Door;
 
 public class AssetSetter {
     GamePanel gp;
@@ -12,36 +13,37 @@ public class AssetSetter {
         this.gp = gp;
     }
 
-    public void setItem() {
-        gp.item[0] = new Item_Key();
-        gp.item[0].worldX = 35 * gp.tileSize;
-        gp.item[0].worldY = 35 * gp.tileSize;
+    public void setWObjects() {
+        gp.getwObjects()[0] = new OBJ_Key(gp);
+        gp.getwObjects()[0].worldX = 35 * gp.getTileSize();
+        gp.getwObjects()[0].worldY = 35 * gp.getTileSize();
 
-        gp.item[1] = new Item_Key();
-        gp.item[1].worldX = 35 * gp.tileSize;
-        gp.item[1].worldY = 38 * gp.tileSize;
+        gp.getwObjects()[1] = new OBJ_Key(gp);
+        gp.getwObjects()[1].worldX = 35 * gp.getTileSize();
+        gp.getwObjects()[1].worldY = 38 * gp.getTileSize();
 
-        gp.item[2] = new Item_Door();
-        gp.item[2].worldX = 35 * gp.tileSize;
-        gp.item[2].worldY = 40 * gp.tileSize;
+        gp.getwObjects()[2] = new OBJ_Door();
+        gp.getwObjects()[2].worldX = 35 * gp.getTileSize();
+        gp.getwObjects()[2].worldY = 40 * gp.getTileSize();
 
-        gp.item[3] = new Item_Door();
-        gp.item[3].worldX = 35 * gp.tileSize;
-        gp.item[3].worldY = 42 * gp.tileSize;
+        gp.getwObjects()[3] = new OBJ_Door();
+        gp.getwObjects()[3].worldX = 35 * gp.getTileSize();
+        gp.getwObjects()[3].worldY = 42 * gp.getTileSize();
 
-        gp.item[4] = new Item_Door();
-        gp.item[4].worldX = 35 * gp.tileSize;
-        gp.item[4].worldY = 44 * gp.tileSize;
+        gp.getwObjects()[4] = new OBJ_Door();
+        gp.getwObjects()[4].worldX = 35 * gp.getTileSize();
+        gp.getwObjects()[4].worldY = 44 * gp.getTileSize();
 
-        gp.item[5] = new Item_Chest();
-        gp.item[5].worldX = 35 * gp.tileSize;
-        gp.item[5].worldY = 43 * gp.tileSize;
+        gp.getwObjects()[5] = new OBJ_Chest();
+        gp.getwObjects()[5].worldX = 35 * gp.getTileSize();
+        gp.getwObjects()[5].worldY = 43 * gp.getTileSize();
 
 
     }
     public void setNPC(){
-        gp.npc[0] = new NPC_OldMan(gp);
-        gp.npc[0].worldX = gp.tileSize*21;
-        gp.npc[0].worldY = gp.tileSize*21;
+        gp.getNpc()[0] = new NPC_OldMan(gp);
+        gp.getNpc()[0].worldX = gp.getTileSize()*21;
+        gp.getNpc()[0].worldY = gp.getTileSize()*21;
     }
+
 }
