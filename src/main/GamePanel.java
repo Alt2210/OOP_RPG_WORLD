@@ -202,20 +202,21 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
     public void update() {
-        if(gameState == playState){
-             player.update();
+        if(gameState == playState) {
+            player.update();
 
-        for (int i = 0; i < npc.length; i++) {
-            if (npc[i] != null) {
-                npc[i].setAction(); // NPC quyết định hành động (ví dụ: đổi hướng)
-                npc[i].update();    // NPC thực hiện cập nhật (di chuyển, animation)
+            for (int i = 0; i < npc.length; i++) {
+                if (npc[i] != null) {
+                    npc[i].setAction(); // NPC quyết định hành động (ví dụ: đổi hướng)
+                    npc[i].update();    // NPC thực hiện cập nhật (di chuyển, animation)
+                }
             }
-        }
 
-        for (int i = 0; i < greenSlime.length; i++) {
-            if (greenSlime[i] != null) {
-                greenSlime[i].setAction();
-                greenSlime[i].update();
+            for (int i = 0; i < greenSlime.length; i++) {
+                if (greenSlime[i] != null) {
+                    greenSlime[i].setAction();
+                    greenSlime[i].update();
+                }
             }
         }
         else if(gameState== pauseState){
