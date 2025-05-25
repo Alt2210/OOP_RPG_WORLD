@@ -5,6 +5,7 @@ import main.GamePanel;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 
 public abstract class ImageProcessor {
     private GamePanel gp;
@@ -35,6 +36,7 @@ public abstract class ImageProcessor {
 
     public BufferedImage setup(String url){
         BufferedImage image = null;
+        InputStream is = null;
         try {
             image = ImageIO.read(getClass().getResourceAsStream(url));
         } catch (IOException e) {

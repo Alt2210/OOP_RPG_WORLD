@@ -5,6 +5,7 @@ import character.Player;
 import character.monster.MON_GreenSlime;
 import tile.TileManager;
 import worldObject.WorldObject;
+import dialogue.DialogueManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +27,20 @@ public class GamePanel extends JPanel implements Runnable {
     private final int worldWidth = tileSize * maxWorldCol;
     private final int worldHeight = tileSize * maxWorldRow;
 
+    private UI ui = new UI(this);
+    private DialogueManager dialogueManager = new DialogueManager(this);
     private int FPS = 60;
+    private Character currentInteractingNPC = null;
+    // Game State
+    public int gameState;
+    public final int titleState = 0;
+    public final int playState=1;
+    public final int pauseState=2;
+    public final int dialogueState = 3;
+    public final int endGameState = 4;
+
+
+    public UI getUi(){return ui;}
 
     public int getOriginalTileSize() {
         return originalTileSize;
@@ -80,6 +94,12 @@ public class GamePanel extends JPanel implements Runnable {
         this.FPS = FPS;
     }
 
+    public DialogueManager getDialogueManager() {return dialogueManager;}
+
+    public Character getInteractingNPC() { return currentInteractingNPC; }
+
+    public void setInteractingNPC(Character npc) { this.currentInteractingNPC = npc; }
+
     public TileManager getTileM() {
         return tileM;
     }
@@ -91,6 +111,8 @@ public class GamePanel extends JPanel implements Runnable {
     public Thread getGameThread() {
         return gameThread;
     }
+
+    public void stopGameThread() { this.gameThread = null; }
 
     public CollisionChecker getcChecker() {
         return cChecker;
@@ -118,7 +140,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Character[] getMON_GreenSlime() { return greenSlime;  }
 
     private TileManager tileM = new TileManager(this);;
-    private KeyHandler keyH = new KeyHandler();
+    private KeyHandler keyH = new KeyHandler(this);
     private Thread gameThread;
     private CollisionChecker cChecker = new CollisionChecker(this);
     private AssetSetter aSetter = new AssetSetter(this);
@@ -140,6 +162,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void setupGame() {
         aSetter.setWObjects();
         aSetter.setNPC();
+        gameState= playState;
         aSetter.setGreenSlime();
     }
 
@@ -179,21 +202,29 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
     public void update() {
+        if(gameState == playState) {
+            player.update();
 
-        player.update();
+            for (int i = 0; i < npc.length; i++) {
+                if (npc[i] != null) {
+                    npc[i].setAction(); // NPC quyết định hành động (ví dụ: đổi hướng)
+                    npc[i].update();    // NPC thực hiện cập nhật (di chuyển, animation)
+                }
+            }
 
-        for (int i = 0; i < npc.length; i++) {
-            if (npc[i] != null) {
-                npc[i].setAction(); // NPC quyết định hành động (ví dụ: đổi hướng)
-                npc[i].update();    // NPC thực hiện cập nhật (di chuyển, animation)
+            for (int i = 0; i < greenSlime.length; i++) {
+                if (greenSlime[i] != null) {
+                    greenSlime[i].setAction();
+                    greenSlime[i].update();
+                }
             }
         }
+        else if(gameState== pauseState){
 
-        for (int i = 0; i < greenSlime.length; i++) {
-            if (greenSlime[i] != null) {
-                greenSlime[i].setAction();
-                greenSlime[i].update();
-            }
+        }
+        else if(gameState== endGameState){
+
+
         }
     }
     public void paintComponent(Graphics g) {
@@ -222,6 +253,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
         player.draw(g2);
 
+        ui.draw(g2);
         g2.dispose();
     }
 }
