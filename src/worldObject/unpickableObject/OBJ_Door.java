@@ -1,10 +1,12 @@
-package item;
+package worldObject.unpickableObject;
+
+import worldObject.WorldObject;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
 
-public class Item_Door extends SuperItem {
-    public Item_Door() {
+public class OBJ_Door extends WorldObject {
+    public OBJ_Door() {
         name = "Door";
         try {
             image = ImageIO.read(getClass().getResourceAsStream("/objects/door.png"));

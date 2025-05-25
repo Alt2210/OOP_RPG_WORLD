@@ -1,7 +1,7 @@
 package main;
 
-import entity.Character;
-import entity.Player; // Cần import lớp Player để sử dụng instanceof
+import character.Character;
+import character.Player; // Cần import lớp Player để sử dụng instanceof
 
 import java.awt.Rectangle; // Import lớp Rectangle
 
@@ -21,10 +21,10 @@ public class CollisionChecker {
         int entityBottomWorldY = entity.worldY + entity.solidArea.y + entity.solidArea.height;
 
         // Tính toán cột và hàng của tile mà entity sẽ va chạm tới
-        int entityLeftCol = entityLeftWorldX / gp.tileSize;
-        int entityRightCol = entityRightWorldX / gp.tileSize;
-        int entityTopRow = entityTopWorldY / gp.tileSize;
-        int entityBottomRow = entityBottomWorldY / gp.tileSize;
+        int entityLeftCol = entityLeftWorldX / gp.getTileSize();
+        int entityRightCol = entityRightWorldX / gp.getTileSize();
+        int entityTopRow = entityTopWorldY / gp.getTileSize();
+        int entityBottomRow = entityBottomWorldY / gp.getTileSize();
 
         int tileNum1, tileNum2;
 
@@ -32,54 +32,54 @@ public class CollisionChecker {
         // Đồng thời kiểm tra xem có vượt ra ngoài biên của bản đồ không
         switch (entity.direction) {
             case "up":
-                entityTopRow = (entityTopWorldY - entity.speed) / gp.tileSize;
+                entityTopRow = (entityTopWorldY - entity.speed) / gp.getTileSize();
                 // Kiểm tra biên trên của bản đồ
-                if (entityTopRow < 0 || entityLeftCol < 0 || entityRightCol >= gp.maxWorldCol) {
+                if (entityTopRow < 0 || entityLeftCol < 0 || entityRightCol >= gp.getMaxWorldCol()) {
                     entity.collisionOn = true;
                     return;
                 }
-                tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
-                tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
-                if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
+                tileNum1 = gp.getTileM().mapTileNum[entityLeftCol][entityTopRow];
+                tileNum2 = gp.getTileM().mapTileNum[entityRightCol][entityTopRow];
+                if (gp.getTileM().tile[tileNum1].collision || gp.getTileM().tile[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
                 break;
             case "down":
-                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.tileSize;
+                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.getTileSize();
                 // Kiểm tra biên dưới của bản đồ
-                if (entityBottomRow >= gp.maxWorldRow || entityLeftCol < 0 || entityRightCol >= gp.maxWorldCol) {
+                if (entityBottomRow >= gp.getMaxWorldRow() || entityLeftCol < 0 || entityRightCol >= gp.getMaxWorldCol()) {
                     entity.collisionOn = true;
                     return;
                 }
-                tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
-                tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
-                if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
+                tileNum1 = gp.getTileM().mapTileNum[entityLeftCol][entityBottomRow];
+                tileNum2 = gp.getTileM().mapTileNum[entityRightCol][entityBottomRow];
+                if (gp.getTileM().tile[tileNum1].collision || gp.getTileM().tile[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
                 break;
             case "left":
-                entityLeftCol = (entityLeftWorldX - entity.speed) / gp.tileSize;
+                entityLeftCol = (entityLeftWorldX - entity.speed) / gp.getTileSize();
                 // Kiểm tra biên trái của bản đồ
-                if (entityLeftCol < 0 || entityTopRow < 0 || entityBottomRow >= gp.maxWorldRow) {
+                if (entityLeftCol < 0 || entityTopRow < 0 || entityBottomRow >= gp.getMaxWorldRow()) {
                     entity.collisionOn = true;
                     return;
                 }
-                tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
-                tileNum2 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
-                if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
+                tileNum1 = gp.getTileM().mapTileNum[entityLeftCol][entityTopRow];
+                tileNum2 = gp.getTileM().mapTileNum[entityLeftCol][entityBottomRow];
+                if (gp.getTileM().tile[tileNum1].collision || gp.getTileM().tile[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
                 break;
             case "right":
-                entityRightCol = (entityRightWorldX + entity.speed) / gp.tileSize;
+                entityRightCol = (entityRightWorldX + entity.speed) / gp.getTileSize();
                 // Kiểm tra biên phải của bản đồ
-                if (entityRightCol >= gp.maxWorldCol || entityTopRow < 0 || entityBottomRow >= gp.maxWorldRow) {
+                if (entityRightCol >= gp.getMaxWorldCol() || entityTopRow < 0 || entityBottomRow >= gp.getMaxWorldRow()) {
                     entity.collisionOn = true;
                     return;
                 }
-                tileNum1 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
-                tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
-                if (gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision) {
+                tileNum1 = gp.getTileM().mapTileNum[entityRightCol][entityTopRow];
+                tileNum2 = gp.getTileM().mapTileNum[entityRightCol][entityBottomRow];
+                if (gp.getTileM().tile[tileNum1].collision || gp.getTileM().tile[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
                 break;
@@ -159,10 +159,10 @@ public class CollisionChecker {
 
         // Vùng va chạm của Player
         Rectangle playerBounds = new Rectangle(
-                gp.player.worldX + gp.player.solidArea.x,
-                gp.player.worldY + gp.player.solidArea.y,
-                gp.player.solidArea.width,
-                gp.player.solidArea.height);
+                gp.getPlayer().worldX + gp.getPlayer().solidArea.x,
+                gp.getPlayer().worldY + gp.getPlayer().solidArea.y,
+                gp.getPlayer().solidArea.width,
+                gp.getPlayer().solidArea.height);
 
         // Dự đoán vị trí tiếp theo của entity (NPC/Monster)
         Rectangle entityNextPositionBounds = new Rectangle(entityBounds); // Sao chép từ entityBounds
@@ -194,56 +194,56 @@ public class CollisionChecker {
     public int checkItem(Character character, boolean player) {
         int index = 999;
 
-        for (int i = 0; i < gp.item.length; i++) {
-            if (gp.item[i] != null) {
+        for (int i = 0; i < gp.getwObjects().length; i++) {
+            if (gp.getwObjects()[i] != null) {
                 // vi tri solid Area cua nhan vat
                 character.solidArea.x = character.worldX + character.solidArea.x;
                 character.solidArea.y = character.worldY + character.solidArea.y;
-                // vi tri solid area cua item
-                gp.item[i].solidArea.x = gp.item[i].worldX + gp.item[i].solidArea.x;
-                gp.item[i].solidArea.y = gp.item[i].worldY + gp.item[i].solidArea.y;
+                // vi tri solid area cua getwObjects()
+                gp.getwObjects()[i].solidArea.x = gp.getwObjects()[i].worldX + gp.getwObjects()[i].solidArea.x;
+                gp.getwObjects()[i].solidArea.y = gp.getwObjects()[i].worldY + gp.getwObjects()[i].solidArea.y;
 
                 switch (character.direction) {
                     case "up":
                         character.solidArea.y -= character.speed;
-                        if (character.solidArea.intersects(gp.item[i].solidArea)) {
-                            if (gp.item[i].collision == true) {
+                        if (character.solidArea.intersects(gp.getwObjects()[i].solidArea)) {
+                            if (gp.getwObjects()[i].collision) {
                                 character.collisionOn = true;
                             }
-                            if (player == true) {
+                            if (player) {
                                 index = i;
                             }
                         }
                         break;
                     case "down":
                         character.solidArea.y += character.speed;
-                        if (character.solidArea.intersects(gp.item[i].solidArea)) {
-                            if (gp.item[i].collision == true) {
+                        if (character.solidArea.intersects(gp.getwObjects()[i].solidArea)) {
+                            if (gp.getwObjects()[i].collision) {
                                 character.collisionOn = true;
                             }
-                            if (player == true) {
+                            if (player) {
                                 index = i;
                             }
                         }
                         break;
                     case "left":
                         character.solidArea.x -= character.speed;
-                        if (character.solidArea.intersects(gp.item[i].solidArea)) {
-                            if (gp.item[i].collision == true) {
+                        if (character.solidArea.intersects(gp.getwObjects()[i].solidArea)) {
+                            if (gp.getwObjects()[i].collision) {
                                 character.collisionOn = true;
                             }
-                            if (player == true) {
+                            if (player) {
                                 index = i;
                             }
                         }
                         break;
                     case "right":
                         character.solidArea.x += character.speed;
-                        if (character.solidArea.intersects(gp.item[i].solidArea)) {
-                            if (gp.item[i].collision == true) {
+                        if (character.solidArea.intersects(gp.getwObjects()[i].solidArea)) {
+                            if (gp.getwObjects()[i].collision) {
                                 character.collisionOn = true;
                             }
-                            if (player == true) {
+                            if (player) {
                                 index = i;
                             }
                         }
@@ -251,8 +251,8 @@ public class CollisionChecker {
                 }
                 character.solidArea.x = character.solidAreaDefaultX;
                 character.solidArea.y = character.solidAreaDefaultY;
-                gp.item[i].solidArea.x = gp.item[i].solidAreaDefaultX;
-                gp.item[i].solidArea.y = gp.item[i].solidAreaDefaultY;
+                gp.getwObjects()[i].solidArea.x = gp.getwObjects()[i].solidAreaDefaultX;
+                gp.getwObjects()[i].solidArea.y = gp.getwObjects()[i].solidAreaDefaultY;
             }
         }
         return index;

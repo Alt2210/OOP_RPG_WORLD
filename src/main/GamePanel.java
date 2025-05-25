@@ -1,8 +1,11 @@
 package main;
 
-import entity.Player;
-import item.SuperItem;
+import character.Character;
+import character.Player;
+import character.monster.MON_GreenSlime;
 import tile.TileManager;
+import worldObject.WorldObject;
+import dialogue.DialogueManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,30 +13,142 @@ import java.awt.*;
 public class GamePanel extends JPanel implements Runnable {
 
     // sreen settings
-    final int originalTileSize = 16; // 16x16 tile
-    final int scale = 3;
-    public final int tileSize = originalTileSize * scale; // 48x48 tile
-    public final int maxScreenCol = 16;
-    public final int maxScreenRow = 12;
-    public final int ScreenWidth = tileSize * maxScreenCol; // 768 pixel
-    public final int ScreenHeight = tileSize * maxScreenRow; // 576 pixel
+    private final int originalTileSize = 16; // 16x16 tile
+    private final int scale = 3;
+    private final int tileSize = originalTileSize * scale; // 48x48 tile
+    private final int maxScreenCol = 16;
+    private final int maxScreenRow = 12;
+    private final int ScreenWidth = tileSize * maxScreenCol; // 768 pixel
+    private final int ScreenHeight = tileSize * maxScreenRow; // 576 pixel
 
     // WORLD SETTINGS
-    public final int maxWorldCol = 50;
-    public final int maxWorldRow = 50;
-    public final int worldWidth = tileSize * maxWorldCol;
-    public final int worldHeight = tileSize * maxWorldRow;
+    private final int maxWorldCol = 50;
+    private final int maxWorldRow = 50;
+    private final int worldWidth = tileSize * maxWorldCol;
+    private final int worldHeight = tileSize * maxWorldRow;
 
-    public int FPS = 60;
+    private UI ui = new UI(this);
+    private DialogueManager dialogueManager = new DialogueManager(this);
+    private int FPS = 60;
+    private Character currentInteractingNPC = null;
+    // Game State
+    public int gameState;
+    public final int titleState = 0;
+    public final int playState=1;
+    public final int pauseState=2;
+    public final int dialogueState = 3;
+    public final int endGameState = 4;
 
-    TileManager tileM = new TileManager(this);;
-    KeyHandler keyH = new KeyHandler();
-    Thread gameThread;
-    public CollisionChecker cChecker = new CollisionChecker(this);
-    public AssetSetter aSetter = new AssetSetter(this);
-    public Player player = new Player(this,keyH);
-    public SuperItem item[] = new SuperItem[10];
-    public entity.Character npc[] = new entity.Character[10];
+
+    public UI getUi(){return ui;}
+
+    public int getOriginalTileSize() {
+        return originalTileSize;
+    }
+
+    public int getScale() {
+        return scale;
+    }
+
+    public int getTileSize() {
+        return tileSize;
+    }
+
+    public int getMaxScreenCol() {
+        return maxScreenCol;
+    }
+
+    public int getMaxScreenRow() {
+        return maxScreenRow;
+    }
+
+    public int getScreenWidth() {
+        return ScreenWidth;
+    }
+
+    public int getScreenHeight() {
+        return ScreenHeight;
+    }
+
+    public int getMaxWorldCol() {
+        return maxWorldCol;
+    }
+
+    public int getMaxWorldRow() {
+        return maxWorldRow;
+    }
+
+    public int getWorldWidth() {
+        return worldWidth;
+    }
+
+    public int getWorldHeight() {
+        return worldHeight;
+    }
+
+    public int getFPS() {
+        return FPS;
+    }
+
+    public void setFPS(int FPS) {
+        this.FPS = FPS;
+    }
+
+    public DialogueManager getDialogueManager() {return dialogueManager;}
+
+    public Character getInteractingNPC() { return currentInteractingNPC; }
+
+    public void setInteractingNPC(Character npc) { this.currentInteractingNPC = npc; }
+
+    public TileManager getTileM() {
+        return tileM;
+    }
+
+    public KeyHandler getKeyH() {
+        return keyH;
+    }
+
+    public Thread getGameThread() {
+        return gameThread;
+    }
+
+    public void stopGameThread() { this.gameThread = null; }
+
+    public CollisionChecker getcChecker() {
+        return cChecker;
+    }
+
+    public AssetSetter getaSetter() {
+        return aSetter;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public WorldObject[] getwObjects() {
+        return wObjects;
+    }
+
+    public void setwObjects(WorldObject[] wObjects) {
+        this.wObjects = wObjects;
+    }
+
+    public Character[] getNpc() {
+        return npc;
+    }
+    public Character[] getMON_GreenSlime() { return greenSlime;  }
+
+    private TileManager tileM = new TileManager(this);;
+    private KeyHandler keyH = new KeyHandler(this);
+    private Thread gameThread;
+    private CollisionChecker cChecker = new CollisionChecker(this);
+    private AssetSetter aSetter = new AssetSetter(this);
+    private Player player = new Player(this,keyH);
+    private WorldObject wObjects[] = new WorldObject[10];
+    private character.Character npc[] = new character.Character[10];
+    private character.Character greenSlime[] = new character.Character[10]; // Nếu Monster kế thừa từ Character
+
 
     public GamePanel() {
 
@@ -45,8 +160,10 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void setupGame() {
-        aSetter.setItem();
+        aSetter.setWObjects();
         aSetter.setNPC();
+        gameState= playState;
+        aSetter.setGreenSlime();
     }
 
     public void startGameThread() {
@@ -85,13 +202,29 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
     public void update() {
+        if(gameState == playState) {
+            player.update();
 
-        player.update();
-        for (int i = 0; i < npc.length; i++) {
-            if (npc[i] != null) {
-                npc[i].setAction(); // NPC quyết định hành động (ví dụ: đổi hướng)
-                npc[i].update();    // NPC thực hiện cập nhật (di chuyển, animation)
+            for (int i = 0; i < npc.length; i++) {
+                if (npc[i] != null) {
+                    npc[i].setAction(); // NPC quyết định hành động (ví dụ: đổi hướng)
+                    npc[i].update();    // NPC thực hiện cập nhật (di chuyển, animation)
+                }
             }
+
+            for (int i = 0; i < greenSlime.length; i++) {
+                if (greenSlime[i] != null) {
+                    greenSlime[i].setAction();
+                    greenSlime[i].update();
+                }
+            }
+        }
+        else if(gameState== pauseState){
+
+        }
+        else if(gameState== endGameState){
+
+
         }
     }
     public void paintComponent(Graphics g) {
@@ -102,9 +235,9 @@ public class GamePanel extends JPanel implements Runnable {
 
         tileM.draw(g2);
 
-        for (int i = 0; i < item.length; i++) {
-            if (item[i] != null) {
-                item[i].draw(g2, this);
+        for (int i = 0; i < wObjects.length; i++) {
+            if (wObjects[i] != null) {
+                wObjects[i].draw(g2, this);
             }
         }
         for(int i=0; i< npc.length; i++){
@@ -112,8 +245,15 @@ public class GamePanel extends JPanel implements Runnable {
                 npc[i].draw(g2);
             }
         }
+
+        for(int i = 0; i < greenSlime.length; i++){ // Sử dụng mảng 'monster' mới
+            if(greenSlime[i] != null){
+                greenSlime[i].draw(g2);
+            }
+        }
         player.draw(g2);
 
+        ui.draw(g2);
         g2.dispose();
     }
 }
