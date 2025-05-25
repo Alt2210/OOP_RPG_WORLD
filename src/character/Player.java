@@ -1,5 +1,6 @@
 package character;
 
+import dialogue.DialogueSpeaker;
 import main.GamePanel;
 import main.KeyHandler;
 
@@ -20,7 +21,7 @@ public class Player extends Character {
     // và thế giới game (bản đồ) sẽ di chuyển xung quanh player.
     public final int screenX;
     public final int screenY;
-
+    private int hasKey;
 
     // --- Constructor ---
     // Được gọi từ lớp GamePanel khi tạo đối tượng Player.
@@ -69,6 +70,7 @@ public class Player extends Character {
         worldY = gp.getTileSize() * 30; // Ví dụ: Bắt đầu ở hàng 30
         speed = 4; // Tốc độ di chuyển của Player
         direction = "down"; // Hướng ban đầu của Player khi game bắt đầu
+        hasKey=0; // ms vao k co key
     }
 
     // Ghi đè phương thức update() từ lớp Character.
@@ -173,16 +175,29 @@ public class Player extends Character {
         // g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height); // Vẽ hình chữ nhật
     }
     public void interactWithNPC(int npcIndex) {
-        if (npcIndex != 999) {
-            // Logic khi Player tương tác với NPC: ví dụ mở hội thoại
-            System.out.println("Interacting with NPC: " + gp.getNpc()[npcIndex].toString());
-            // gp.gameState = gp.dialogueState;
-            // gp.npc[npcIndex].speak(); // Giả sử NPC có phương thức speak()
+        if (npcIndex != 999) { // Kiểm tra xem có va chạm với NPC hợp lệ không
+            Character npcCharacter = gp.getNpc()[npcIndex]; // Lấy đối tượng NPC từ mảng
+
+            // Kiểm tra xem NPC này có khả năng nói chuyện không (có implement DialogueSpeaker không)
+            if (npcCharacter instanceof NPC_Princess && !(npcCharacter instanceof DialogueSpeaker)) {
+                // Xử lý Princess kết thúc game nếu Princess KHÔNG phải là DialogueSpeaker
+                // (Nếu Princess cũng nói chuyện trước khi kết thúc, thì nó nên là DialogueSpeaker)
+                gp.gameState = gp.endGameState;
+            } else if (npcCharacter instanceof DialogueSpeaker) {
+                // Không cần chuyển gameState ở đây nữa, DialogueManager.startDialogue sẽ làm
+                ((DialogueSpeaker) npcCharacter).initiateDialogue(gp);
+            }
         }
     }
 
 
-
+    public int getHasKey() { return hasKey; }
+    public void incrementKeyCount() { this.hasKey++; }
+     public void decrementKeyCount() {
+     if (this.hasKey > 0) {
+         this.hasKey--;
+     }
+ }
     public void pickUpItem(int i) {
         // the object array's index
         if (i != 999) {
@@ -190,17 +205,23 @@ public class Player extends Character {
 
             switch (itemName) {
                 case "Key":
-
+                    incrementKeyCount();         // Tăng số lượng chìa khóa
                     gp.getwObjects()[i] = null;
-                    System.out.println("Key:" );
+                    gp.getUi().showMessage("Got a golden key");
                     break;
                 case "Door":
-                    /*if (hasKey > 0) {
-                        gp.item[i] = null;
-                        hasKey--;
-                    }*/
-                    System.out.println("Touch Door");
+                    if (hasKey > 0) {
+                        gp.getwObjects()[i] = null;
+                        decrementKeyCount();
+                        gp.getUi().showMessage("You opened a door");
+                    }
+                    else{
+                        gp.getUi().showMessage("You need a key");
+                    }
+
                     break;
+                case "chest":
+
             }
         }
     }
