@@ -71,6 +71,10 @@ public class Player extends Character {
         speed = 4; // Tốc độ di chuyển của Player
         direction = "down"; // Hướng ban đầu của Player khi game bắt đầu
         hasKey=0; // ms vao k co key
+
+        maxHealth = 100;
+        currentHealth = maxHealth;
+        name = "Đạt đẹp trai";
     }
 
     // Ghi đè phương thức update() từ lớp Character.
@@ -168,6 +172,8 @@ public class Player extends Character {
         // null là tham số ImageObserver, thường dùng null khi vẽ trực tiếp lên Graphics.
         g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
 
+        drawHealthBar(g2, screenX, screenY); // Truyền screenX và screenY vào
+        drawHealthBar(g2, screenX, screenY); // Truyền screenX và screenY vào
         // --- Tùy chọn: Vẽ vùng va chạm (solidArea) để debug ---
         // Điều này giúp bạn thấy rõ vùng va chạm của nhân vật trên màn hình.
         // Vị trí vẽ vùng va chạm: Tọa độ màn hình của Player + offset của solidArea.

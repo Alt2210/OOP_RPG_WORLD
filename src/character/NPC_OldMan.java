@@ -41,17 +41,13 @@ public class NPC_OldMan extends Character implements DialogueSpeaker {
         speed = 1; //
         direction = "down"; //
 
-        solidArea.x = 8; //
-        solidArea.y = 16; //
-        solidArea.width = 32; //
-        solidArea.height = 32; //
-        // solidAreaDefaultX và solidAreaDefaultY nên được gán ở đây nếu bạn có thay đổi solidArea sau này
-        solidAreaDefaultX = solidArea.x;
-        solidAreaDefaultY = solidArea.y;
 
-        if (cip != null) {
-            cip.getImage("/npc","oldman_"); //
-        }
+        solidArea.x = 8;      // Điều chỉnh cho phù hợp với sprite của NPC
+        solidArea.y = 16;     // Điều chỉnh cho phù hợp với sprite của NPC
+        solidArea.width = 32; // Ví dụ: 32x32 pixels
+        solidArea.height = 32;
+        cip.getImage("/npc","oldman_"); // Tải ảnh ở đây
+        name = "Old Man";
     }
 
     @Override // Đảm bảo setAction được override nếu nó có trong lớp cha Character (có vẻ không)

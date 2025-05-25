@@ -2,6 +2,7 @@ package main;
 
 import character.Character;
 import character.Player;
+import character.monster.MON_GreenSlime;
 import tile.TileManager;
 import worldObject.WorldObject;
 import dialogue.DialogueManager;
@@ -136,6 +137,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Character[] getNpc() {
         return npc;
     }
+    public Character[] getMON_GreenSlime() { return greenSlime;  }
 
     private TileManager tileM = new TileManager(this);;
     private KeyHandler keyH = new KeyHandler(this);
@@ -145,6 +147,8 @@ public class GamePanel extends JPanel implements Runnable {
     private Player player = new Player(this,keyH);
     private WorldObject wObjects[] = new WorldObject[10];
     private character.Character npc[] = new character.Character[10];
+    private character.Character greenSlime[] = new character.Character[10]; // Nếu Monster kế thừa từ Character
+
 
     public GamePanel() {
 
@@ -159,6 +163,7 @@ public class GamePanel extends JPanel implements Runnable {
         aSetter.setWObjects();
         aSetter.setNPC();
         gameState= playState;
+        aSetter.setGreenSlime();
     }
 
     public void startGameThread() {
@@ -198,18 +203,26 @@ public class GamePanel extends JPanel implements Runnable {
     }
     public void update() {
         if(gameState == playState){
-            player.update();
-            for (int i = 0; i < npc.length; i++) {
-                if (npc[i] != null) {
-                    npc[i].setAction(); // NPC quyết định hành động (ví dụ: đổi hướng)
-                    npc[i].update();    // NPC thực hiện cập nhật (di chuyển, animation)
-                }
+             player.update();
+
+        for (int i = 0; i < npc.length; i++) {
+            if (npc[i] != null) {
+                npc[i].setAction(); // NPC quyết định hành động (ví dụ: đổi hướng)
+                npc[i].update();    // NPC thực hiện cập nhật (di chuyển, animation)
+            }
+        }
+
+        for (int i = 0; i < greenSlime.length; i++) {
+            if (greenSlime[i] != null) {
+                greenSlime[i].setAction();
+                greenSlime[i].update();
             }
         }
         else if(gameState== pauseState){
 
         }
         else if(gameState== endGameState){
+
 
         }
     }
@@ -229,6 +242,12 @@ public class GamePanel extends JPanel implements Runnable {
         for(int i=0; i< npc.length; i++){
             if(npc[i] != null){
                 npc[i].draw(g2);
+            }
+        }
+
+        for(int i = 0; i < greenSlime.length; i++){ // Sử dụng mảng 'monster' mới
+            if(greenSlime[i] != null){
+                greenSlime[i].draw(g2);
             }
         }
         player.draw(g2);

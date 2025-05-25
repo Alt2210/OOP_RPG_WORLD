@@ -4,8 +4,6 @@ import imageProcessor.CharacterImageProcessor;
 import main.GamePanel;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 public abstract class Character {
 
@@ -22,10 +20,28 @@ public abstract class Character {
     public boolean collisionOn = false;
     public int actionLockCounter = 0;
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    // STATE
+    public boolean onPath = false;
+
+
     // CHARACTER ATTRIBUTES
     // Tính phần máu còn lại (giả sử maxHealth và currentHealth có sẵn)
-    int maxHealth;  // ví dụ
-    int currentHealth;  // ví dụ, bạn có thể làm thành thuộc tính nhân vật
+    protected int maxHealth;  // ví dụ
+    protected int currentHealth;  // ví dụ, bạn có thể làm thành thuộc tính nhân vật
+    protected int defaultSpeed;
+    protected int attack;
+    protected int defense;
+
+    String name;
+
 
     public Character(GamePanel gp) {
         this.gp = gp;
@@ -37,6 +53,35 @@ public abstract class Character {
     public abstract void draw(Graphics2D g2);
 
     public void setDefaultValues() {
+    }
+
+
+    public int getCenterX() {
+        return worldX + cip.getCurFrame().getWidth()/2;
+    }
+
+    public int getCenterY() {
+        return worldY + cip.getCurFrame().getHeight()/2;
+    }
+
+    public int getXDistance(Character target) {
+        return Math.abs(getCenterX() - target.getCenterX());
+    }
+
+    public int getYDistance(Character target) {
+        return Math.abs(getCenterY() - target.getCenterY());
+    }
+
+    public int getTileDistance(Character target) {
+        return (getXDistance(target) + getYDistance(target))/ gp.getTileSize();
+    }
+
+    public int getGoalCol(Character target) {
+        return (target.worldX + target.solidArea.x) / gp.getTileSize();
+    }
+
+    public int getGoalRow(Character target) {
+        return (target.worldY + target.solidArea.y) / gp.getTileSize();
     }
 
     public void update() {
