@@ -2,8 +2,6 @@ package main;
 
 import character.Character;
 import character.Player;
-import item.Item;
-import item.SuperItem;
 import tile.TileManager;
 import worldObject.WorldObject;
 import dialogue.DialogueManager;

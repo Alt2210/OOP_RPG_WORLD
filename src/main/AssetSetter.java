@@ -48,4 +48,5 @@ public class AssetSetter {
         gp.getNpc()[1].worldX = gp.getTileSize()*25;
         gp.getNpc()[1].worldY = gp.getTileSize()*25;
     }
+
 }
