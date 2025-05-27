@@ -1,5 +1,7 @@
-package character;
+package character.player;
 
+import character.Character;
+import character.npc.NPC_Princess;
 import dialogue.DialogueSpeaker;
 import main.GamePanel;
 import main.KeyHandler;
@@ -10,7 +12,7 @@ import java.awt.image.BufferedImage;
 
 // Lớp Player, kế thừa từ Character.
 // Chứa các thuộc tính và hành vi riêng của người chơi.
-public class Player extends Character {
+public class Player extends character.Character {
 
     // Player cần KeyHandler để đọc input từ bàn phím.
     // Khai báo public để các lớp khác (nếu cần) có thể truy cập trạng thái phím của player.
@@ -74,7 +76,7 @@ public class Player extends Character {
 
         maxHealth = 100;
         currentHealth = maxHealth;
-        name = "Đạt đẹp trai";
+        this.setName("Đạt đẹp trai");
     }
 
     // Ghi đè phương thức update() từ lớp Character.

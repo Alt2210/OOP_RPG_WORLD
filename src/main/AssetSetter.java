@@ -1,9 +1,7 @@
 package main;
-import character.*;
-import character.NPC_OldMan;
+import character.npc.NPC_OldMan;
 import character.monster.MON_GreenSlime;
-import character.monster.Monster;
-import item.Item_Key;
+import character.npc.NPC_Princess;
 import worldObject.pickableObject.OBJ_Key;
 import worldObject.unpickableObject.OBJ_Chest;
 import worldObject.unpickableObject.OBJ_Door;

@@ -1,7 +1,7 @@
 package main;
 
 import worldObject.pickableObject.OBJ_Key;
-import character.Player;
+import character.player.Player;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

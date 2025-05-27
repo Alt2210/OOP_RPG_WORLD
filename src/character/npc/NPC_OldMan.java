@@ -1,5 +1,6 @@
-package character;
+package character.npc;
 
+import character.Character;
 import main.GamePanel;
 import dialogue.*; // Import cả package dialogue
 // import dialogue.Dialogue; // Không cần thiết nếu đã import dialogue.*
@@ -47,7 +48,7 @@ public class NPC_OldMan extends Character implements DialogueSpeaker {
         solidArea.width = 32; // Ví dụ: 32x32 pixels
         solidArea.height = 32;
         cip.getImage("/npc","oldman_"); // Tải ảnh ở đây
-        name = "Old Man";
+        this.setName("Old Man");
     }
 
     @Override // Đảm bảo setAction được override nếu nó có trong lớp cha Character (có vẻ không)

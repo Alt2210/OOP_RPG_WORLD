@@ -1,5 +1,5 @@
 package dialogue;
-import character.NPC_Princess;
+import character.npc.NPC_Princess;
 import main.GamePanel;
 import character.Character; // Cần để biết NPC nào đang nói
 

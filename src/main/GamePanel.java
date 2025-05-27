@@ -1,8 +1,7 @@
 package main;
 
 import character.Character;
-import character.Player;
-import character.monster.MON_GreenSlime;
+import character.player.Player;
 import tile.TileManager;
 import worldObject.WorldObject;
 import dialogue.DialogueManager;

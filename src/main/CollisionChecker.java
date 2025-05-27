@@ -1,7 +1,7 @@
 package main;
 
 import character.Character;
-import character.Player; // Cần import lớp Player để sử dụng instanceof
+import character.player.Player; // Cần import lớp Player để sử dụng instanceof
 
 import java.awt.Rectangle; // Import lớp Rectangle
 

@@ -1,9 +1,9 @@
 package character;
 
+import character.player.Player;
 import imageProcessor.CharacterImageProcessor;
 import main.GamePanel;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public abstract class Character {
 
