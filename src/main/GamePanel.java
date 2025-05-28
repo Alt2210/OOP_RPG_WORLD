@@ -7,6 +7,7 @@ import character.monster.Monster;
 import tile.TileManager;
 import worldObject.WorldObject;
 import dialogue.DialogueManager;
+import sound.Sound;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,7 +42,9 @@ public class GamePanel extends JPanel implements Runnable {
     public final int pauseState=2;
     public final int dialogueState = 3;
     public final int endGameState = 4;
-
+    // Sound
+    public Sound music = new Sound();
+    public Sound soundEffect = new Sound();
 
     public UI getUi(){return ui;}
 
@@ -165,10 +168,30 @@ public class GamePanel extends JPanel implements Runnable {
     public void setupGame() {
         aSetter.setWObjects();
         aSetter.setNPC();
-        gameState= playState;
+        gameState= titleState;
         aSetter.setGreenSlime();
+        playMusic(Sound.MUSIC_BACKGROUND);
+    }
+    public void playMusic(int soundIndex) {
+        music.loop(soundIndex);
     }
 
+    // Phương thức để dừng nhạc nền
+    public void stopMusic() {
+        music.stopMusic();
+        // music.close(); // Có thể gọi khi thoát game hoàn toàn để giải phóng tài nguyên
+    }
+
+    // Phương thức để phát hiệu ứng âm thanh (SFX)
+    public void playSoundEffect(int soundIndex) {
+        soundEffect.play(soundIndex);
+    }
+    public void cleanUpBeforeExit() {
+        music.closeAllClips();
+        soundEffect.closeAllClips();
+        // Dừng gameThread nếu nó đang chạy
+        stopGameThread();
+    }
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
@@ -238,28 +261,35 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D)g;
+        // Title screen
 
-        tileM.draw(g2);
-
-        for (int i = 0; i < wObjects.length; i++) {
-            if (wObjects[i] != null) {
-                wObjects[i].draw(g2, this);
-            }
+        if(gameState == titleState){
+            ui.draw(g2);
         }
-        for(int i=0; i< npc.length; i++){
-            if(npc[i] != null){
-                npc[i].draw(g2);
+        else{
+            tileM.draw(g2);
+
+            for (int i = 0; i < wObjects.length; i++) {
+                if (wObjects[i] != null) {
+                    wObjects[i].draw(g2, this);
+                }
             }
+            for(int i=0; i< npc.length; i++){
+                if(npc[i] != null){
+                    npc[i].draw(g2);
+                }
+            }
+
+            for(int i = 0; i < greenSlime.length; i++){ // Sử dụng mảng 'monster' mới
+                if(greenSlime[i] != null){
+                    greenSlime[i].draw(g2);
+                }
+            }
+            player.draw(g2);
+
+            ui.draw(g2);
+            g2.dispose();
         }
 
-        for(int i = 0; i < greenSlime.length; i++){ // Sử dụng mảng 'monster' mới
-            if(greenSlime[i] != null){
-                greenSlime[i].draw(g2);
-            }
-        }
-        player.draw(g2);
-
-        ui.draw(g2);
-        g2.dispose();
     }
 }

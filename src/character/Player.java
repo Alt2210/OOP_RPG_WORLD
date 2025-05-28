@@ -3,6 +3,7 @@ package character;
 import dialogue.DialogueSpeaker;
 import main.GamePanel;
 import main.KeyHandler;
+import sound.Sound;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -143,6 +144,7 @@ public class Player extends Character {
         int height = gp.getTileSize();
         g2.drawImage(image, screenX, screenY, width, height, null);
 
+        drawHealthBar(g2, screenX, screenY); // Truyền screenX và screenY vào
         drawHealthBar(g2, screenX, screenY); // Truyền screenX và screenY vào
         // --- Tùy chọn: Vẽ vùng va chạm (solidArea) để debug ---
         // Điều này giúp bạn thấy rõ vùng va chạm của nhân vật trên màn hình.
