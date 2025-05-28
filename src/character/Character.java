@@ -57,6 +57,9 @@ public abstract class Character {
     public void setDefaultValues() {
     }
 
+    public GamePanel getGp() {
+        return gp;
+    }
 
     public int getCenterX() {
         return worldX + cip.getCurFrame().getWidth()/2;

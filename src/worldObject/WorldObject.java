@@ -1,5 +1,6 @@
 package worldObject;
 
+import character.Player;
 import main.GamePanel;
 
 import java.awt.*;
@@ -11,8 +12,6 @@ public class WorldObject {
     public int id;
     public boolean collision = false;
     public int worldX, worldY;
-
-    protected int pickable = 0;
 
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX = 0;
@@ -31,4 +30,10 @@ public class WorldObject {
         }
 
     }
+
+    public void interactPlayer(Player player, int i){
+
+    }
+
+
 }

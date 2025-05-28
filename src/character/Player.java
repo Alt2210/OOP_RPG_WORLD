@@ -6,10 +6,7 @@ import main.KeyHandler;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-// Không cần import IOException và ImageIO ở đây nữa vì dùng phương thức setup() từ Character
 
-// Lớp Player, kế thừa từ Character.
-// Chứa các thuộc tính và hành vi riêng của người chơi.
 public class Player extends Character {
 
     public KeyHandler keyH;
@@ -44,6 +41,7 @@ public class Player extends Character {
         setDefaultValues(); // Thiết lập worldX, worldY, speed, direction ban đầu.
         cip.getImage("/player", "sodier");      // Tải hình ảnh hoạt ảnh của Player.
     }
+
 
 
 
@@ -186,28 +184,7 @@ public class Player extends Character {
     public void pickUpItem(int i) {
         // the object array's index
         if (i != 999) {
-            String itemName = gp.getwObjects()[i].name;
-
-            switch (itemName) {
-                case "Key":
-                    incrementKeyCount();         // Tăng số lượng chìa khóa
-                    gp.getwObjects()[i] = null;
-                    gp.getUi().showMessage("Got a golden key");
-                    break;
-                case "Door":
-                    if (hasKey > 0) {
-                        gp.getwObjects()[i] = null;
-                        decrementKeyCount();
-                        gp.getUi().showMessage("You opened a door");
-                    }
-                    else{
-                        gp.getUi().showMessage("You need a key");
-                    }
-
-                    break;
-                case "chest":
-
-            }
+            gp.getwObjects()[i].interactPlayer(this, i);
         }
     }
 
