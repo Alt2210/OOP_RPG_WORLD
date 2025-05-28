@@ -9,6 +9,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.util.ArrayList; // Thêm import này
+import java.util.List;    // Thêm import này
 
 public class UI {
     GamePanel gp;
@@ -105,17 +107,20 @@ public class UI {
             drawPlayUI(g2);
         } else if (gp.gameState == gp.pauseState) {
             drawPauseScreen(g2);
-        } else if (gp.gameState == gp.endGameState) {
+        } else if (gp.gameState == gp.victoryEndState) {
             drawEndGameScreen(g2);
         } else if (gp.gameState == gp.dialogueState) {
             drawDialogueScreen(g2);
+        } else if (gp.gameState == gp.gameOverState){
+            drawGameOverScreen(g2);
         }
     }
 
     private void drawPlayUI(Graphics2D g2) {
-        g2.setFont(pixelFont_Small);
+        g2.setFont(pixelFont_Small); // Hoặc font bạn muốn cho các thông tin chung
         g2.setColor(Color.white);
 
+        // ... (code vẽ key và time như cũ) ...
         int currentTileSize = gp.getTileSize();
         Player currentPlayer = gp.getPlayer();
         if (keyImage != null && currentPlayer != null) {
@@ -128,27 +133,119 @@ public class UI {
         }
         drawTextWithShadow(g2, "Time: " + dFormat.format(playtime), gp.getTileSize() * 10, currentTileSize, Color.WHITE, menuTextShadowColor, 1);
 
+
+        // Hiển thị tin nhắn (messageOn) với word wrapping
         if (messageOn) {
-            g2.setFont(pixelFont_Medium);
-            int messageBoxWidth = gp.getScreenWidth() - gp.getTileSize() * 6;
-            int messageBoxHeight = gp.getTileSize() * 2;
-            int messageBoxX = gp.getScreenWidth()/2 - messageBoxWidth/2;
-            int messageBoxY = gp.getScreenHeight() - gp.getTileSize() * 3 - gp.getTileSize()/2;
+            // 1. Định nghĩa kích thước và vị trí cho ô chứa message
+            // Bạn đã có sẵn logic này, rất tốt!
+            int messageBoxWidth = gp.getScreenWidth() - gp.getTileSize() * 6; //
+            int messageBoxHeight = gp.getTileSize() * 2; //
+            int messageBoxX = gp.getScreenWidth() / 2 - messageBoxWidth / 2; //
+            int messageBoxY = gp.getScreenHeight() - gp.getTileSize() * 3 - gp.getTileSize() / 2; //
 
-            drawSubWindow(g2, messageBoxX, messageBoxY, messageBoxWidth, messageBoxHeight, menuBoxBgColor_New, menuBoxBorderColor_New, 15,15,3);
+            // 2. Vẽ ô chứa (subWindow) cho message
+            // Bạn đã có: drawSubWindow(g2, messageBoxX, messageBoxY, messageBoxWidth, messageBoxHeight, menuBoxBgColor_New, menuBoxBorderColor_New, 15,15,3);
+            // Đảm bảo màu sắc và kiểu dáng phù hợp
+            Color messageBgColor = new Color(0, 0, 0, 180); // Nền đen mờ ví dụ
+            Color messageBorderColor = Color.WHITE;
+            drawSubWindow(g2, messageBoxX, messageBoxY, messageBoxWidth, messageBoxHeight,
+                    messageBgColor, messageBorderColor, 20, 20, 2); // Điều chỉnh bo góc, độ dày viền
 
-            FontMetrics fm = g2.getFontMetrics();
-            int messageX = getXforCenteredTextInBox(message, g2, g2.getFont(), messageBoxX, messageBoxWidth);
-            int messageY = messageBoxY + (messageBoxHeight - fm.getHeight()) / 2 + fm.getAscent();
 
-            drawTextWithShadow(g2, message, messageX, messageY, Color.WHITE, menuTextShadowColor, 1);
+            // 3. Xử lý và vẽ text message với word wrapping
+            Font messageFont = pixelFont_Medium; // Hoặc pixelFont_Small, tùy bạn chọn
+            g2.setFont(messageFont);
+            g2.setColor(Color.WHITE);
 
+            int textPaddingX = gp.getTileSize() / 3; // Khoảng đệm ngang cho text bên trong message box
+            int textPaddingY = gp.getTileSize() / 3; // Khoảng đệm trên cho text
+            int availableTextWidth = messageBoxWidth - (textPaddingX * 2); // Chiều rộng thực cho text
+            int currentTextY = messageBoxY + textPaddingY + g2.getFontMetrics(messageFont).getAscent(); // Vị trí Y cho dòng đầu tiên
+            int lineHeight = g2.getFontMetrics(messageFont).getHeight();
+
+            if (message != null && !message.isEmpty()) {
+                List<String> wrappedLines = wrapText(message, g2.getFontMetrics(messageFont), availableTextWidth);
+
+                for (String lineToDraw : wrappedLines) {
+                    // Chỉ vẽ nếu còn không gian trong messageBoxHeight
+                    if (currentTextY < messageBoxY + messageBoxHeight - textPaddingY) {
+                        // Căn giữa text trong messageBox (nếu muốn)
+                        // int lineX = messageBoxX + (messageBoxWidth - g2.getFontMetrics(messageFont).stringWidth(lineToDraw)) / 2;
+                        // Hoặc căn trái với padding
+                        int lineX = messageBoxX + textPaddingX;
+                        drawTextWithShadow(g2, lineToDraw, lineX, currentTextY, Color.WHITE, menuTextShadowColor, 1);
+                        currentTextY += lineHeight;
+                    } else {
+                        break; // Ngừng vẽ nếu vượt quá chiều cao box
+                    }
+                }
+            }
+
+            // messageCounter vẫn hoạt động như cũ
             messageCounter++;
-            if (messageCounter > 120) {
+            if (messageCounter > 120) { // Thời gian hiển thị message (ví dụ: 2 giây)
                 messageCounter = 0;
                 messageOn = false;
             }
         }
+    }
+
+    // Phương thức wrapText (đảm bảo bạn đã có nó trong lớp UI)
+    private List<String> wrapText(String text, FontMetrics fm, int availableWidth) {
+        List<String> lines = new ArrayList<>();
+        if (text == null || text.isEmpty() || fm == null || availableWidth <= 0) {
+            lines.add(text == null ? "" : text);
+            return lines;
+        }
+
+        String[] words = text.split(" ");
+        StringBuilder currentLine = new StringBuilder();
+
+        for (String word : words) {
+            int wordWidth = fm.stringWidth(word + " ");
+            if (currentLine.length() > 0 && fm.stringWidth(currentLine.toString()) + wordWidth > availableWidth) {
+                lines.add(currentLine.toString().trim());
+                currentLine = new StringBuilder();
+            }
+
+            // Xử lý từ đơn lẻ dài hơn availableWidth
+            if (fm.stringWidth(word) > availableWidth && currentLine.length() == 0) {
+                String remainingWord = word;
+                while (fm.stringWidth(remainingWord) > availableWidth) {
+                    int breakPoint = 0;
+                    for (int i = 1; i <= remainingWord.length(); i++) {
+                        if (fm.stringWidth(remainingWord.substring(0, i)) > availableWidth) {
+                            breakPoint = i - 1;
+                            break;
+                        }
+                        breakPoint = i;
+                    }
+                    if (breakPoint > 0) {
+                        lines.add(remainingWord.substring(0, breakPoint));
+                        remainingWord = remainingWord.substring(breakPoint);
+                    } else {
+                        lines.add(remainingWord); // Thêm cả từ (sẽ bị tràn nếu không xử lý được nữa)
+                        remainingWord = "";
+                        break;
+                    }
+                }
+                if (!remainingWord.isEmpty()) {
+                    currentLine.append(remainingWord); // Nối phần còn lại của từ (nếu có) vào dòng hiện tại
+                    // (hoặc bắt đầu dòng mới nếu currentLine rỗng)
+                    if (fm.stringWidth(remainingWord) > 0) currentLine.append(" ");
+                }
+            } else {
+                currentLine.append(word).append(" ");
+            }
+        }
+
+        if (currentLine.length() > 0) {
+            lines.add(currentLine.toString().trim());
+        }
+        if (lines.isEmpty() && text.isEmpty()) {
+            lines.add("");
+        }
+        return lines;
     }
 
     public void drawTitleScreen(Graphics2D g2) {
@@ -274,6 +371,14 @@ public class UI {
         int y2 = gp.getScreenHeight() / 2 + gp.getTileSize() /2 + yOffset;
         drawTextWithShadow(g2, text2, x2, y2, menuTextColor_Selected, new Color(0,0,0,180), 2);
 
+        g2.setFont(pixelFont_Small); // Sử dụng font nhỏ hơn
+        g2.setColor(Color.WHITE); // Hoặc Color.LIGHT_GRAY
+        String textEnter = "Press ENTER to return";
+        int xEnter = getXforCenteredText(textEnter, g2, g2.getFont());
+        // Đặt vị trí Y cho dòng này phía trên dòng "Press ESC to Exit"
+        int yEnter = gp.getScreenHeight() / 2 + gp.getTileSize() * 2 + yOffset - gp.getTileSize()/2; // Dịch lên một chút so với text3
+        drawTextWithShadow(g2, textEnter, xEnter, yEnter, Color.WHITE, menuTextShadowColor, 1);
+
         g2.setFont(pixelFont_Small);
         String text3 = "Press ESC to Exit";
         int x3 = getXforCenteredText(text3, g2, g2.getFont());
@@ -398,5 +503,34 @@ public class UI {
         if (currentFont == null) { currentFont = basePixelFont; }
         FontMetrics fm = g2.getFontMetrics(currentFont);
         return boxX + (boxWidth - fm.stringWidth(text)) / 2;
+    }
+    public void drawGameOverScreen(Graphics2D g2) {
+        // 1. Vẽ một lớp phủ màu tối (hoặc đỏ mờ) để làm nổi bật text "GAME OVER"
+        g2.setColor(new Color(0, 0, 0, 200)); // Màu đen với độ trong suốt alpha 200
+        g2.fillRect(0, 0, gp.getScreenWidth(), gp.getScreenHeight());
+
+        String gameOverText;
+        int x, y;
+        // 2. Vẽ chữ "GAME OVER" lớn ở giữa
+        g2.setFont(pixelFont_Large.deriveFont(Font.BOLD, 70F)); // Sử dụng font pixel lớn, đậm
+        g2.setColor(new Color(180, 0, 0)); // Màu đỏ đậm cho "GAME OVER"
+        gameOverText = "GAME OVER";
+        x = getXforCenteredText(gameOverText, g2, g2.getFont());
+        y = gp.getScreenHeight() / 2 - gp.getTileSize(); // Hơi dịch lên trên
+        drawTextWithShadow(g2, gameOverText, x, y, new Color(180,0,0), Color.BLACK, 3); // Thêm bóng đen
+
+        // 4. Hướng dẫn người chơi
+        g2.setFont(pixelFont_Small); // Font nhỏ hơn cho hướng dẫn
+        g2.setColor(Color.WHITE);
+
+        String continueText = "Press ENTER to return to Title Screen";
+        x = getXforCenteredText(continueText, g2, g2.getFont());
+        y = gp.getScreenHeight() / 2 + gp.getTileSize() * 2;
+        drawTextWithShadow(g2, continueText, x, y, Color.WHITE, menuTextShadowColor, 1);
+
+        String exitText = "Press ESC to Exit Game";
+        x = getXforCenteredText(exitText, g2, g2.getFont());
+        y += gp.getTileSize(); // Dịch xuống một chút
+        drawTextWithShadow(g2, exitText, x, y, Color.WHITE, menuTextShadowColor, 1);
     }
 }

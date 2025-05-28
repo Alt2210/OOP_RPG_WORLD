@@ -3,6 +3,7 @@ package character.monster;
 import ai.Node;
 import ai.PathFinder;
 import character.Character;
+import character.Player;
 import main.GamePanel;
 import worldObject.WorldObject;
 
@@ -22,7 +23,11 @@ public abstract class Monster extends Character {
     public void draw(Graphics2D g2) {
 
     }
+    @Override
+    public void update() {
+        super.update(); // Gọi logic update của lớp Character (di chuyển, animation, cooldown)
 
+    }
     public void checkStartChasingOrNot(Character target, int distance, int rate) {
         if (getTileDistance(target) < distance) {
             int i = new Random().nextInt(rate);
@@ -61,16 +66,25 @@ public abstract class Monster extends Character {
 
     public void playerChasing() {
         if (onPath) {
-            checkStopChasingOrNot(gp.getPlayer(), 15, 100);
+            checkStopChasingOrNot(gp.getPlayer(), 15, 10);
 
             // Vị trí hiện tại của monster (tính theo ô tile)
-            int currentMonsterCol = worldX / gp.getTileSize();
-            int currentMonsterRow = worldY / gp.getTileSize();
+            int monsterCenterX = worldX + solidArea.x + solidArea.width / 2;
+            int monsterCenterY = worldY + solidArea.y + solidArea.height / 2;
+            int currentMonsterCol = monsterCenterX / gp.getTileSize();
+            int currentMonsterRow = monsterCenterY / gp.getTileSize();
 
-            // Vị trí của Player (tính theo ô tile)
-            int goalCol = gp.getPlayer().worldX / gp.getTileSize();
-            int goalRow = gp.getPlayer().worldY / gp.getTileSize();
+            // Vị trí của Player (tính theo ô tile, dựa vào tâm solidArea)
+            Player player = gp.getPlayer(); // Lấy đối tượng Player một lần
+            int playerCenterX = player.worldX + player.solidArea.x + player.solidArea.width / 2;
+            int playerCenterY = player.worldY + player.solidArea.y + player.solidArea.height / 2;
+            int goalCol = playerCenterX / gp.getTileSize();
+            int goalRow = playerCenterY / gp.getTileSize();
 
+            currentMonsterCol = Math.max(0, Math.min(currentMonsterCol, gp.getMaxWorldCol() - 1));
+            currentMonsterRow = Math.max(0, Math.min(currentMonsterRow, gp.getMaxWorldRow() - 1));
+            goalCol = Math.max(0, Math.min(goalCol, gp.getMaxWorldCol() - 1));
+            goalRow = Math.max(0, Math.min(goalRow, gp.getMaxWorldRow() - 1));
             // Thiết lập các node cho PathFinder
             pathFinder.setNodes(currentMonsterCol, currentMonsterRow, goalCol, goalRow, this);
 
@@ -100,7 +114,13 @@ public abstract class Monster extends Character {
                 } else {
                     // pathList rỗng mặc dù search() trả về true (có thể goalNode = startNode)
                     // Hoặc không còn node nào trong pathList (đã đến đích)
-                    onPath = false; // Đã đến đích hoặc không còn đường
+                    int monsterCurrentTileCol = (worldX + solidArea.x + solidArea.width / 2) / gp.getTileSize();
+                    int monsterCurrentTileRow = (worldY + solidArea.y + solidArea.height / 2) / gp.getTileSize();
+
+                    // goalCol và goalRow là vị trí tile của player
+                    if (monsterCurrentTileCol == goalCol && monsterCurrentTileRow == goalRow) {
+
+                    onPath = false;} // Đã đến đích hoặc không còn đường
                 }
             } else {
                 // Không tìm thấy đường đi, chuyển sang di chuyển ngẫu nhiên

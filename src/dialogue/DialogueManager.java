@@ -46,7 +46,7 @@ public class DialogueManager {
         // KIỂM TRA XEM CÓ PHẢI LÀ PRINCESS VÀ QUYẾT ĐỊNH TRẠNG THÁI TIẾP THEO
         if (currentSpeaker instanceof NPC_Princess) {
 
-            gp.gameState = gp.endGameState;
+            gp.gameState = gp.victoryEndState;
 
         } else {
             // Đối với các NPC khác, quay lại trạng thái chơi bình thường
@@ -65,5 +65,13 @@ public class DialogueManager {
         return gp.gameState == gp.dialogueState && currentDialogue != null;
     }
 
-    // Có thể thêm các phương thức khác như lựa chọn của người chơi, v.v.
+    public void reset() {
+        currentSpeaker = null;
+        currentDialogue = null;
+        currentDialogueLine = null;
+        if (gp.getUi() != null) { // Thêm kiểm tra null cho an toàn
+            gp.getUi().setCurrentDialogue("");
+        }
+        // Không thay đổi gameState ở đây, GamePanel sẽ quyết định
+    }
 }

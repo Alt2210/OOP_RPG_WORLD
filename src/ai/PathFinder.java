@@ -15,7 +15,7 @@ public class PathFinder {
     Node startNode, goalNode, currentNode;
     boolean goalReached = false;
     int step = 0;
-    final int MAX_SEARCH_STEPS = 500; // Giới hạn số bước tìm kiếm
+    final int MAX_SEARCH_STEPS = 1000; // Giới hạn số bước tìm kiếm
 
     public PathFinder(GamePanel gp) {
         this.gp = gp;
@@ -87,6 +87,7 @@ public class PathFinder {
                     node[c][r].solid = true;
                 }
 
+
                 // Từ InteractiveTiles (CẦN HOÀN THIỆN LOGIC NÀY DỰA TRÊN GAME CỦA BẠN)
                 /*
                 if (gp.iTile != null && gp.iTile[gp.currentMap] != null) {
@@ -123,8 +124,8 @@ public class PathFinder {
 
 
     public boolean search() {
-        if (startNode == null || goalNode == null) return false; // Đã kiểm tra trong setNodes
-        if (startNode.solid || goalNode.solid) return false; // Không tìm đường nếu start/goal là vật cản
+//        if (startNode == null || goalNode == null) return false; // Đã kiểm tra trong setNodes
+       if (startNode.solid || goalNode.solid) return false; // Không tìm đường nếu start/goal là vật cản
 
         while (!goalReached && step < MAX_SEARCH_STEPS) {
             if (openList.isEmpty()) {

@@ -31,7 +31,7 @@ public class WorldObject {
 
     }
 
-    public void interactPlayer(Player player, int i){
+    public void interactPlayer(Player player, int i, GamePanel gp){
 
     }
 

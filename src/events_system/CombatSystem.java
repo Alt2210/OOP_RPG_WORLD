@@ -5,6 +5,8 @@ import character.Player;
 import character.monster.Monster;
 import main.GamePanel;
 
+import java.awt.*;
+
 public class CombatSystem {
     private GamePanel gp;
 
@@ -35,6 +37,42 @@ public class CombatSystem {
                 }
             } else if (monster.canAttack()) {
                 performAttack(monster, player);
+            }
+        }
+    }
+    public void handleMonsterCollisionAttack(Player player, Monster[] monsters) {
+        if (player == null || player.getCurrentHealth() <= 0) {
+            return; // Không làm gì nếu Player không hợp lệ hoặc đã chết
+        }
+
+        Rectangle playerBounds = new Rectangle(
+                player.worldX + player.solidArea.x,
+                player.worldY + player.solidArea.y,
+                player.solidArea.width,
+                player.solidArea.height
+        );
+
+        for (Monster monster : monsters) {
+            if (monster != null && monster.getCurrentHealth() > 0) {
+                Rectangle monsterBounds = new Rectangle(
+                        monster.worldX + monster.solidArea.x,
+                        monster.worldY + monster.solidArea.y,
+                        monster.solidArea.width,
+                        monster.solidArea.height
+                );
+
+                // Kiểm tra va chạm trực tiếp giữa vị trí HIỆN TẠI của Player và Monster
+                if (playerBounds.intersects(monsterBounds)) {
+                    // Nếu chạm nhau, Monster sẽ tấn công Player (nếu cooldown cho phép)
+                    if (monster.canAttack()) {
+                        System.out.println("CombatSystem: " + monster.getName() + " is attacking " + player.getName() + " on direct collision.");
+                        performAttack(monster, player);
+                        // Nếu Player chết sau đòn tấn công này, có thể dừng vòng lặp sớm
+                        if (player.getCurrentHealth() <= 0) {
+                            break;
+                        }
+                    }
+                }
             }
         }
     }

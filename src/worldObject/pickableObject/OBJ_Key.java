@@ -4,6 +4,7 @@ import character.Player;
 import item.Item;
 import item.Item_Key;
 import main.GamePanel;
+import sound.Sound;
 import worldObject.WorldObject;
 
 public class OBJ_Key extends WorldObject implements Pickable {
@@ -21,9 +22,10 @@ public class OBJ_Key extends WorldObject implements Pickable {
     }
 
     @Override
-    public void interactPlayer(Player player, int i){
+    public void interactPlayer(Player player, int i, GamePanel gp){
         player.incrementKeyCount();         // Tăng số lượng chìa khóa
         player.getGp().getwObjects()[i] = null;
         player.getGp().getUi().showMessage("Got a golden key");
+        gp.playSoundEffect(Sound.SFX_PICKUP_KEY);
     }
 }

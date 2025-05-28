@@ -96,7 +96,9 @@ public abstract class Character {
     public int getDefense() {
         return defense;
     }
-
+    public int getAttackCooldown() {
+        return attackCooldown;
+    }
     public int getCurrentHealth() {
         return currentHealth;
     }

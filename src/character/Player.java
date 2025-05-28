@@ -149,16 +149,45 @@ public class Player extends Character {
         // --- Tùy chọn: Vẽ vùng va chạm (solidArea) để debug ---
         // Điều này giúp bạn thấy rõ vùng va chạm của nhân vật trên màn hình.
         // Vị trí vẽ vùng va chạm: Tọa độ màn hình của Player + offset của solidArea.
-        // g2.setColor(Color.red); // Đặt màu vẽ là đỏ
-        // g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height); // Vẽ hình chữ nhật
+         g2.setColor(Color.red); // Đặt màu vẽ là đỏ
+         g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height); // Vẽ hình chữ nhật
+
+
     }
     // Sau khi chet
     @Override
     protected void onDeath(Character attacker) {
         gp.getUi().showMessage("Bạn đã bị đánh bại bởi " + attacker.getName() + "!");
-        gp.gameState = gp.endGameState;
+        gp.gameState = gp.gameOverState;
     }
+    public Rectangle getAttackArea() {
+        int attackAreaWidth = gp.getTileSize(); // Chiều rộng vùng tấn công
+        int attackAreaHeight = gp.getTileSize(); // Chiều cao vùng tấn công
+        int attackX = worldX + solidArea.x;
+        int attackY = worldY + solidArea.y;
 
+        // Điều chỉnh vị trí vùng tấn công dựa trên hướng của Player
+        // Đây là ví dụ đơn giản, bạn có thể làm chi tiết hơn
+        switch (direction) {
+            case "up":
+                attackY -= attackAreaHeight; // Vùng tấn công ở trên Player
+                attackX += (solidArea.width / 2) - (attackAreaWidth / 2); // Căn giữa theo chiều ngang
+                break;
+            case "down":
+                attackY += solidArea.height; // Vùng tấn công ở dưới Player
+                attackX += (solidArea.width / 2) - (attackAreaWidth / 2);
+                break;
+            case "left":
+                attackX -= attackAreaWidth; // Vùng tấn công ở bên trái Player
+                attackY += (solidArea.height / 2) - (attackAreaHeight / 2); // Căn giữa theo chiều dọc
+                break;
+            case "right":
+                attackX += solidArea.width; // Vùng tấn công ở bên phải Player
+                attackY += (solidArea.height / 2) - (attackAreaHeight / 2);
+                break;
+        }
+        return new Rectangle(attackX, attackY, attackAreaWidth, attackAreaHeight);
+    }
     public void interactWithNPC(int npcIndex) {
         if (npcIndex != 999) { // Kiểm tra xem có va chạm với NPC hợp lệ không
             Character npcCharacter = gp.getNpc()[npcIndex]; // Lấy đối tượng NPC từ mảng
@@ -167,7 +196,7 @@ public class Player extends Character {
             if (npcCharacter instanceof NPC_Princess && !(npcCharacter instanceof DialogueSpeaker)) {
                 // Xử lý Princess kết thúc game nếu Princess KHÔNG phải là DialogueSpeaker
                 // (Nếu Princess cũng nói chuyện trước khi kết thúc, thì nó nên là DialogueSpeaker)
-                gp.gameState = gp.endGameState;
+                gp.gameState = gp.victoryEndState;
             } else if (npcCharacter instanceof DialogueSpeaker) {
                 // Không cần chuyển gameState ở đây nữa, DialogueManager.startDialogue sẽ làm
                 ((DialogueSpeaker) npcCharacter).initiateDialogue(gp);
@@ -186,7 +215,7 @@ public class Player extends Character {
     public void pickUpItem(int i) {
         // the object array's index
         if (i != 999) {
-            gp.getwObjects()[i].interactPlayer(this, i);
+            gp.getwObjects()[i].interactPlayer(this, i,this.gp);
         }
     }
 
