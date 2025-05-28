@@ -1,104 +1,105 @@
-Dựa trên phiên bản trước (Version 1.2) và phiên bản hiện tại (Version 1.3), tôi sẽ viết lại changelog, làm nổi bật các thay đổi và cải tiến từ Version 1.2 lên Version 1.3, đồng thời giữ nguyên kế hoạch tương lai.
+# MyNewMMOGame - RPG Adventure
 
-🚀 VERSION 1.3 🎮
+🚀 **Version 1.3** 🎮  
+*Last updated: 02:12 PM +07, Wednesday, May 28, 2025*
 
-📜 Giới Thiệu Chung
+## 📜 Introduction
+Welcome to the latest version of our RPG game! This release focuses on enhancing core gameplay mechanics, optimizing sprite rendering, and introducing a basic combat system to deliver a smoother and more engaging player experience.
 
-Phiên bản mới nhất của game RPG, tập trung vào cải thiện hoạt ảnh, tối ưu hóa hiển thị hình ảnh, và triển khai hệ thống chiến đấu cơ bản, mang lại trải nghiệm chơi game mượt mà và hấp dẫn hơn.
+## ✨ Changelog (Version 1.3 vs. Version 1.2)
 
-✨ Sửa đổi mới (So sánh giữa Version 1.3 và Version 1.2)
+### Hệ thống Giao diện Người dùng (UI)
+- **Version 1.2:** Displayed key count, time, messages, and supported game states (playState, pauseState, dialogueState, endGameState).
+- **Version 1.3:**
+    - **Added health bar:** Implemented `drawHealthBar` for `Player` and `MON_GreenSlime`, visually showing health percentage for better tracking.
 
-Hệ thống Giao diện Người dùng (UI):
+### Quản lý Trạng thái Game (Game State Management)
+- **Version 1.2:** GamePanel managed game states with basic `update()` and `draw()` logic; game ended on interaction with `NPC_Princess`.
+- **Version 1.3:**
+    - **Improved game over logic:** Added `onDeath` for `Player`, displaying a message (e.g., "You were defeated by Green Slime!") and switching to `endGameState`.
 
-Version 1.2: UI hiển thị số chìa khóa, thời gian, tin nhắn, và các màn hình trạng thái game (playState, pauseState, dialogueState, endGameState).
-Version 1.3:
-Thêm thanh máu (drawHealthBar) cho Player và MON_GreenSlime, hiển thị trực quan phần trăm máu còn lại, giúp người chơi dễ theo dõi trạng thái nhân vật và quái vật.
-Quản lý Trạng thái Game (gameState):
+### Hệ thống Hội thoại (Dialogue System)
+- **Version 1.2:** Basic DialogueManager supported `NPC_OldMan` and `NPC_Princess` conversations; `Player` triggered dialogues via `DialogueSpeaker`.
+- **Version 1.3:**
+    - **Enhanced interaction:** Ensured smooth return to `playState` after dialogue completion.
 
-Version 1.2: GamePanel quản lý các trạng thái game với logic update() và draw() cơ bản; kết thúc game khi tương tác với NPC_Princess.
-Version 1.3:
-Cải tiến logic kết thúc game: Thêm logic onDeath cho Player, hiển thị thông báo khi chết (ví dụ: "Bạn đã bị đánh bại bởi Green Slime!") và chuyển sang endGameState.
-Hệ thống Hội thoại (Dialogue System):
+### Hệ thống Nhân vật (Character System)
+- **Version 1.2:** `NPC_OldMan` and `NPC_Princess` featured movement and dialogue; `NPC_Princess` used left/right sprites despite 4-direction movement logic.
+- **Version 1.3:**
+    - **Player:**
+        - **Fixed attack animation:** Attack sprites (`sodier_attack*.png`) now display when standing still, not just while moving.
+        - **Direction-based attacks:** Added separate sprites for right (`sodier_attackright*.png`) and left (`sodier_attackleft*.png`), displayed based on `direction`.
+        - **Optimized sprite rendering:** Fixed image distortion by scaling sprites with preserved aspect ratio, centered within tiles (`gp.getTileSize()`).
+    - **NPC:**
+        - **Optimized rendering:** `NPC_OldMan` and `NPC_Princess` now render with preserved sprite aspect ratio, avoiding distortion.
+    - **Monster (New):**
+        - **Introduced `MON_GreenSlime`:** First monster with combat logic, including health, attack, defense, and chasing behavior (`playerChasing`).
+        - **Added health bar:** Monsters display health bars for player convenience.
 
-Version 1.2: DialogueManager được triển khai cơ bản, cho phép NPC_OldMan và NPC_Princess nói chuyện; Player kích hoạt hội thoại qua DialogueSpeaker.
-Version 1.3:
-Tối ưu hóa tương tác: Đảm bảo Player quay lại trạng thái chơi (playState) mượt mà sau khi hội thoại kết thúc.
-Hệ thống Nhân vật (Character System):
+### Hệ thống Chiến đấu (Combat System) - New
+- **Version 1.2:** No combat system.
+- **Version 1.3:**
+    - **Basic implementation:** Added attributes `attack`, `defense`, `maxHealth`, `currentHealth`, and `attackCooldown` to `Character`.
+    - **Combat mechanics:** `Player` attacks with the Space key, dealing damage to monsters; monster death triggers a message (e.g., "Đạt đẹp trai defeated Green Slime!").
+    - **Interaction support:** `MON_GreenSlime` takes damage and dies (`onDeath`), with basic drop logic (`checkDrop`).
 
-Version 1.2: NPC_OldMan và NPC_Princess có logic di chuyển và hội thoại; NPC_Princess chỉ có sprite trái/phải nhưng logic di chuyển hỗ trợ 4 hướng.
-Version 1.3:
-Player:
-Sửa lỗi hoạt ảnh tấn công: Hoạt ảnh tấn công (sodier_attack*.png) giờ đây hiển thị cả khi đứng im, không chỉ khi di chuyển.
-Hỗ trợ tấn công theo hướng: Thêm sprite tấn công riêng cho bên phải (sodier_attackright*.png) và bên trái (sodier_attackleft*.png), hiển thị đúng hướng dựa trên direction.
-Tối ưu hóa hiển thị sprite: Sửa lỗi méo mó hình ảnh bằng cách scale giữ tỷ lệ gốc, căn giữa trong tile (gp.getTileSize()).
-NPC:
-Tối ưu hóa hiển thị: NPC_OldMan và NPC_Princess được cập nhật để giữ tỷ lệ sprite gốc, tránh méo mó khi vẽ.
-Monster (Mới):
-Thêm MON_GreenSlime: Quái vật đầu tiên với logic chiến đấu, có máu, tấn công, phòng thủ, và khả năng đuổi theo Player (playerChasing).
-Hiển thị thanh máu: Quái vật hiển thị thanh máu, hỗ trợ người chơi theo dõi trạng thái.
-Hệ thống Chiến đấu (Combat System - Mới):
+### Hệ thống Hình ảnh và Hoạt ảnh (Image Processing)
+- **Version 1.2:** `CharacterImageProcessor` handled basic movement sprites and animations.
+- **Version 1.3:**
+    - **Direction-based attacks:** Added `attackRight` and `attackLeft` lists for directional attack sprites.
+    - **Fixed distortion:** Scaled sprites to maintain aspect ratio, centered in tiles, eliminating stretching.
+    - **Improved frame rate:** Reduced frame delay during attacks for smoother animations.
 
-Version 1.2: Không có hệ thống chiến đấu.
-Version 1.3:
-Triển khai cơ bản: Thêm thuộc tính attack, defense, maxHealth, currentHealth, và attackCooldown trong Character.
-Logic chiến đấu: Player tấn công bằng phím Space, gây sát thương lên quái vật; quái vật chết thì hiển thị thông báo (ví dụ: "Đạt đẹp trai đã đánh bại Green Slime!").
-Hỗ trợ tương tác: Quái vật (MON_GreenSlime) có thể nhận sát thương và chết (onDeath), với logic thả vật phẩm (checkDrop) cơ bản.
-Hệ thống Hình ảnh và Hoạt ảnh (Image Processing):
+### Hệ thống Item
+- **Version 1.2:** `Player` could pick up keys and open doors.
+- **Version 1.3:**
+    - Retained core pick-up and usage logic for `Key` and `Door`.
 
-Version 1.2: CharacterImageProcessor xử lý sprite di chuyển và hoạt ảnh cơ bản.
-Version 1.3:
-Hỗ trợ tấn công theo hướng: Thêm attackRight và attackLeft để quản lý sprite tấn công theo hướng.
-Sửa lỗi méo mó: Sprite được scale giữ tỷ lệ gốc, căn giữa trong tile, tránh biến dạng.
-Tối ưu hóa tốc độ khung hình: Giảm frame delay khi tấn công, mang lại hoạt ảnh mượt mà hơn.
-Hệ thống Item:
+### Tái cấu trúc và Tối ưu hóa
+- **Version 1.2:** Focused on basic encapsulation.
+- **Version 1.3:**
+    - **Enhanced encapsulation:** Improved `Character`, `Player`, and `Monster` with clearer attributes and methods.
+    - **Better debugging:** Added detailed logs in `ImageProcessor` and `CharacterImageProcessor` for easier sprite loading error detection.
 
-Version 1.2: Player có thể nhặt chìa khóa và mở cửa.
-Version 1.3:
-Giữ nguyên logic nhặt và sử dụng vật phẩm (Key, Door).
-Tái cấu trúc và Tối ưu hóa:
+## 🤝 Future Plans
 
-Version 1.2: Tập trung vào đóng gói cơ bản.
-Version 1.3:
-Cải thiện đóng gói: Tối ưu hóa Character, Player, và Monster với các thuộc tính và phương thức rõ ràng hơn.
-Debug tốt hơn: Thêm log chi tiết trong ImageProcessor và CharacterImageProcessor để dễ dàng phát hiện lỗi tải sprite.
-🤝 Làm thêm trong tương lai
+### Hoàn thiện Hệ thống Hội thoại
+- Enable NPCs to have multiple dialogue branches based on context or quest status.
+- Add player dialogue choices.
+- Load dialogue content from files (text, JSON, XML) instead of hardcoding.
 
-Hoàn thiện Hệ thống Hội thoại:
+### Hệ thống Nhiệm vụ (Quest System)
+- Design and implement a quest system for players to accept and complete from NPCs.
+- Integrate dialogues with quest progression.
 
-Cho phép NPC có nhiều đoạn hội thoại khác nhau tùy theo ngữ cảnh, trạng thái nhiệm vụ.
-Thêm tính năng lựa chọn hội thoại cho người chơi.
-Tải nội dung hội thoại từ file (text, JSON, XML) thay vì hardcode.
-Hệ thống Nhiệm vụ (Quest System):
+### Hoàn thiện Hệ thống Item và Inventory
+- Fully implement `Inventory` and `ItemStack` classes.
+- Allow `Player` to pick up various `WorldObject` types and convert them to `Item` in `Inventory`.
+- Add item usage functionality (e.g., health restoration, power boosts).
 
-Thiết kế và triển khai hệ thống nhiệm vụ mà người chơi có thể nhận và hoàn thành từ NPC.
-Tích hợp hội thoại với hệ thống nhiệm vụ.
-Hoàn thiện Hệ thống Item và Inventory:
+### Mở rộng Hệ thống Chiến đấu
+- Introduce new monster types with diverse behaviors and attributes.
+- Implement an EXP and level system for `Player`.
+- Add combat effects (screen shake, sound effects).
 
-Triển khai đầy đủ lớp Inventory và ItemStack.
-Cho phép Player nhặt nhiều loại WorldObject khác nhau và chuyển thành Item trong Inventory.
-Thêm chức năng sử dụng item (ví dụ: hồi máu, tăng sức mạnh).
-Mở rộng Hệ thống Chiến đấu:
+### Cải thiện AI cho NPC và Monster
+- Enhance NPC and Monster behavior (e.g., ranged attacks, context-aware NPC reactions).
+- Optimize `PathFinder` for complex maps.
 
-Thêm các loại quái vật mới với hành vi và thuộc tính đa dạng.
-Triển khai hệ thống kinh nghiệm (EXP) và cấp độ (level) cho Player.
-Thêm hiệu ứng tấn công (rung màn hình, âm thanh).
-Cải thiện AI cho NPC và Monster:
+### Thêm Âm thanh và Hiệu ứng
+- Integrate background music and sound effects for actions (attacks, item pickups, dialogues).
+- Add visual effects (screen shake, particles) for attacks or damage.
 
-Làm cho hành vi của NPC và Monster thông minh hơn (ví dụ: Monster tấn công từ xa, NPC phản ứng theo hành động người chơi).
-Tối ưu hóa PathFinder để xử lý bản đồ phức tạp hơn.
-Thêm Âm thanh và Hiệu ứng:
+### Lưu và Tải Game (Save/Load System)
+- Develop a system to save and load game states (player position, key count, quest progress).
 
-Tích hợp âm thanh nền, hiệu ứng âm thanh cho hành động (tấn công, nhặt vật phẩm, hội thoại).
-Thêm hiệu ứng hình ảnh (rung màn hình, particle) khi tấn công hoặc nhận sát thương.
-Lưu và Tải Game (Save/Load System):
+### Mở rộng Bản đồ và Nội dung Game
+- Add new areas, NPCs, items, and a richer storyline.
+- Increase environmental interaction (e.g., breaking obstacles, discovering secrets).
 
-Triển khai hệ thống lưu trữ trạng thái game (vị trí người chơi, số chìa khóa, tiến độ nhiệm vụ).
-Mở rộng Bản đồ và Nội dung Game:
+### Tiếp tục Tái cấu trúc
+- Review code to ensure encapsulation and OOP principles.
+- Optimize performance as map size and entity count grow.
 
-Thêm các khu vực mới, NPC mới, item mới, và cốt truyện phong phú hơn.
-Tăng tính tương tác với môi trường (ví dụ: phá hủy vật cản, khám phá bí mật).
-Tiếp tục Tái cấu trúc (Refactoring):
-
-Rà soát code để đảm bảo tính đóng gói và các nguyên tắc OOP.
-Tối ưu hóa hiệu suất, đặc biệt khi bản đồ và số lượng entity tăng lên.
-Cảm ơn bạn đã đọc! 🎉
+## 🙌 Acknowledgments
+Thank you for reading and supporting the project! Stay tuned for more updates! 🎉
