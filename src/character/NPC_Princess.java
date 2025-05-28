@@ -69,7 +69,7 @@ public class NPC_Princess extends Character implements DialogueSpeaker {
             // QUAN TRỌNG: Kiểm tra lại prefixName này ("Princess_")
             // Nó phải khớp với cách CharacterImageProcessor.getImage() xây dựng đường dẫn
             // và tên file thực tế của bạn (ví dụ: princess_walkleft1.png, princess_walkright1.png)
-            this.cip.getImage("/npc", "Princess_"); //
+            this.cip.getImage("/npc", "Princess"); //
             // Nếu tên file của bạn là "princess_walkleftX.png", bạn có thể cần truyền "princess_walk_"
             // this.cip.getImage("/npc", "princess_walk_");
         }

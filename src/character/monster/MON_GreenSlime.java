@@ -40,7 +40,7 @@ public class MON_GreenSlime extends Monster {
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
-        cip.getImage("/monster", "greenslime_");
+        cip.getImage("/monster", "greenslime");
     }
 
     @Override

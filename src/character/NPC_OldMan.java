@@ -46,7 +46,7 @@ public class NPC_OldMan extends Character implements DialogueSpeaker {
         solidArea.y = 16;     // Điều chỉnh cho phù hợp với sprite của NPC
         solidArea.width = 32; // Ví dụ: 32x32 pixels
         solidArea.height = 32;
-        cip.getImage("/npc","oldman_"); // Tải ảnh ở đây
+        cip.getImage("/npc","oldman"); // Tải ảnh ở đây
         name = "Old Man";
     }
 

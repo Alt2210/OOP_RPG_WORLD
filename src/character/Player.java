@@ -23,6 +23,9 @@ public class Player extends Character {
     public final int screenY;
     private int hasKey;
 
+    // THÊM MỚI: Bộ đếm thời gian tấn công
+    private int attackAnimationCounter = 0;
+
     // --- Constructor ---
     // Được gọi từ lớp GamePanel khi tạo đối tượng Player.
     // Nhận tham chiếu đến GamePanel và KeyHandler.
@@ -53,7 +56,7 @@ public class Player extends Character {
         // --- Thiết lập Giá trị ban đầu và Tải ảnh ---
         // Gọi các phương thức để thiết lập trạng thái khởi tạo và tải hình ảnh của Player.
         setDefaultValues(); // Thiết lập worldX, worldY, speed, direction ban đầu.
-        cip.getImage("/player", "sodier_walk");      // Tải hình ảnh hoạt ảnh của Player.
+        cip.getImage("/player", "sodier");      // Tải hình ảnh hoạt ảnh của Player.
     }
 
     // --- Ghi đè các Phương thức chung từ Character ---
@@ -84,6 +87,14 @@ public class Player extends Character {
     // Thêm logic xử lý input riêng của Player trước khi gọi logic cập nhật chung.
     @Override
     public void update() {
+        // THÊM MỚI: Kiểm soát thời gian tấn công
+        if (keyH.attackPressed) {
+            attackAnimationCounter = 30; // 0.5 giây tại 60 FPS
+        }
+        if (attackAnimationCounter > 0) {
+            attackAnimationCounter--;
+        }
+
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
             // 1. Xác định hướng di chuyển dựa trên input
             if (keyH.upPressed) {
@@ -151,10 +162,12 @@ public class Player extends Character {
             cip.update();
 
         } else {
-            // Người chơi không nhấn phím di chuyển -> xử lý animation đứng yên
-            cip.setSpriteNum(0); // Đặt về frame đầu tiên (hoặc frame đứng yên cụ thể)
-            // Hoặc bạn có thể không làm gì ở đây để giữ nguyên frame cuối cùng của hành động trước.
-            // Tùy thuộc vào hiệu ứng bạn muốn.
+            // THAY ĐỔI: Gọi cip.update() nếu đang trong trạng thái tấn công
+            if (attackAnimationCounter > 0) {
+                cip.update();
+            } else {
+                cip.setSpriteNum(0);
+            }
         }
     }
 
@@ -239,6 +252,11 @@ public class Player extends Character {
 
             }
         }
+    }
+
+    // THÊM MỚI: Phương thức kiểm tra trạng thái tấn công
+    public boolean isAttacking() {
+        return attackAnimationCounter > 0;
     }
 
 }
