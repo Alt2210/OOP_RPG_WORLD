@@ -6,6 +6,8 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements KeyListener {
     GamePanel gp;
     public boolean upPressed, downPressed, leftPressed, rightPressed;
+    // Biến để theo dõi phím tấn công
+    public boolean attackPressed;
 
     public KeyHandler(GamePanel gp){
         this.gp = gp;
@@ -40,6 +42,11 @@ public class KeyHandler implements KeyListener {
                 gp.gameState = gp.playState;
             }
         }
+        // Hỗ trợ phím Space để tấn công
+        if (code == KeyEvent.VK_SPACE) {
+            attackPressed = true; // Đảm bảo Space kích hoạt tấn công
+            System.out.println("Space pressed: " + attackPressed); // Log để debug
+        }
         if (gp.gameState == gp.dialogueState) {
             if (code == KeyEvent.VK_ENTER) {
                 gp.getDialogueManager().advance(); // Yêu cầu DialogueManager tiến tới câu thoại tiếp theo
@@ -47,7 +54,6 @@ public class KeyHandler implements KeyListener {
         }
         if (code == KeyEvent.VK_ESCAPE) {
             if (gp.gameState == gp.endGameState) {
-                System.out.println("Exiting game from end game state.");
                 System.exit(0);
             } else if (gp.gameState == gp.playState || gp.gameState == gp.pauseState) {
                 // Có thể thêm chức năng mở menu hoặc thoát game từ các trạng thái này
@@ -73,5 +79,8 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_D) {
             rightPressed = false;
         }
-    }
+        if (code == KeyEvent.VK_SPACE) {
+            attackPressed = false; // Đặt lại khi thả phím
+            System.out.println("Space released: " + attackPressed); // Log để debug
+        }    }
 }

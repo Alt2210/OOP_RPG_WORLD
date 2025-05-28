@@ -3,6 +3,7 @@ package main;
 import character.Character;
 import character.Player;
 import character.monster.MON_GreenSlime;
+import character.monster.Monster;
 import tile.TileManager;
 import worldObject.WorldObject;
 import dialogue.DialogueManager;
@@ -26,9 +27,11 @@ public class GamePanel extends JPanel implements Runnable {
     private final int maxWorldRow = 50;
     private final int worldWidth = tileSize * maxWorldCol;
     private final int worldHeight = tileSize * maxWorldRow;
-
     private UI ui = new UI(this);
     private DialogueManager dialogueManager = new DialogueManager(this);
+    // Khởi tạo CombatSystem
+    private events_system.CombatSystem combatSystem = new events_system.CombatSystem(this);
+
     private int FPS = 60;
     private Character currentInteractingNPC = null;
     // Game State
@@ -137,7 +140,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Character[] getNpc() {
         return npc;
     }
-    public Character[] getMON_GreenSlime() { return greenSlime;  }
+    public Monster[] getMON_GreenSlime() { return greenSlime;  }
 
     private TileManager tileM = new TileManager(this);;
     private KeyHandler keyH = new KeyHandler(this);
@@ -147,7 +150,7 @@ public class GamePanel extends JPanel implements Runnable {
     private Player player = new Player(this,keyH);
     private WorldObject wObjects[] = new WorldObject[10];
     private character.Character npc[] = new character.Character[10];
-    private character.Character greenSlime[] = new character.Character[10]; // Nếu Monster kế thừa từ Character
+    private Monster[] greenSlime = new MON_GreenSlime[10];
 
 
     public GamePanel() {
@@ -207,22 +210,25 @@ public class GamePanel extends JPanel implements Runnable {
 
             for (int i = 0; i < npc.length; i++) {
                 if (npc[i] != null) {
-                    npc[i].setAction(); // NPC quyết định hành động (ví dụ: đổi hướng)
+                    // npc[i].playerChasing(); // NPC quyết định hành động (ví dụ: đổi hướng)
                     npc[i].update();    // NPC thực hiện cập nhật (di chuyển, animation)
                 }
             }
 
             for (int i = 0; i < greenSlime.length; i++) {
                 if (greenSlime[i] != null) {
-                    greenSlime[i].setAction();
+                    greenSlime[i].playerChasing();
                     greenSlime[i].update();
                 }
             }
+            // Kiểm tra chiến đấu giữa người chơi và quái vật
+            combatSystem.checkPlayerMonsterCombat(player, greenSlime);
         }
-        else if(gameState== pauseState){
+
+        else if (gameState== pauseState){
 
         }
-        else if(gameState== endGameState){
+        else if (gameState== endGameState){
 
 
         }

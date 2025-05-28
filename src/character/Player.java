@@ -60,8 +60,9 @@ public class Player extends Character {
 
     // Ghi đè phương thức setDefaultValues() từ lớp Character.
     // Thiết lập các giá trị khởi tạo riêng cho Player khi bắt đầu game.
-    @Override
+
     public void setAction(){}
+
     @Override // Sử dụng annotation @Override là một cách tốt để kiểm tra lỗi nếu phương thức ở lớp cha bị đổi tên hoặc xóa.
     public void setDefaultValues() {
         // Vị trí ban đầu của Player trong thế giới game (worldX, worldY).
@@ -74,6 +75,8 @@ public class Player extends Character {
 
         maxHealth = 100;
         currentHealth = maxHealth;
+        attack = 10; // Giá trị tấn công của người chơi
+        defense = 2; // Giá trị phòng thủ của người chơi
         name = "Đạt đẹp trai";
     }
 
@@ -173,13 +176,19 @@ public class Player extends Character {
         g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
 
         drawHealthBar(g2, screenX, screenY); // Truyền screenX và screenY vào
-        drawHealthBar(g2, screenX, screenY); // Truyền screenX và screenY vào
         // --- Tùy chọn: Vẽ vùng va chạm (solidArea) để debug ---
         // Điều này giúp bạn thấy rõ vùng va chạm của nhân vật trên màn hình.
         // Vị trí vẽ vùng va chạm: Tọa độ màn hình của Player + offset của solidArea.
         // g2.setColor(Color.red); // Đặt màu vẽ là đỏ
         // g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height); // Vẽ hình chữ nhật
     }
+    // Sau khi chet
+    @Override
+    protected void onDeath(Character attacker) {
+        gp.getUi().showMessage("Bạn đã bị đánh bại bởi " + attacker.getName() + "!");
+        gp.gameState = gp.endGameState;
+    }
+
     public void interactWithNPC(int npcIndex) {
         if (npcIndex != 999) { // Kiểm tra xem có va chạm với NPC hợp lệ không
             Character npcCharacter = gp.getNpc()[npcIndex]; // Lấy đối tượng NPC từ mảng

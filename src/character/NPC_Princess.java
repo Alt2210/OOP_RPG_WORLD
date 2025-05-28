@@ -75,7 +75,6 @@ public class NPC_Princess extends Character implements DialogueSpeaker {
         }
     }
 
-    @Override
     public void setAction() {
 
         actionLockCounter++; //

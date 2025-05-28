@@ -39,7 +39,8 @@ public abstract class Character {
     protected int defaultSpeed;
     protected int attack;
     protected int defense;
-
+    protected int attackCooldown; // Số frame cho đến khi được tấn công tiếp
+    protected final int ATTACK_COOLDOWN_DURATION = 30; // 0.5 giây tại 60 FPS
     String name;
 
 
@@ -47,9 +48,10 @@ public abstract class Character {
         this.gp = gp;
         solidArea = new Rectangle();
         cip = new CharacterImageProcessor(gp, this);
+        // THÊM MỚI: Khởi tạo attackCooldown
+        attackCooldown = 0;
     }
 
-    public abstract void setAction();
     public abstract void draw(Graphics2D g2);
 
     public void setDefaultValues() {
@@ -84,6 +86,18 @@ public abstract class Character {
         return (target.worldY + target.solidArea.y) / gp.getTileSize();
     }
 
+    public int getAttack() {
+        return attack;
+    }
+
+    public int getDefense() {
+        return defense;
+    }
+
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
     public void update() {
         collisionOn = false;
         gp.getcChecker().checkTile(this);
@@ -100,8 +114,24 @@ public abstract class Character {
             }
         }
 
+        // Giảm thời gian hồi chiêu tấn công trong mỗi frame
+        if (attackCooldown > 0) {
+            attackCooldown--;
+        }
+
         cip.update();
     }
+
+    // Phương thức kiểm tra xem có thể tấn công hay không
+    public boolean canAttack() {
+        return attackCooldown == 0;
+    }
+
+    // Đặt lại thời gian hồi chiêu sau khi tấn công
+    public void resetAttackCooldown() {
+        attackCooldown = ATTACK_COOLDOWN_DURATION;
+    }
+
     public void drawHealthBar(Graphics2D g2, int screenX, int screenY) {
         int barWidth = gp.getTileSize();
         int barHeight = 6;
@@ -125,5 +155,18 @@ public abstract class Character {
             g2.fillRect(x + 1, y + 1, healthBarWidth - 1, barHeight - 1);
         }
     }
+
+    public void receiveDamage(int damage, Character attacker) {
+        int actualDamage = Math.max(0, damage - defense);
+        currentHealth = Math.max(0, currentHealth - actualDamage);
+        if (currentHealth <= 0) {
+            onDeath(attacker);
+        }
+    }
+
+    protected void onDeath(Character attacker) {
+        // Được ghi đè bởi các lớp con
+    }
+
 
 }

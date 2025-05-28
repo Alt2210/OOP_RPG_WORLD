@@ -50,7 +50,6 @@ public class NPC_OldMan extends Character implements DialogueSpeaker {
         name = "Old Man";
     }
 
-    @Override // Đảm bảo setAction được override nếu nó có trong lớp cha Character (có vẻ không)
     // Nếu Character không có setAction abstract, thì bỏ @Override
     public void setAction(){ //
         actionLockCounter++; //
