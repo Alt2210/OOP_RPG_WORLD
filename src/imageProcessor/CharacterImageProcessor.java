@@ -34,16 +34,16 @@ public class CharacterImageProcessor extends ImageProcessor {
     public BufferedImage getCurFrame() {
         if (character instanceof Player && ((Player) character).isAttacking()) {
             if (character.direction.equals("right") && attackRight.size() > 0) {
-                System.out.println("Displaying attack right sprite, frame: " + (spriteNum % attackRight.size()) + ", attackRight size: " + attackRight.size());
+                //System.out.println("Displaying attack right sprite, frame: " + (spriteNum % attackRight.size()) + ", attackRight size: " + attackRight.size());
                 return attackRight.get(spriteNum % attackRight.size());
             } else if (character.direction.equals("left") && attackLeft.size() > 0) {
-                System.out.println("Displaying attack left sprite, frame: " + (spriteNum % attackLeft.size()) + ", attackLeft size: " + attackLeft.size());
+                //System.out.println("Displaying attack left sprite, frame: " + (spriteNum % attackLeft.size()) + ", attackLeft size: " + attackLeft.size());
                 return attackLeft.get(spriteNum % attackLeft.size());
             } else if (attackRight.size() > 0) { // Mặc định dùng attackRight nếu hướng là "up" hoặc "down"
-                System.out.println("Displaying attack right sprite (default), frame: " + (spriteNum % attackRight.size()) + ", attackRight size: " + attackRight.size());
+                //System.out.println("Displaying attack right sprite (default), frame: " + (spriteNum % attackRight.size()) + ", attackRight size: " + attackRight.size());
                 return attackRight.get(spriteNum % attackRight.size());
             } else if (attackLeft.size() > 0) {
-                System.out.println("Displaying attack left sprite (fallback), frame: " + (spriteNum % attackLeft.size()) + ", attackLeft size: " + attackLeft.size());
+                //System.out.println("Displaying attack left sprite (fallback), frame: " + (spriteNum % attackLeft.size()) + ", attackLeft size: " + attackLeft.size());
                 return attackLeft.get(spriteNum % attackLeft.size());
             } else {
                 System.out.println("Attack sprites not loaded, falling back to default");

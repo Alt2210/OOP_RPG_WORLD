@@ -39,7 +39,7 @@ public class NPC_Princess extends Character implements DialogueSpeaker {
         // Thêm các câu thoại của Princess ở đây
         victoryDialogue.addLine("Princess", "Ôi, dũng sĩ! Cuối cùng ngài cũng đã đến!"); // Sửa lại text cho phù hợp
         victoryDialogue.addLine("Princess", "Ngài đã giải cứu vương quốc chúng ta..."); //
-        victoryDialogue.addLine("Player", "(Djt nhau Djt nhau chit chit chit)"); //
+        victoryDialogue.addLine("Player", "..."); //
         victoryDialogue.addLine("Princess", "Xin cảm ơn ngài. Giờ đây, hòa bình sẽ trở lại."); //
     }
 
