@@ -71,8 +71,9 @@ public class MON_GreenSlime extends Monster {
     }
     @Override
     public void update(){
-        super.update();
         this.playerChasing();
+        super.update();
+
 
     }
     @Override

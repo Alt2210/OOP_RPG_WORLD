@@ -257,4 +257,17 @@ public class CollisionChecker {
         }
         return index;
     }
+    public boolean areRectsNearlyColliding(Rectangle r1, Rectangle r2, int tolerance) {
+        tolerance = 0; //nghĩa là chạm cạnh cũng tính
+        // tolerance = 1 nghĩa là có thể cách nhau 1 pixel vẫn tính
+        // Logic intersects tiêu chuẩn:
+        // r1.x < r2.x + r2.width && r1.x + r1.width > r2.x &&
+        // r1.y < r2.y + r2.height && r1.y + r1.height > r2.y
+
+        // Để bao gồm cả chạm cạnh (khi các cạnh bằng nhau):
+        return r1.x <= r2.x + r2.width - tolerance &&   // r1.left <= r2.right (trừ đi tolerance để "nới lỏng")
+                r1.x + r1.width >= r2.x + tolerance &&    // r1.right >= r2.left (cộng tolerance)
+                r1.y <= r2.y + r2.height - tolerance &&  // r1.top <= r2.bottom
+                r1.y + r1.height >= r2.y + tolerance;    // r1.bottom >= r2.top
+    }
 }
