@@ -5,6 +5,7 @@ import character.Player;
 import character.monster.MON_Bat;
 import character.monster.MON_GreenSlime;
 import character.monster.Monster;
+import projectile.Projectile;
 import tile.TileManager;
 import worldObject.WorldObject;
 import dialogue.DialogueManager;
@@ -12,6 +13,8 @@ import sound.Sound;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -180,6 +183,7 @@ public class GamePanel extends JPanel implements Runnable {
     private MON_GreenSlime[] greenSlime = new MON_GreenSlime[10];
     private MON_Bat[] bat = new MON_Bat[10];
 
+    public List<Projectile> projectiles = new ArrayList<>();
     public GamePanel() {
 
         this.setPreferredSize(new Dimension(ScreenWidth, ScreenHeight));
@@ -199,6 +203,8 @@ public class GamePanel extends JPanel implements Runnable {
         if (player != null) {
             player.setDefaultValues(); // << ĐÂY LÀ NƠI QUAN TRỌNG ĐỂ RESET PLAYER
         }
+        projectiles.clear(); // Xóa danh sách projectile để tránh rò rỉ bộ nhớ
+
     }
 
     public void playMusic(int soundIndex) {
@@ -298,6 +304,16 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
+            // Cập nhật projectiles
+            for (int i = projectiles.size() - 1; i >= 0; i--) { // Duyệt ngược để xóa an toàn
+                Projectile p = projectiles.get(i);
+                if (p.alive) {
+                    p.update();
+                } else {
+                    projectiles.remove(i);
+                }
+            }
+
             // 4. XỬ LÝ HỆ THỐNG CHIẾN ĐẤU
             // Chỉ xử lý nếu Player còn sống
             if (player != null && player.getCurrentHealth() > 0) {
@@ -365,6 +381,12 @@ public class GamePanel extends JPanel implements Runnable {
             for (int i = 0; i < bat.length; i++) { // Sử dụng mảng 'monster' mới
                 if (bat[i] != null) {
                     bat[i].draw(g2);
+                }
+            }
+            // Vẽ projectiles sau các đối tượng khác nhưng trước Player hoặc UI để nó bay phía trên
+            for (Projectile p : projectiles) {
+                if (p.alive) { // Chỉ vẽ projectile còn "sống"
+                    p.draw(g2);
                 }
             }
             player.draw(g2);
