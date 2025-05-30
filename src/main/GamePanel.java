@@ -172,8 +172,7 @@ public class GamePanel extends JPanel implements Runnable {
     private Player player = new Player(this, keyH);
     private WorldObject wObjects[] = new WorldObject[10];
     private character.Character npc[] = new character.Character[10];
-    private Monster[] greenSlime = new MON_GreenSlime[10];
-
+    private MON_GreenSlime[] greenSlime = new MON_GreenSlime[10];
 
     public GamePanel() {
 

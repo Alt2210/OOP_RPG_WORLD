@@ -61,7 +61,7 @@ public class Player extends Character {
         currentHealth = maxHealth;
         attack = 10; // Giá trị tấn công của người chơi
         defense = 2; // Giá trị phòng thủ của người chơi
-        attackRange = 64;
+        attackRange = 100;
         name = "Đạt đẹp trai";
     }
 
@@ -145,7 +145,6 @@ public class Player extends Character {
         int height = gp.getTileSize();
         g2.drawImage(image, screenX, screenY, width, height, null);
 
-        drawHealthBar(g2, screenX, screenY); // Truyền screenX và screenY vào
         drawHealthBar(g2, screenX, screenY); // Truyền screenX và screenY vào
         // --- Tùy chọn: Vẽ vùng va chạm (solidArea) để debug ---
         // Điều này giúp bạn thấy rõ vùng va chạm của nhân vật trên màn hình.

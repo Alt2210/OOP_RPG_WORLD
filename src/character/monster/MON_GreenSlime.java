@@ -65,6 +65,10 @@ public class MON_GreenSlime extends Monster {
             g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
         }
     }
+    @Override
+    public void playerChasing() {
+        super.playerChasing();
+    }
 
     @Override
     public void damageReaction() {

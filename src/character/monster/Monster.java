@@ -20,9 +20,8 @@ public abstract class Monster extends Character {
     }
 
     @Override
-    public void draw(Graphics2D g2) {
+    public abstract void draw(Graphics2D g2);
 
-    }
     @Override
     public void update() {
         super.update(); // Gọi logic update của lớp Character (di chuyển, animation, cooldown)
