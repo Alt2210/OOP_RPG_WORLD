@@ -127,13 +127,55 @@ public class UI {
             g2.drawImage(keyImage, currentTileSize / 2, currentTileSize / 2, currentTileSize, currentTileSize, null);
             drawTextWithShadow(g2, "x " + currentPlayer.getHasKey(), currentTileSize / 2 + currentTileSize + 10, currentTileSize / 2 + currentTileSize - 5, Color.WHITE, menuTextShadowColor, 1);
         }
-
+        // Vẽ thời gian chơi
         if (gp.gameState == gp.playState) {
             playtime += (double) 1.0 / gp.getFPS();
         }
         drawTextWithShadow(g2, "Time: " + dFormat.format(playtime), gp.getTileSize() * 10, currentTileSize, Color.WHITE, menuTextShadowColor, 1);
 
+        // Vẽ thanh Mana (MP Bar)
+        if (currentPlayer != null) {
+            int mpBarX = currentTileSize / 2;
+            // Đặt thanh Mana ngay dưới thanh Máu (đã được vẽ bởi Character.drawHealthBar -> Player.draw -> Player.drawHealthBar)
+            // Giả sử thanh máu của player vẽ tại player.screenY - healthBarHeight - 5
+            // Thanh mana sẽ ở dưới đó một chút hoặc ở vị trí khác tùy bạn.
+            // Ví dụ: đặt ngay dưới thông tin chìa khóa
+            int mpBarY = currentTileSize / 2 + currentTileSize + 10; // Vị trí Y cho thanh MP
+            int barOutlineWidth = currentTileSize * 2 + 2; // Thêm viền nhỏ
+            int barOutlineHeight = 12 + 2;
+            int barWidth = currentTileSize * 2;
+            int barHeight = 12;
 
+            double manaPercent = 0;
+            if (currentPlayer.getMaxMana() > 0) { // Tránh chia cho 0
+                manaPercent = (double) currentPlayer.getCurrentMana() / currentPlayer.getMaxMana();
+            }
+            int currentManaBarWidth = (int) (barWidth * manaPercent);
+
+            // Vẽ viền cho thanh mana (tùy chọn)
+            g2.setColor(Color.BLACK);
+            g2.fillRoundRect(mpBarX -1, mpBarY -1 , barOutlineWidth, barOutlineHeight, 5, 5);
+
+
+            // Vẽ nền cho phần mana đã mất
+            g2.setColor(new Color(50, 50, 100)); // Màu nền tối cho mana
+            g2.fillRoundRect(mpBarX, mpBarY, barWidth, barHeight, 5, 5);
+
+            // Vẽ phần mana hiện có
+            g2.setColor(new Color(0, 100, 255)); // Màu xanh dương cho mana
+            if (currentManaBarWidth > 0) { // Chỉ vẽ nếu có mana
+                g2.fillRoundRect(mpBarX, mpBarY, currentManaBarWidth, barHeight, 5, 5);
+            }
+
+            // Vẽ text MP (ví dụ: "MP: 30/50")
+            g2.setFont(pixelFont_XSmall); // Font nhỏ cho text
+            g2.setColor(Color.WHITE);
+            String mpText = currentPlayer.getCurrentMana() + "/" + currentPlayer.getMaxMana();
+            FontMetrics fm = g2.getFontMetrics(pixelFont_XSmall);
+            int textX = mpBarX + barWidth + 5; // Cách thanh MP một chút
+            int textY = mpBarY + fm.getAscent() - (fm.getHeight() - barHeight)/2 +1; // Căn giữa text với thanh MP
+            drawTextWithShadow(g2, mpText, textX, textY, Color.WHITE, menuTextShadowColor, 1);
+        }
         // Hiển thị tin nhắn (messageOn) với word wrapping
         if (messageOn) {
             // 1. Định nghĩa kích thước và vị trí cho ô chứa message

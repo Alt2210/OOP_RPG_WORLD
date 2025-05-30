@@ -139,7 +139,17 @@ public class MON_GreenSlime extends Monster {
     }
 
     @Override
-    public void damageReaction() {
+    public void damageReaction(Character attacker) {
+        actionLockCounter = 120; // Reset bộ đếm khóa hành động để quái vật có thể hành động ngay
+        onPath = true;
+    }
+    @Override
+    public void receiveDamage(int damage, Character attacker) {
+        super.receiveDamage(damage, attacker); // Gọi Character.receiveDamage() để giảm máu và kiểm tra onDeath
+
+        if (this.currentHealth > 0) { // Nếu quái vật vẫn còn sống sau khi nhận sát thương
+            this.damageReaction(attacker);    // Gọi phản ứng sát thương của nó
+        }
     }
     @Override
     public void update(){
@@ -167,4 +177,5 @@ public class MON_GreenSlime extends Monster {
             dropItem(new OBJ_ManaCrystal(gp));
         }*/
     }
+
 }

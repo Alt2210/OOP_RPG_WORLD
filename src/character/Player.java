@@ -4,6 +4,7 @@ import dialogue.DialogueSpeaker;
 import main.GamePanel;
 import main.KeyHandler;
 import sound.Sound;
+import projectile.Fireball;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -18,7 +19,9 @@ public class Player extends Character {
 
     // THÊM MỚI: Bộ đếm thời gian tấn công
     private int attackAnimationCounter = 0;
-
+    private int fireballManaCost;
+    private int fireballCooldown;
+    private final int FIREBALL_COOLDOWN_DURATION = 60; // Ví dụ: 1 giây (60 frames @ 60FPS)
     public Player(GamePanel gp, KeyHandler keyH) {
 
         super(gp);
@@ -62,11 +65,19 @@ public class Player extends Character {
         attack = 10; // Giá trị tấn công của người chơi
         defense = 2; // Giá trị phòng thủ của người chơi
         attackRange = 100;
-        name = "Đạt đẹp trai";
+        name = "Gnoud đẹp trai";
+        maxMana = 500; // Ví dụ: Player có tối đa 500 Mana
+        currentMana = maxMana;
+        fireballManaCost = 10; // Ví dụ: Fireball tốn 10 Mana
+        fireballCooldown = 0; // Sẵn sàng sử dụng khi bắt đầu
     }
 
     @Override
     public void update() {
+        // Giảm cooldown cho Fireball mỗi frame
+        if (fireballCooldown > 0) {
+            fireballCooldown--;
+        }
         // THÊM MỚI: Kiểm soát thời gian tấn công
         if (keyH.attackPressed) {
             attackAnimationCounter = 30; // 0.5 giây tại 60 FPS
@@ -124,6 +135,62 @@ public class Player extends Character {
                 cip.setSpriteNum(0);
             }
         }
+        // Xử lý input cho kỹ năng Fireball (có thể dùng khi đứng yên hoặc di chuyển)
+        // Đảm bảo không cast skill khi đang trong animation tấn công tay
+        if (keyH.skill1Pressed && fireballCooldown == 0 && currentMana >= fireballManaCost && attackAnimationCounter == 0) {
+            spendMana(fireballManaCost); // Trừ mana (sử dụng phương thức từ Character)
+            fireballCooldown = FIREBALL_COOLDOWN_DURATION; // Đặt cooldown cho Fireball
+            gp.getUi().showMessage("Fireball cast! Cost: " + fireballManaCost + " MP."); // Thông báo tạm
+            gp.playSoundEffect(Sound.SFX_FIREBALL_SHOOT);
+            // Đảm bảo Player có hướng hợp lệ để bắn Fireball
+            // Nếu Player đang đứng yên và chưa di chuyển, direction có thể là hướng cuối cùng Player đối mặt
+            // Hoặc bạn có thể có logic để Player tự động quay mặt về phía chuột/mục tiêu nếu có
+
+
+
+            Fireball fireball = new Fireball(gp);
+
+            // Lấy kích thước hitbox của fireball (đã được thiết lập trong constructor của Fireball)
+            int fireballHitboxWidth = fireball.solidArea.width;
+            int fireballHitboxHeight = fireball.solidArea.height;
+
+            // Tính toán tâm của solidArea của Player
+            int playerSolidCenterX = worldX + solidArea.x + solidArea.width / 2;
+            int playerSolidCenterY = worldY + solidArea.y + solidArea.height / 2;
+
+            // Vị trí X, Y ban đầu cho TÂM của Fireball (trùng với tâm solidArea của Player)
+            int fireballSpawnCenterX = playerSolidCenterX;
+            int fireballSpawnCenterY = playerSolidCenterY;
+
+            // Khoảng cách dịch chuyển tâm Fireball ra ngoài mép solidArea của Player
+            // Player_halfSolidSize + Fireball_halfHitboxSize + a small gap
+            int gap = 2; // Khoảng hở nhỏ
+            int offsetX = solidArea.width / 2 + fireballHitboxWidth / 2 + gap;
+            int offsetY = solidArea.height / 2 + fireballHitboxHeight / 2 + gap;
+
+            switch (direction) {
+                case "up":
+                    fireballSpawnCenterY -= offsetY;
+                    break;
+                case "down":
+                    fireballSpawnCenterY += offsetY;
+                    break;
+                case "left":
+                    fireballSpawnCenterX -= offsetX;
+                    break;
+                case "right":
+                    fireballSpawnCenterX += offsetX;
+                    break;
+            }
+
+            fireball.set(fireballSpawnCenterX, fireballSpawnCenterY, this.direction, this, this.attack * 2); // Sát thương fireball có thể tùy chỉnh
+            gp.projectiles.add(fireball);
+        }
+
+        // Cooldown cho đòn đánh thường của Character (nếu bạn muốn tách biệt với animation)
+        if (attackCooldown > 0) { // attackCooldown từ lớp Character
+            attackCooldown--;
+        }
     }
 
     // Triển khai phương thức trừu tượng draw(Graphics2D g2) từ lớp Character.
@@ -141,7 +208,7 @@ public class Player extends Character {
         // Player được vẽ tại vị trí CỐ ĐỊNH trên màn hình (screenX, screenY).
         // Kích thước vẽ được scale bằng gp.getTileSize().
         // null là tham số ImageObserver, thường dùng null khi vẽ trực tiếp lên Graphics.
-        int width = image.getWidth()*gp.getScale();
+        int width = image.getWidth() * gp.getScale();
         int height = gp.getTileSize();
         g2.drawImage(image, screenX, screenY, width, height, null);
 

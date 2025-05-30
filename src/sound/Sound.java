@@ -21,6 +21,8 @@ public class Sound {
     public static final int SFX_UNLOCK_DOOR = 3;
     public static final int SFX_FANFARE = 4;
     public static final int SFX_PICKUP_KEY = 5;
+    public static final int SFX_FIREBALL_SHOOT = 6; // Âm thanh khi bắn Fireball
+    public static final int SFX_FIREBALL_HIT = 7;   // Âm thanh khi Fireball trúng mục tiêu/tường
     // ... (thêm các hằng số khác)
 
     public Sound() {
@@ -31,7 +33,8 @@ public class Sound {
             soundURL[SFX_UNLOCK_DOOR] = getClass().getResource("/sound/unlock.wav");
             soundURL[SFX_FANFARE] = getClass().getResource("/sound/fanfare.wav");
             soundURL[SFX_PICKUP_KEY] = getClass().getResource("/sound/coin.wav"); // Sử dụng coin.wav cho pickup_key
-
+            soundURL[SFX_FIREBALL_SHOOT] = getClass().getResource("/sound/burning.wav"); // Tạm dùng powerup.wav
+            soundURL[SFX_FIREBALL_HIT] = getClass().getResource("/sound/hitmonster.wav"); // Cần file hitmonster.wav hoặc tương tự
             // Tùy chọn: Kiểm tra null cho các URL (rất hữu ích để debug)
             // for (int i = 0; i <= SFX_PICKUP_KEY; i++) { // Chỉ ví dụ đến SFX_PICKUP_KEY
             //     if (soundURL[i] == null && i != SFX_COIN /*ví dụ nếu coin.wav chưa có*/) {

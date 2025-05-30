@@ -68,6 +68,11 @@ public abstract class Monster extends Character {
 //        direction = gp.player.direction;
         onPath = true;
     }
+    public void damageReaction(Character attacker) {
+        actionLockCounter = 0;
+//        direction = gp.player.direction;
+        onPath = true;
+    }
 
     // Phương thức thả vật phẩm tại vị trí của quái vật
     protected void dropItem(WorldObject item) {
