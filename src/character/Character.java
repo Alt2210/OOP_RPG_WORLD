@@ -41,7 +41,7 @@ public abstract class Character {
     protected int defense;
     protected int attackRange;
     protected int attackCooldown; // Số frame cho đến khi được tấn công tiếp
-    protected final int ATTACK_COOLDOWN_DURATION = 30; // 0.5 giây tại 60 FPS
+    protected int ATTACK_COOLDOWN_DURATION; // 0.5 giây tại 60 FPS
     String name;
 
 

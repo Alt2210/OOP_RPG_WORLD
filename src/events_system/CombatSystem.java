@@ -24,10 +24,6 @@ public class CombatSystem {
             int defense = target.getDefense();
 
             double damageMultiplier = 1.0;
-            if (isAttackedFromBehind(attacker, target)) {
-                damageMultiplier = 1.5;
-                System.out.println("    " + target.getName() + " bị tấn công từ phía sau! Sát thương tăng 50%.");
-            }
 
             int actualDamage = (int) (Math.max(0, damage - defense) * damageMultiplier);
 

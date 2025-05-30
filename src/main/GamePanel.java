@@ -2,6 +2,7 @@ package main;
 
 import character.Character;
 import character.Player;
+import character.monster.MON_Bat;
 import character.monster.MON_GreenSlime;
 import character.monster.Monster;
 import tile.TileManager;
@@ -159,8 +160,12 @@ public class GamePanel extends JPanel implements Runnable {
         return npc;
     }
 
-    public Monster[] getMON_GreenSlime() {
+    public MON_GreenSlime[] getMON_GreenSlime() {
         return greenSlime;
+    }
+
+    public MON_Bat[] getMON_Bat() {
+        return bat;
     }
 
     private TileManager tileM = new TileManager(this);
@@ -173,6 +178,7 @@ public class GamePanel extends JPanel implements Runnable {
     private WorldObject wObjects[] = new WorldObject[10];
     private character.Character npc[] = new character.Character[10];
     private MON_GreenSlime[] greenSlime = new MON_GreenSlime[10];
+    private MON_Bat[] bat = new MON_Bat[10];
 
     public GamePanel() {
 
@@ -188,6 +194,7 @@ public class GamePanel extends JPanel implements Runnable {
         aSetter.setNPC();
         gameState = titleState;
         aSetter.setGreenSlime();
+        aSetter.setBat();
         playMusic(Sound.MUSIC_BACKGROUND);
         if (player != null) {
             player.setDefaultValues(); // << ĐÂY LÀ NƠI QUAN TRỌNG ĐỂ RESET PLAYER
@@ -279,6 +286,18 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
+            for (int i = 0; i < bat.length; i++) {
+                if (bat[i] != null) {
+                    if (bat[i].getCurrentHealth() > 0) {
+                        // MON_bat.update() sẽ gọi playerChasing() và sau đó super.update()
+                        // để Monster di chuyển và cập nhật trạng thái cơ bản.
+                        bat[i].update();
+                    } else {
+
+                    }
+                }
+            }
+
             // 4. XỬ LÝ HỆ THỐNG CHIẾN ĐẤU
             // Chỉ xử lý nếu Player còn sống
             if (player != null && player.getCurrentHealth() > 0) {
@@ -289,6 +308,14 @@ public class GamePanel extends JPanel implements Runnable {
                 combatSystem.handleMonsterCollisionAttack(player, greenSlime);
             }
 
+            if (player != null && player.getCurrentHealth() > 0) {
+                // 4a. Player chủ động nhấn nút tấn công Monster
+                combatSystem.checkPlayerMonsterCombat(player, bat);
+
+                // 4b. Monster tự động tấn công Player khi có va chạm trực tiếp
+                combatSystem.handleMonsterCollisionAttack(player, bat);
+            }
+
         } else if (gameState == pauseState) {
             // Logic cho trạng thái Pause
         } else if (gameState == victoryEndState) {
@@ -297,6 +324,8 @@ public class GamePanel extends JPanel implements Runnable {
             // Logic cho trạng thái Game Over
         }
         // Bạn có thể thêm các else if cho các trạng thái game khác nếu có
+
+
     }
 
     public void resetGameForNewSession() {
@@ -330,6 +359,12 @@ public class GamePanel extends JPanel implements Runnable {
             for (int i = 0; i < greenSlime.length; i++) { // Sử dụng mảng 'monster' mới
                 if (greenSlime[i] != null) {
                     greenSlime[i].draw(g2);
+                }
+            }
+
+            for (int i = 0; i < bat.length; i++) { // Sử dụng mảng 'monster' mới
+                if (bat[i] != null) {
+                    bat[i].draw(g2);
                 }
             }
             player.draw(g2);
