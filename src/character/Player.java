@@ -61,6 +61,7 @@ public class Player extends Character {
         currentHealth = maxHealth;
         attack = 10; // Giá trị tấn công của người chơi
         defense = 2; // Giá trị phòng thủ của người chơi
+        attackRange = 64;
         name = "Đạt đẹp trai";
     }
 
@@ -152,6 +153,27 @@ public class Player extends Character {
          g2.setColor(Color.red); // Đặt màu vẽ là đỏ
          g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height); // Vẽ hình chữ nhật
 
+        // Trong Player.draw
+        if (isAttacking()) {
+            g2.setColor(new Color(255, 0, 0, 100));
+            int centerX = screenX + gp.getTileSize() / 2;
+            int centerY = screenY + gp.getTileSize() / 2;
+            int range = attackRange;
+            switch (direction) {
+                case "right":
+                    g2.fillArc(centerX - range, centerY - range, range * 2, range * 2, -45, 90);
+                    break;
+                case "left":
+                    g2.fillArc(centerX - range, centerY - range, range * 2, range * 2, 135, 90);
+                    break;
+                case "down":
+                    g2.fillArc(centerX - range, centerY - range, range * 2, range * 2, 225, 90);
+                    break;
+                case "up":
+                    g2.fillArc(centerX - range, centerY - range, range * 2, range * 2, 45, 90);
+                    break;
+            }
+        }
 
     }
     // Sau khi chet
