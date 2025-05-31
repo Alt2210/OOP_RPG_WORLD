@@ -8,6 +8,7 @@ public class KeyHandler implements KeyListener {
     public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed; // Giữ lại enterPressed nếu bạn dùng cho tương tác khác
     public boolean attackPressed; // Biến theo dõi phím tấn công
     public boolean skill1Pressed; // Biến theo dõi phím kỹ năng 1
+
     public KeyHandler(GamePanel gp) {
         this.gp = gp;
     }
@@ -54,12 +55,24 @@ public class KeyHandler implements KeyListener {
                 }
             }
         } else if (gp.gameState == gp.playState) {
-            if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { upPressed = true; }
-            if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { downPressed = true; }
-            if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) { leftPressed = true; }
-            if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) { rightPressed = true; }
-            if (code == KeyEvent.VK_P) { gp.gameState = gp.pauseState; }
-            if (code == KeyEvent.VK_SPACE) { attackPressed = true; }
+            if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+                upPressed = true;
+            }
+            if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+                downPressed = true;
+            }
+            if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+                leftPressed = true;
+            }
+            if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+                rightPressed = true;
+            }
+            if (code == KeyEvent.VK_P) {
+                gp.gameState = gp.pauseState;
+            }
+            if (code == KeyEvent.VK_SPACE) {
+                attackPressed = true;
+            }
             if (code == KeyEvent.VK_ENTER) {
                 // enterPressed sẽ được Player.update() sử dụng nếu bạn quay lại logic "nhấn Enter để nói chuyện"
                 // Đối với logic "chạm để nói chuyện", cờ này không còn quá quan trọng cho việc bắt đầu hội thoại NPC
@@ -77,7 +90,9 @@ public class KeyHandler implements KeyListener {
                 // gp.gameState = gp.titleState; // Ví dụ: quay về màn hình chính
             }
         } else if (gp.gameState == gp.pauseState) {
-            if (code == KeyEvent.VK_P) { gp.gameState = gp.playState; }
+            if (code == KeyEvent.VK_P) {
+                gp.gameState = gp.playState;
+            }
         } else if (gp.gameState == gp.dialogueState) {
             if (code == KeyEvent.VK_ENTER) {
                 if (gp.getDialogueManager() != null) { // Không cần kiểm tra getInteractingNPC ở đây nữa
@@ -89,13 +104,17 @@ public class KeyHandler implements KeyListener {
                 gp.resetGameForNewSession();
                 gp.gameState = gp.titleState;
             }
-            if (code == KeyEvent.VK_ESCAPE) { System.exit(0); }
+            if (code == KeyEvent.VK_ESCAPE) {
+                System.exit(0);
+            }
         } else if (gp.gameState == gp.victoryEndState) {
             if (code == KeyEvent.VK_ENTER) {
                 gp.resetGameForNewSession();
                 gp.gameState = gp.titleState;
             }
-            if (code == KeyEvent.VK_ESCAPE) { System.exit(0); }
+            if (code == KeyEvent.VK_ESCAPE) {
+                System.exit(0);
+            }
         }
     }
 
@@ -121,10 +140,10 @@ public class KeyHandler implements KeyListener {
         }
         if (code == KeyEvent.VK_ENTER) {
             enterPressed = false;
-            if (code == KeyEvent.VK_U) {
-                skill1Pressed = false; // Đặt lại khi thả phím kỹ năng 1
-                // System.out.println("Skill 1 released: " + skill1Pressed);
-            }
+        }
+        if (code == KeyEvent.VK_U) {
+            skill1Pressed = false; // Đặt lại khi thả phím kỹ năng 1
+            // System.out.println("Skill 1 released: " + skill1Pressed);
         }
     }
 }
