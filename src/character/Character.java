@@ -39,8 +39,11 @@ public abstract class Character {
     protected int defaultSpeed;
     protected int attack;
     protected int defense;
+    protected int attackRange;
     protected int attackCooldown; // Số frame cho đến khi được tấn công tiếp
-    protected final int ATTACK_COOLDOWN_DURATION = 30; // 0.5 giây tại 60 FPS
+    protected int ATTACK_COOLDOWN_DURATION; // 0.5 giây tại 60 FPS
+    protected int maxMana;
+    protected int currentMana;
     String name;
 
 
@@ -59,6 +62,10 @@ public abstract class Character {
 
     public GamePanel getGp() {
         return gp;
+    }
+
+    public int getAttackRange() {
+        return attackRange;
     }
 
     public int getCenterX() {
@@ -102,7 +109,20 @@ public abstract class Character {
     public int getCurrentHealth() {
         return currentHealth;
     }
+    public int getMaxMana() {
+        return maxMana;
+    }
 
+    public int getCurrentMana() {
+        return currentMana;
+    }
+    public void setCurrentMana(int currentMana) {
+        this.currentMana = Math.max(0, Math.min(currentMana, maxMana));
+    }
+
+    public void spendMana(int amount) {
+        this.currentMana = Math.max(0, this.currentMana - amount);
+    }
     public void update() {
         collisionOn = false;
         gp.getcChecker().checkTile(this);

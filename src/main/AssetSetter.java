@@ -1,6 +1,7 @@
 package main;
 import character.*;
 import character.NPC_OldMan;
+import character.monster.MON_Bat;
 import character.monster.MON_GreenSlime;
 import character.monster.Monster;
 import item.Item_Key;
@@ -54,6 +55,25 @@ public class AssetSetter {
         gp.getMON_GreenSlime()[0] = new MON_GreenSlime(gp);
         gp.getMON_GreenSlime()[0].worldX = gp.getTileSize()*33;
         gp.getMON_GreenSlime()[0].worldY = gp.getTileSize()*33;
+
+        gp.getMON_GreenSlime()[1] = new MON_GreenSlime(gp);
+        gp.getMON_GreenSlime()[1].worldX = gp.getTileSize()*34;
+        gp.getMON_GreenSlime()[1].worldY = gp.getTileSize()*33;
+
+        gp.getMON_GreenSlime()[2] = new MON_GreenSlime(gp);
+        gp.getMON_GreenSlime()[2].worldX = gp.getTileSize()*35;
+        gp.getMON_GreenSlime()[2].worldY = gp.getTileSize()*33;
     }
+    public void setBat(){
+        gp.getMON_Bat()[0] = new MON_Bat(gp);
+        gp.getMON_Bat()[0].worldX = gp.getTileSize()*27;
+        gp.getMON_Bat()[0].worldY = gp.getTileSize()*33;
+
+        gp.getMON_Bat()[1] = new MON_Bat(gp);
+        gp.getMON_Bat()[1].worldX = gp.getTileSize()*26;
+        gp.getMON_Bat()[1].worldY = gp.getTileSize()*33;
+
+    }
+
 
 }

@@ -10,14 +10,11 @@ import java.awt.*;
 public class CombatSystem {
     private GamePanel gp;
 
-    // Khởi tạo CombatSystem với tham chiếu đến GamePanel
     public CombatSystem(GamePanel gp) {
         this.gp = gp;
     }
 
-    // Phương thức thực hiện tấn công từ attacker sang target
     public void performAttack(Character attacker, Character target) {
-        // Log khi phương thức được gọi
         System.out.println("[" + System.currentTimeMillis() + "] performAttack: " + attacker.getName() + " (hướng: " + attacker.direction + ") định tấn công " + target.getName() + " (hướng: " + target.direction + ")");
         System.out.println("    Attacker ("+ attacker.getName() +") canAttack: " + attacker.canAttack() + " (Cooldown: " + attacker.getAttackCooldown() + ")");
         System.out.println("    Target ("+ target.getName() +") currentHealth: " + target.getCurrentHealth());
@@ -25,13 +22,16 @@ public class CombatSystem {
         if (attacker.canAttack() && target.getCurrentHealth() > 0) {
             int damage = attacker.getAttack();
             int defense = target.getDefense();
-            int actualDamage = Math.max(0, damage - defense); // Sát thương thực tế không thể âm
+
+            double damageMultiplier = 1.0;
+
+            int actualDamage = (int) (Math.max(0, damage - defense) * damageMultiplier);
 
             System.out.println("    => CUỘC TẤN CÔNG XÁC NHẬN: " + attacker.getName() + " đánh " + target.getName());
-            System.out.println("        RawDamage=" + damage + ", TargetDefense=" + defense + ", ActualDamage=" + actualDamage);
+            System.out.println("        RawDamage=" + damage + ", TargetDefense=" + defense + ", DamageMultiplier=" + damageMultiplier + ", ActualDamage=" + actualDamage);
 
-            target.receiveDamage(damage, attacker); // Target nhận sát thương
-            attacker.resetAttackCooldown();         // Đặt lại cooldown cho attacker
+            target.receiveDamage(damage, attacker);
+            attacker.resetAttackCooldown();
 
             System.out.println("    " + attacker.getName() + " cooldown được đặt lại thành: " + attacker.getAttackCooldown());
             gp.getUi().showMessage(attacker.getName() + " gây " + actualDamage + " sát thương cho " + target.getName());
@@ -40,93 +40,169 @@ public class CombatSystem {
         }
     }
 
-    // Kiểm tra và xử lý chiến đấu giữa người chơi và quái vật
-    public void checkPlayerMonsterCombat(Player player, Monster[] monsters) {
-        // Log khi bắt đầu kiểm tra (có thể bỏ nếu quá nhiều log)
-        // System.out.println("[" + System.currentTimeMillis() + "] checkPlayerMonsterCombat: Bắt đầu cho Player " + player.getName());
+    private boolean isAttackedFromBehind(Character attacker, Character target) {
+        String attackerDir = attacker.direction;
+        String targetDir = target.direction;
 
-        // player là 'entity' đang được kiểm tra, monsters là mảng 'target'
-        // checkEntity kiểm tra xem bước đi *tiếp theo* của player có va chạm với monster nào không
-        int monsterIndex = gp.getcChecker().checkEntity(player, monsters);
+        switch (attackerDir) {
+            case "right":
+                return targetDir.equals("left");
+            case "left":
+                return targetDir.equals("right");
+            case "up":
+                return targetDir.equals("down");
+            case "down":
+                return targetDir.equals("up");
+            default:
+                return false;
+        }
+    }
 
-        // Log kết quả từ checkEntity (có thể bỏ nếu quá nhiều log)
-        // if (monsterIndex != 999) {
-        //     System.out.println("    checkEntity (player vs monster): Player (hướng: " + player.direction + ") có khả năng va chạm với " + monsters[monsterIndex].getName() + " (index: " + monsterIndex + ")");
-        // } else {
-        //     System.out.println("    checkEntity (player vs monster): Player (hướng: " + player.direction + ") không có khả năng va chạm với monster nào ở bước tiếp theo.");
-        // }
+    private boolean isWithinAttackRange(Character attacker, Character target) {
+        // Tính trung tâm của attacker và target
+        int attackerCenterX = attacker.worldX + attacker.solidArea.x + attacker.solidArea.width / 2;
+        int attackerCenterY = attacker.worldY + attacker.solidArea.y + attacker.solidArea.height / 2;
+        int targetCenterX = target.worldX + target.solidArea.x + target.solidArea.width / 2;
+        int targetCenterY = target.worldY + target.solidArea.y + target.solidArea.height / 2;
 
+        // Tính khoảng cách giữa hai trung tâm
+        double distance = Math.sqrt(Math.pow(attackerCenterX - targetCenterX, 2) + Math.pow(attackerCenterY - targetCenterY, 2));
 
-        if (monsterIndex != 999) { // Nếu bước đi tiếp theo của player sẽ va chạm với một monster
-            Monster monster = monsters[monsterIndex];
-            System.out.println("[" + System.currentTimeMillis() + "] checkPlayerMonsterCombat: Player (hướng: " + player.direction + ") định di chuyển vào " + monster.getName() + " (hướng: " + monster.direction + ", HP: " + monster.getCurrentHealth() + ")");
+        // Nếu khoảng cách vượt quá attackRange, không cần kiểm tra thêm
+        if (distance > attacker.getAttackRange()) {
+            return false;
+        }
 
-            if (gp.getKeyH().attackPressed && player.canAttack()) { // Nếu player nhấn nút tấn công VÀ có thể tấn công (không trong cooldown)
-                System.out.println("    Player chủ động tấn công " + monster.getName());
-                performAttack(player, monster);
-                if (monster.getCurrentHealth() <= 0) {
-                    System.out.println("    " + monster.getName() + " đã bị Player đánh bại.");
-                    monsters[monsterIndex] = null; // Loại bỏ monster khỏi mảng (hoặc đánh dấu là đã chết)
+        // Tính góc giữa attacker và target
+        double angle = Math.toDegrees(Math.atan2(targetCenterY - attackerCenterY, targetCenterX - attackerCenterX));
+        if (angle < 0) angle += 360;
+
+        // THAY ĐỔI: Kiểm tra khu vực hình quạt chặt chẽ hơn
+        boolean isInDirection = false;
+        double fanAngle = 90; // Góc mở của hình quạt (90 độ)
+        double startAngle, endAngle;
+
+        switch (attacker.direction) {
+            case "right":
+                startAngle = 315; // 0 - 45 độ
+                endAngle = 45;
+                isInDirection = angle >= startAngle || angle <= endAngle;
+                break;
+            case "left":
+                startAngle = 135; // 135 - 225 độ
+                endAngle = 225;
+                isInDirection = angle >= startAngle && angle <= endAngle;
+                break;
+            case "up":
+                startAngle = 225; // 225 - 315 độ
+                endAngle = 315;
+                isInDirection = angle >= startAngle && angle <= endAngle;
+                break;
+            case "down":
+                startAngle = 45; // 45 - 135 độ
+                endAngle = 135;
+                isInDirection = angle >= startAngle && angle <= endAngle;
+                break;
+            default:
+                startAngle = 0;
+                endAngle = 0;
+                isInDirection = false;
+        }
+
+        // THÊM MỚI: Kiểm tra xem solidArea của target có giao với khu vực hình quạt không
+        boolean isInFanShape = false;
+        if (isInDirection) {
+            // Tính các điểm của solidArea của target
+            int targetLeft = target.worldX + target.solidArea.x;
+            int targetRight = targetLeft + target.solidArea.width;
+            int targetTop = target.worldY + target.solidArea.y;
+            int targetBottom = targetTop + target.solidArea.height;
+
+            // Kiểm tra từng góc của solidArea của target
+            int[][] targetCorners = new int[][] {
+                    {targetLeft, targetTop},    // Góc trên-trái
+                    {targetRight, targetTop},   // Góc trên-phải
+                    {targetLeft, targetBottom}, // Góc dưới-trái
+                    {targetRight, targetBottom} // Góc dưới-phải
+            };
+
+            for (int[] corner : targetCorners) {
+                double cornerAngle = Math.toDegrees(Math.atan2(corner[1] - attackerCenterY, corner[0] - attackerCenterX));
+                if (cornerAngle < 0) cornerAngle += 360;
+                double cornerDistance = Math.sqrt(Math.pow(corner[0] - attackerCenterX, 2) + Math.pow(corner[1] - attackerCenterY, 2));
+
+                boolean cornerInDirection = false;
+                if (attacker.direction.equals("right")) {
+                    cornerInDirection = cornerAngle >= startAngle || cornerAngle <= endAngle;
+                } else {
+                    cornerInDirection = cornerAngle >= startAngle && cornerAngle <= endAngle;
                 }
-            } else if (monster.canAttack()) { // Nếu player KHÔNG chủ động tấn công, NHƯNG monster có thể tấn công (không trong cooldown)
-                // Đây là trường hợp "monster phản công" khi player đi vào.
-                System.out.println("    Player di chuyển vào " + monster.getName() + ". Monster (cooldown: " + monster.getAttackCooldown() + ") thực hiện phản công.");
-                performAttack(monster, player); // Monster tấn công Player
-            } else if (!monster.canAttack()){ // Player di chuyển vào nhưng monster đang cooldown
-                System.out.println("    Player di chuyển vào " + monster.getName() + ". Monster (cooldown: " + monster.getAttackCooldown() + ") KHÔNG THỂ phản công (đang cooldown).");
+
+                if (cornerDistance <= attacker.getAttackRange() && cornerInDirection) {
+                    isInFanShape = true;
+                    break;
+                }
+            }
+        }
+
+
+        return distance <= attacker.getAttackRange() && isInFanShape;
+    }
+
+    public void checkPlayerMonsterCombat(Player player, Monster[] monsters) {
+        if (player == null || player.getCurrentHealth() <= 0) {
+            return;
+        }
+
+        if (gp.getKeyH().attackPressed && player.canAttack()) {
+            for (int i = 0; i < monsters.length; i++) {
+                Monster monster = monsters[i];
+                if (monster != null && monster.getCurrentHealth() > 0) {
+                    if (isWithinAttackRange(player, monster)) {
+                        System.out.println("[" + System.currentTimeMillis() + "] checkPlayerMonsterCombat: Player tấn công " + monster.getName() + " trong tầm đánh hình quạt.");
+                        performAttack(player, monster);
+                        if (monster.getCurrentHealth() <= 0) {
+                            System.out.println("    " + monster.getName() + " đã bị Player đánh bại.");
+                            monsters[i] = null;
+                        }
+                        break;
+                    }
+                }
+            }
+        } else {
+            int monsterIndex = gp.getcChecker().checkEntity(player, monsters);
+            if (monsterIndex != 999) {
+                Monster monster = monsters[monsterIndex];
+                System.out.println("[" + System.currentTimeMillis() + "] checkPlayerMonsterCombat: Player (hướng: " + player.direction + ") định di chuyển vào " + monster.getName() + " (hướng: " + monster.direction + ", HP: " + monster.getCurrentHealth() + ")");
+
+                if (monster.canAttack()) {
+                    System.out.println("    Player di chuyển vào " + monster.getName() + ". Monster (cooldown: " + monster.getAttackCooldown() + ") thực hiện phản công.");
+                    performAttack(monster, player);
+                } else {
+                    System.out.println("    Player di chuyển vào " + monster.getName() + ". Monster (cooldown: " + monster.getAttackCooldown() + ") KHÔNG THỂ phản công (đang cooldown).");
+                }
             }
         }
     }
 
     public void handleMonsterCollisionAttack(Player player, Monster[] monsters) {
         if (player == null || player.getCurrentHealth() <= 0) {
-            // System.out.println("[" + System.currentTimeMillis() + "] handleMonsterCollisionAttack: Bỏ qua vì Player null hoặc đã hết máu.");
             return;
         }
 
-        Rectangle playerBounds = new Rectangle(
-                player.worldX + player.solidArea.x,
-                player.worldY + player.solidArea.y,
-                player.solidArea.width,
-                player.solidArea.height
-        );
-
         for (Monster monster : monsters) {
             if (monster != null && monster.getCurrentHealth() > 0) {
-                Rectangle monsterBounds = new Rectangle(
-                        monster.worldX + monster.solidArea.x,
-                        monster.worldY + monster.solidArea.y,
-                        monster.solidArea.width,
-                        monster.solidArea.height
-                );
-                int collisionTolerance = 1; // Hoặc 0 nếu bạn muốn chạm chính xác
-                boolean collisionOccurs = gp.getcChecker().areRectsNearlyColliding(playerBounds, monsterBounds, collisionTolerance);
-
-                // Log thông tin bounds và hướng của cả hai
-//                System.out.println("[" + System.currentTimeMillis() + "] handleMonsterCollisionAttack - KIỂM TRA TRỰC TIẾP: " + monster.getName() + " vs " + player.getName());
-//                System.out.println("    Player dir: " + player.direction + ", Monster dir: " + monster.direction);
-//                System.out.println("    Player Bounds: X=" + playerBounds.x + ", Y=" + playerBounds.y + ", W=" + playerBounds.width + ", H=" + playerBounds.height + " (Player worldX: " + player.worldX + ", worldY: " + player.worldY + ")");
-//                System.out.println("    Monster Bounds: X=" + monsterBounds.x + ", Y=" + monsterBounds.y + ", W=" + monsterBounds.width + ", H=" + monsterBounds.height + " (Monster worldX: " + monster.worldX + ", worldY: " + monster.worldY + ")");
-
-                //boolean collisionOccurs = playerBounds.intersects(monsterBounds);
-              //  System.out.println("    Va chạm thực tế (intersects): " + collisionOccurs);
-
-                if (collisionOccurs) {
-//                    System.out.println("    -> VA CHẠM ĐƯỢC PHÁT HIỆN giữa " + player.getName() + " và " + monster.getName());
-//                    System.out.println("    -> Kiểm tra " + monster.getName() + " có thể tấn công không. Cooldown: " + monster.getAttackCooldown());
-
-                    if (monster.canAttack()) { // Kiểm tra monster có thể tấn công không
-                        //System.out.println("    -> " + monster.getName() + " CÓ THỂ tấn công. Gọi performAttack.");
-                        performAttack(monster, player); // Monster tấn công Player
+                if (isWithinAttackRange(monster, player)) {
+                    if (monster.canAttack()) {
+                        System.out.println("[" + System.currentTimeMillis() + "] handleMonsterCollisionAttack: " + monster.getName() + " tấn công Player trong tầm đánh hình quạt.");
+                        performAttack(monster, player);
                         if (player.getCurrentHealth() <= 0) {
-                           // System.out.println("    -> Player " + player.getName() + " đã bị " + monster.getName() + " đánh bại sau va chạm trực tiếp.");
-                            break; // Thoát vòng lặp nếu player đã chết
+                            break;
                         }
                     } else {
-                      //  System.out.println("    -> " + monster.getName() + " KHÔNG THỂ tấn công (cooldown: " + monster.getAttackCooldown() + ").");
+                        System.out.println("    " + monster.getName() + " KHÔNG THỂ tấn công (cooldown: " + monster.getAttackCooldown() + ").");
                     }
                 }
-                // System.out.println("    ---- Kết thúc kiểm tra với " + monster.getName() + " ----"); // Phân tách log cho từng monster nếu cần
             }
         }
     }
