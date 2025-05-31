@@ -169,27 +169,48 @@ public class Fireball extends Projectile {
         }
 
         // Kiểm tra va chạm với quái vật (nếu caster là Player)
-        if (caster instanceof character.Player) { // Đảm bảo import character.Player
-            for (Monster monster : gp.getMON_GreenSlime()) { // Lấy danh sách quái vật từ GamePanel
-                if (monster != null && monster.getCurrentHealth() > 0) {
-                    // Cập nhật vị trí solidArea của fireball và monster cho kiểm tra chính xác
-                    this.solidArea.x = worldX;
-                    this.solidArea.y = worldY;
-
-                    monster.solidArea.x = monster.worldX + monster.solidAreaDefaultX;
-                    monster.solidArea.y = monster.worldY + monster.solidAreaDefaultY;
-
-                    if (this.solidArea.intersects(monster.solidArea)) {
-                        // gp.getUi().showMessage("Fireball hit " + monster.getName()); // Debug
-                        monster.receiveDamage(this.damage, this.caster);
-                        // Phát âm thanh va chạm (nếu có)
-                        gp.playSoundEffect(Sound.SFX_FIREBALL_HIT);
-                        this.alive = false; // Fireball biến mất sau khi trúng mục tiêu
-                        return;
-                    }
-                }
-            }
-        }
+//        if (caster instanceof character.Player) { // Đảm bảo import character.Player
+//            for (Monster monster : gp.getMON_GreenSlime()) { // Lấy danh sách quái vật từ GamePanel
+//                if (monster != null && monster.getCurrentHealth() > 0) {
+//                    // Cập nhật vị trí solidArea của fireball và monster cho kiểm tra chính xác
+//                    this.solidArea.x = worldX;
+//                    this.solidArea.y = worldY;
+//
+//                    monster.solidArea.x = monster.worldX + monster.solidAreaDefaultX;
+//                    monster.solidArea.y = monster.worldY + monster.solidAreaDefaultY;
+//
+//                    if (this.solidArea.intersects(monster.solidArea)) {
+//                        // gp.getUi().showMessage("Fireball hit " + monster.getName()); // Debug
+//                        gp.getCombatSystem().handleProjectileHit(this, monster);
+//                        //monster.receiveDamage(this.damage, this.caster);
+//                        // Phát âm thanh va chạm (nếu có)
+//                        gp.playSoundEffect(Sound.SFX_FIREBALL_HIT);
+//                        this.alive = false; // Fireball biến mất sau khi trúng mục tiêu
+//                        return;
+//                    }
+//                }
+//            }
+//            for (Monster batMonster : gp.getMON_Bat()) {
+//                if (batMonster != null && batMonster.getCurrentHealth() > 0) {
+//                    // Cập nhật vị trí solidArea của fireball và batMonster cho kiểm tra chính xác
+//                    this.solidArea.x = worldX;
+//                    this.solidArea.y = worldY;
+//
+//                    batMonster.solidArea.x = batMonster.worldX + batMonster.solidAreaDefaultX;
+//                    batMonster.solidArea.y = batMonster.worldY + batMonster.solidAreaDefaultY;
+//
+//                    if (this.solidArea.intersects(batMonster.solidArea)) {
+//                        // gp.getUi().showMessage("Fireball hit " + batMonster.getName()); // Debug
+//                        gp.getCombatSystem().handleProjectileHit(this, batMonster);
+//                        batMonster.receiveDamage(this.damage, this.caster); // Gây sát thương cho MON_Bat
+//                        // Phát âm thanh va chạm (nếu có)
+//                        //gp.playSoundEffect(Sound.SFX_FIREBALL_HIT);
+//                        this.alive = false; // Fireball biến mất sau khi trúng mục tiêu
+//                        return; // Thoát khỏi phương thức update sau khi xử lý va chạm
+//                    }
+//                }
+//            }
+//        }
         // (Tùy chọn) Kiểm tra va chạm với Player nếu caster là Monster (chưa làm ở đây)
 
         // Kiểm tra tầm bay tối đa

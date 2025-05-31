@@ -183,7 +183,7 @@ public class Player extends Character {
                     break;
             }
 
-            fireball.set(fireballSpawnCenterX, fireballSpawnCenterY, this.direction, this, this.attack * 2); // Sát thương fireball có thể tùy chỉnh
+            fireball.set(fireballSpawnCenterX, fireballSpawnCenterY, this.direction, this, this.attack * 4); // Sát thương fireball có thể tùy chỉnh
             gp.projectiles.add(fireball);
         }
 

@@ -4,6 +4,8 @@ import character.Character;
 import character.Player;
 import character.monster.Monster;
 import main.GamePanel;
+import projectile.Projectile;
+import sound.Sound;
 
 import java.awt.*;
 
@@ -37,6 +39,72 @@ public class CombatSystem {
             gp.getUi().showMessage(attacker.getName() + " gây " + actualDamage + " sát thương cho " + target.getName());
         } else {
             System.out.println("    => CUỘC TẤN CÔNG BỊ HỦY: Attacker không thể tấn công (cooldown: " + attacker.getAttackCooldown() + ") hoặc Target đã hết máu (HP: " + target.getCurrentHealth() + ").");
+        }
+    }
+    public void processProjectileImpacts(Projectile projectile) {
+        if (projectile == null || !projectile.isAlive() || projectile.getCaster() == null) {
+            return;
+        }
+        // Chỉ xử lý nếu người bắn là Player (để gây sát thương cho Monster)
+        // Nếu bạn muốn Monster cũng bắn projectile trúng Player, bạn cần mở rộng logic này
+        if (!(projectile.getCaster() instanceof Player)) {
+            return;
+        }
+
+        // Vùng va chạm của projectile (đã được cập nhật trong projectile.update() dựa trên worldX, worldY)
+        Rectangle projectileBounds = new Rectangle(
+                projectile.worldX + projectile.solidArea.x, // Giả sử solidArea.x/y là offset so với worldX/Y
+                projectile.worldY + projectile.solidArea.y,
+                projectile.solidArea.width,
+                projectile.solidArea.height
+        );
+
+        // Tạo một danh sách tạm thời chứa tất cả quái vật còn sống để duyệt
+        // Hoặc bạn có thể duyệt qua từng mảng quái vật riêng biệt như trong checkPlayerMonsterCombat
+        Monster[] allMonstersToCheck[] = {
+                gp.getMON_GreenSlime(),
+                gp.getMON_Bat()
+                // Thêm các mảng quái vật khác ở đây nếu có
+        };
+
+        for (Monster[] monsterArray : allMonstersToCheck) {
+            if (monsterArray == null) continue;
+
+            for (int i = 0; i < monsterArray.length; i++) {
+                Monster monster = monsterArray[i];
+                if (monster != null && monster.getCurrentHealth() > 0) {
+                    Rectangle monsterBounds = new Rectangle(
+                            monster.worldX + monster.solidAreaDefaultX,
+                            monster.worldY + monster.solidAreaDefaultY,
+                            monster.solidArea.width,
+                            monster.solidArea.height
+                    );
+
+                    if (projectileBounds.intersects(monsterBounds)) {
+                        // ĐÃ TRÚNG MỤC TIÊU!
+                        System.out.println("[" + System.currentTimeMillis() + "] CombatSystem.processProjectileImpacts: " +
+                                projectile.getCaster().getName() + "'s projectile trúng " + monster.getName());
+
+                        int projectileDamageValue = projectile.getDamageValue();
+                        int actualDamageDealt = monster.receiveDamage(projectileDamageValue, projectile.getCaster());
+
+                        gp.getUi().showMessage(projectile.getCaster().getName() + " bắn trúng " +
+                                monster.getName() + " gây " + actualDamageDealt + " sát thương!");
+
+                        gp.playSoundEffect(Sound.SFX_FIREBALL_HIT); // Âm thanh trúng
+                        projectile.setAlive(false); // Projectile biến mất sau khi trúng
+
+                        if (monster.getCurrentHealth() <= 0) {
+                            System.out.println("    " + monster.getName() + " đã bị projectile đánh bại.");
+                            // GamePanel sẽ chịu trách nhiệm loại bỏ monster khỏi mảng (ví dụ: đặt thành null)
+                            // trong vòng lặp cập nhật quái vật của nó, sau khi kiểm tra currentHealth.
+                            // Hoặc, bạn có thể có một cơ chế sự kiện ở đây.
+                            monsterArray[i] = null;
+                        }
+                        return; // Projectile chỉ trúng một mục tiêu rồi biến mất
+                    }
+                }
+            }
         }
     }
 
