@@ -63,7 +63,7 @@ public class MON_GreenSlime extends Monster {
 
                 drawHealthBar(g2, screenX, screenY);
             g2.setColor(Color.RED); // Hoặc một màu khác để phân biệt
-// screenX và screenY là tọa độ vẽ của sprite trên màn hình
+            // screenX và screenY là tọa độ vẽ của sprite trên màn hình
             g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
         }
     }
@@ -97,7 +97,7 @@ public class MON_GreenSlime extends Monster {
                 // Nếu tìm thấy đường đi, pathFinder.pathList sẽ chứa các Node
                 // Lấy Node tiếp theo trên đường đi
                 if (!pathFinder.pathList.isEmpty()) {
-                    Node nextNode = pathFinder.pathList.get(0); // Node đầu tiên trong path là điểm đến tiếp theo
+                    Node nextNode = pathFinder.pathList.getFirst(); // Node đầu tiên trong path là điểm đến tiếp theo
                     int nextX = nextNode.col * gp.getTileSize();
                     int nextY = nextNode.row * gp.getTileSize();
 
@@ -110,11 +110,11 @@ public class MON_GreenSlime extends Monster {
                         // Nếu không di chuyển chính xác đến tile tiếp theo trong 1 frame:
                         // else if (worldY > nextY && worldX > nextX) direction = "up-left"; // Cần xử lý sprite và di chuyển
                         // ...
-                    else {
+                    //else {
                         // Nếu không thể xác định hướng rõ ràng (ví dụ đã ở rất gần nextNode)
                         // hoặc nếu nextNode chính là currentNode (hiếm khi xảy ra nếu pathList > 0)
                         // Có thể giữ nguyên hướng cũ hoặc dừng lại một chút
-                    }
+                    //}
                 } else {
                     // pathList rỗng mặc dù search() trả về true (có thể goalNode = startNode)
                     // Hoặc không còn node nào trong pathList (đã đến đích)
@@ -144,12 +144,13 @@ public class MON_GreenSlime extends Monster {
         onPath = true;
     }
     @Override
-    public void receiveDamage(int damage, Character attacker) {
+    public int receiveDamage(int damage, Character attacker) {
         super.receiveDamage(damage, attacker); // Gọi Character.receiveDamage() để giảm máu và kiểm tra onDeath
 
         if (this.currentHealth > 0) { // Nếu quái vật vẫn còn sống sau khi nhận sát thương
             this.damageReaction(attacker);    // Gọi phản ứng sát thương của nó
         }
+        return damage; // Trả về sát thương đã nhận
     }
     @Override
     public void update(){
@@ -164,7 +165,7 @@ public class MON_GreenSlime extends Monster {
 
     public void checkDrop() {
         // CAST A DIE
-        int i = new Random().nextInt(100) + 1;
+        //int i = new Random().nextInt(100) + 1;
 
         // SET THE MONSTER DROP
         /*if (i < 50) {

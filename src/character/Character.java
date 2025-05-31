@@ -181,12 +181,13 @@ public abstract class Character {
         }
     }
 
-    public void receiveDamage(int damage, Character attacker) {
+    public int receiveDamage(int damage, Character attacker) {
         int actualDamage = Math.max(0, damage - defense);
         currentHealth = Math.max(0, currentHealth - actualDamage);
         if (currentHealth <= 0) {
             onDeath(attacker);
         }
+        return actualDamage;
     }
 
     protected void onDeath(Character attacker) {
