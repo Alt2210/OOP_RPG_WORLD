@@ -34,6 +34,8 @@ public class MON_GreenSlime extends Monster {
         defense = 0;
         exp = 2;
         ATTACK_COOLDOWN_DURATION = 30;
+        contactDamageAmount = 3;
+
 
         solidArea.x = 3;
         solidArea.y = 18;
@@ -90,7 +92,7 @@ public class MON_GreenSlime extends Monster {
             goalCol = Math.max(0, Math.min(goalCol, gp.getMaxWorldCol() - 1));
             goalRow = Math.max(0, Math.min(goalRow, gp.getMaxWorldRow() - 1));
             // Thiết lập các node cho PathFinder
-            pathFinder.setNodes(currentMonsterCol, currentMonsterRow, goalCol, goalRow, this);
+             pathFinder.setNodes(currentMonsterCol, currentMonsterRow, goalCol, goalRow, this);
 
             // Tìm kiếm đường đi
             if (pathFinder.search()) {

@@ -84,23 +84,28 @@ public class MON_Bat extends Monster {
             } else {
                 // Nếu đụng tường, dừng lướt ngay lập tức
                 isDashing = false;
-                // Có thể thêm âm thanh hoặc hiệu ứng khi Bat đụng tường ở đây
-                // gp.playSoundEffect(Sound.BAT_HIT_WALL_SOUND);
-            }
+                }
 
             // 3. KIỂM TRA VA CHẠM VỚI PLAYER ĐỂ GÂY SÁT THƯƠNG (NẾU CHƯA DỪNG LƯỚT VÌ ĐỤNG TƯỜNG)
             if (isDashing) { // Kiểm tra lại vì có thể isDashing đã bị set false do đụng tường
                 Player player = gp.getPlayer();
                 // Tạo một Rectangle tạm thời cho vùng va chạm của Bat tại vị trí hiện tại
                 // để kiểm tra với solidArea của Player.
-                Rectangle batCurrentSolidArea = new Rectangle(worldX + solidArea.x, worldY + solidArea.y, solidArea.width, solidArea.height);
+                Rectangle batAttackCheckArea = new Rectangle(
+                        worldX + solidArea.x,
+                        worldY + solidArea.y,
+                        solidArea.width,
+                        solidArea.height
+                );
+                int attackReachPadding = 2; // Ví dụ: thêm 2 pixel "tầm với"
+                batAttackCheckArea.grow(attackReachPadding, attackReachPadding); // Mở rộng về mọi phía
 
-                if (!hasDamagedPlayerThisDash && batCurrentSolidArea.intersects(player.solidArea)) {
-                    int dashAttackPower = this.attack + 2; // Ví dụ: Sát thương lướt mạnh hơn đánh thường
-                    player.receiveDamage(dashAttackPower, this); //
-                    gp.getUi().showMessage(getName() + " lướt trúng " + player.getName() + "!"); //
-                    hasDamagedPlayerThisDash = true; // Đánh dấu đã gây sát thương trong cú lướt này
-
+                if (!hasDamagedPlayerThisDash && batAttackCheckArea.intersects(player.solidArea)) {
+                    int dashAttackPower = this.attack + 2; // Ví dụ
+                    player.receiveDamage(dashAttackPower, this);
+                    gp.getUi().showMessage(getName() + " lướt trúng " + player.getName() + "!");
+                    hasDamagedPlayerThisDash = true;
+                    // isDashing = false; // Cân nhắc dừng lướt sau khi trúng để tránh đa sát thương
                 }
             }
 

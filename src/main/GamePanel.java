@@ -335,7 +335,7 @@ public class GamePanel extends JPanel implements Runnable {
                 combatSystem.checkPlayerMonsterCombat(player, greenSlime);
 
                 // 4b. Monster tự động tấn công Player khi có va chạm trực tiếp
-                combatSystem.handleMonsterCollisionAttack(player, greenSlime);
+                //combatSystem.handleMonsterCollisionAttack(player, greenSlime);
             }
 
             if (player != null && player.getCurrentHealth() > 0) {
