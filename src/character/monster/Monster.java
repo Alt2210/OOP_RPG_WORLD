@@ -48,6 +48,9 @@ public abstract class Monster extends Character {
         super.update(); // Gọi logic update của lớp Character (di chuyển, animation, cooldown)
         updateContactDamageCooldown();
     }
+
+    public abstract void playerChasing();
+
     public void checkStartChasingOrNot(Character target, int distance, int rate) {
         if (getTileDistance(target) < distance) {
             int i = new Random().nextInt(rate);

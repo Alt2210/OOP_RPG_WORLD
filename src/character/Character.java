@@ -166,7 +166,7 @@ public abstract class Character {
         double healthPercent = (double) currentHealth / maxHealth;
         int healthBarWidth = (int) (barWidth * healthPercent);
 
-        if (currentHealth <= maxHealth && currentHealth > 0) { // Ví dụ: chỉ hiện khi bị mất máu hoặc còn máu
+        if (currentHealth < maxHealth && currentHealth > 0) { // Ví dụ: chỉ hiện khi bị mất máu hoặc còn máu
             // Vẽ viền thanh máu
             g2.setColor(Color.BLACK);
             g2.drawRect(x, y, barWidth, barHeight);
