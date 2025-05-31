@@ -59,8 +59,8 @@ public class Player extends Character {
     @Override // Sử dụng annotation @Override là một cách tốt để kiểm tra lỗi nếu phương thức ở lớp cha bị đổi tên hoặc xóa.
     public void setDefaultValues() {
 
-        worldX = gp.getTileSize() * 30; // Ví dụ: Bắt đầu ở cột 30
-        worldY = gp.getTileSize() * 30; // Ví dụ: Bắt đầu ở hàng 30
+        worldX = gp.getTileSize() * 10; // Ví dụ: Bắt đầu ở cột 30
+        worldY = gp.getTileSize() * 20; // Ví dụ: Bắt đầu ở hàng 30
         speed = 4; // Tốc độ di chuyển của Player
         direction = "down"; // Hướng ban đầu của Player khi game bắt đầu
         hasKey=0; // ms vao k co key

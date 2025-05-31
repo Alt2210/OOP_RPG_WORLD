@@ -3,12 +3,18 @@ package character.monster;
 import character.Character;
 import character.Player;
 import main.GamePanel;
+import projectile.Projectile;
+import projectile.Slimeball;
+import sound.Sound;
 import ai.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class MON_GreenSlime extends Monster {
+    private int projectileCooldown;
+    private final int PROJECTILE_COOLDOWN_DURATION = 60 * 5; // 5 giây (60 FPS * 5 giây)
+    private final int SHOOTING_RANGE_TILES = 7; // Slime sẽ bắn nếu Player trong phạm vi 7 ô
 
     public MON_GreenSlime(GamePanel gp) {
         super(gp);
@@ -46,7 +52,61 @@ public class MON_GreenSlime extends Monster {
 
         cip.getImage("/monster", "greenslime");
     }
+    private String getDirectionToTarget(Character target) {
+        if (target == null) return this.direction; // Giữ hướng cũ nếu không có mục tiêu
 
+        int targetCenterX = target.worldX + target.solidArea.x + target.solidArea.width / 2;
+        int targetCenterY = target.worldY + target.solidArea.y + target.solidArea.height / 2;
+        int selfCenterX = this.worldX + this.solidArea.x + this.solidArea.width / 2;
+        int selfCenterY = this.worldY + this.solidArea.y + this.solidArea.height / 2;
+
+        int dx = targetCenterX - selfCenterX;
+        int dy = targetCenterY - selfCenterY;
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+            return (dx > 0) ? "right" : "left";
+        } else {
+            return (dy > 0) ? "down" : "up";
+        }
+    }
+
+    public void attemptToShoot() {
+        if (projectileCooldown > 0) {
+            projectileCooldown--;
+            return;
+        }
+
+        Player player = gp.getPlayer();
+        // Chỉ bắn nếu player tồn tại, còn sống và trong tầm bắn
+        if (player != null && player.getCurrentHealth() > 0 && getTileDistance(player) <= SHOOTING_RANGE_TILES) {
+
+            String shootingDirection = getDirectionToTarget(player);
+            this.direction = shootingDirection; // Slime quay mặt về phía Player khi bắn
+
+            Slimeball slimeball = new Slimeball(gp);
+            int projectileDamage = this.attack; // Sát thương của slimeball, có thể điều chỉnh (vd: this.attack / 2)
+
+            // Điểm bắt đầu của projectile (ví dụ: từ giữa Slime)
+            int spawnX = this.worldX + this.solidArea.x + this.solidArea.width / 2;
+            int spawnY = this.worldY + this.solidArea.y + this.solidArea.height / 2;
+
+            // Dịch chuyển điểm spawn ra ngoài solidArea của Slime một chút theo hướng bắn
+            int offsetDistance = gp.getTileSize() / 2;
+            switch(shootingDirection) {
+                case "up": spawnY -= offsetDistance; break;
+                case "down": spawnY += offsetDistance; break;
+                case "left": spawnX -= offsetDistance; break;
+                case "right": spawnX += offsetDistance; break;
+            }
+
+            slimeball.set(spawnX, spawnY, shootingDirection, this, projectileDamage);
+            gp.projectiles.add(slimeball);
+
+            projectileCooldown = PROJECTILE_COOLDOWN_DURATION; // Reset cooldown
+            // gp.playSoundEffect(Sound.SFX_SLIME_SHOOT); // Thêm âm thanh nếu có
+            System.out.println(getName() + " bắn Slimeball về phía Player!");
+        }
+    }
     @Override
     public void draw(Graphics2D g2) {
         BufferedImage image = cip.getCurFrame(); // Lấy frame hiện tại từ lớp Character
@@ -156,6 +216,7 @@ public class MON_GreenSlime extends Monster {
     }
     @Override
     public void update(){
+        attemptToShoot(); // Thử bắn projectile
         this.playerChasing();
         super.update();
     }
