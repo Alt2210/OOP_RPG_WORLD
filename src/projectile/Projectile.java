@@ -24,13 +24,30 @@ public abstract class Projectile {
         this.gp = gp;
     }
 
+    public int getDamageValue() { // Đổi tên từ getDamage() để tránh trùng nếu có trong lớp con cụ thể với ý nghĩa khác
+        return damage;
+    }
+
+    public Character getCaster() {
+        return caster;
+    }
+
+    public boolean isAlive() { // Thêm getter cho trạng thái alive
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
     /**
      * Thiết lập các giá trị ban đầu cho projectile.
-     * @param worldX Tọa độ X ban đầu (thường là trung tâm của caster).
-     * @param worldY Tọa độ Y ban đầu.
+     *
+     * @param worldX    Tọa độ X ban đầu (thường là trung tâm của caster).
+     * @param worldY    Tọa độ Y ban đầu.
      * @param direction Hướng bay.
-     * @param caster Nhân vật bắn ra.
-     * @param damage Sát thương gây ra.
+     * @param caster    Nhân vật bắn ra.
+     * @param damage    Sát thương gây ra.
      */
     public abstract void set(int worldX, int worldY, String direction, Character caster, int damage);
 
@@ -41,12 +58,14 @@ public abstract class Projectile {
 
     /**
      * Vẽ projectile lên màn hình.
+     *
      * @param g2 Đối tượng Graphics2D để vẽ.
      */
     public abstract void draw(Graphics2D g2);
 
     /**
      * Kiểm tra va chạm của projectile (tại một điểm x,y cụ thể, thường là tâm hoặc điểm đầu) với các tile cứng.
+     *
      * @param checkX Tọa độ X để kiểm tra.
      * @param checkY Tọa độ Y để kiểm tra.
      * @return true nếu có va chạm, false nếu không.

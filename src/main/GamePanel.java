@@ -313,11 +313,17 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             // Cập nhật projectiles
-            for (int i = projectiles.size() - 1; i >= 0; i--) { // Duyệt ngược để xóa an toàn
+            for (int i = projectiles.size() - 1; i >= 0; i--) {
                 Projectile p = projectiles.get(i);
-                if (p.alive) {
-                    p.update();
-                } else {
+                if (p.isAlive()) { // Sử dụng getter
+                    p.update(); // Projectile tự cập nhật vị trí, animation, va chạm tile, tầm xa
+
+                    if (p.isAlive()) { // Nếu projectile vẫn còn sống sau các kiểm tra riêng của nó
+                        combatSystem.processProjectileImpacts(p); // CombatSystem kiểm tra va chạm với quái vật
+                    }
+                }
+
+                if (!p.isAlive()) { // Nếu projectile không còn sống (do va chạm tile, tầm xa, hoặc trúng quái vật)
                     projectiles.remove(i);
                 }
             }
