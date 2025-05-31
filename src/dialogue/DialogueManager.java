@@ -14,8 +14,12 @@ public class DialogueManager {
     }
 
     public void startDialogue(DialogueSpeaker speaker, Dialogue dialogue) {
+        if (gp.gameState == gp.dialogueState && this.currentSpeaker == speaker && this.currentDialogue == dialogue) {
+            return;
+        }
         this.currentSpeaker = speaker;
         this.currentDialogue = dialogue;
+
         if (this.currentDialogue != null) {
             this.currentDialogue.reset(); // Đảm bảo bắt đầu từ đầu
             advance(); // Hiển thị dòng đầu tiên

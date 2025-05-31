@@ -4,6 +4,7 @@ import character.Character;
 import character.Player;
 import character.monster.MON_GreenSlime;
 import character.monster.Monster;
+import data.SaveLoad;
 import tile.TileManager;
 import worldObject.WorldObject;
 import dialogue.DialogueManager;
@@ -32,6 +33,8 @@ public class GamePanel extends JPanel implements Runnable {
     private DialogueManager dialogueManager = new DialogueManager(this);
     // Khởi tạo CombatSystem
     private events_system.CombatSystem combatSystem = new events_system.CombatSystem(this);
+    // Save Load
+    SaveLoad saveLoad =new SaveLoad(this);
 
     private int FPS = 60;
     private Character currentInteractingNPC = null;
@@ -164,7 +167,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private TileManager tileM = new TileManager(this);
-    ;
+    private SaveLoad saveLoadManager;
     private KeyHandler keyH = new KeyHandler(this);
     private Thread gameThread;
     private CollisionChecker cChecker = new CollisionChecker(this);
@@ -182,6 +185,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        this.saveLoadManager = new SaveLoad(this);
     }
 
     public void setupGame() {
@@ -193,6 +197,10 @@ public class GamePanel extends JPanel implements Runnable {
         if (player != null) {
             player.setDefaultValues(); // << ĐÂY LÀ NƠI QUAN TRỌNG ĐỂ RESET PLAYER
         }
+    }
+
+    public SaveLoad getSaveLoadManager() {
+        return this.saveLoadManager;
     }
 
     public void playMusic(int soundIndex) {

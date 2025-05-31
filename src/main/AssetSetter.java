@@ -44,8 +44,8 @@ public class AssetSetter {
     }
     public void setNPC(){
         gp.getNpc()[0] = new NPC_OldMan(gp);
-        gp.getNpc()[0].worldX = gp.getTileSize()*21;
-        gp.getNpc()[0].worldY = gp.getTileSize()*21;
+        gp.getNpc()[0].worldX = gp.getTileSize()*25;
+        gp.getNpc()[0].worldY = gp.getTileSize()*24;
         gp.getNpc()[1] = new NPC_Princess(gp);
         gp.getNpc()[1].worldX = gp.getTileSize()*25;
         gp.getNpc()[1].worldY = gp.getTileSize()*25;

@@ -17,9 +17,7 @@ public class NPC_Princess extends Character implements DialogueSpeaker {
 
     public NPC_Princess(GamePanel gp) {
         super(gp); // Gọi constructor của lớp cha Character, this.gp sẽ được gán ở lớp cha.
-        // Các giá trị nên được thiết lập sau khi super(gp) được gọi.
 
-        // Thiết lập các thuộc tính đặc thù cho Princess
         this.direction = "down";  // Hướng mặc định ban đầu (ví dụ: hướng xuống để chào đón Player)
         this.speed = 1;
 
@@ -60,19 +58,9 @@ public class NPC_Princess extends Character implements DialogueSpeaker {
         solidAreaDefaultY = solidArea.y;
 
         if (this.cip != null) {
-            // Tên file ảnh của Princess và cách CharacterImageProcessor
-            // của bạn ghép chuỗi ("up", "down", "left", "right" và số thứ tự)
-            // phải khớp với tên file thực tế trong thư mục res/npc/
-            // Nếu CharacterImageProcessor.getImage() của bạn ánh xạ up -> right ảnh, down -> left ảnh
-            // thì không cần lo lắng về file up/down không tồn tại cho Princess.
 
-            // QUAN TRỌNG: Kiểm tra lại prefixName này ("Princess_")
-            // Nó phải khớp với cách CharacterImageProcessor.getImage() xây dựng đường dẫn
-            // và tên file thực tế của bạn (ví dụ: princess_walkleft1.png, princess_walkright1.png)
             this.cip.getImage("/npc", "Princess"); //
-            // Nếu tên file của bạn là "princess_walkleftX.png", bạn có thể cần truyền "princess_walk_"
-            // this.cip.getImage("/npc", "princess_walk_");
-        }
+            }
     }
 
     public void setAction() {
@@ -95,7 +83,12 @@ public class NPC_Princess extends Character implements DialogueSpeaker {
 
         }
     }
-
+    @Override
+    public void update() {
+        // Gọi setAction() để NPC quyết định hướng di chuyển tiếp theo
+        setAction();
+        super.update();
+    }
     // --- Triển khai phương thức của DialogueSpeaker ---
     @Override
     public void initiateDialogue(GamePanel gpReference) { // gpReference ở đây chính là this.gp

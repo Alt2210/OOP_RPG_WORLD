@@ -22,6 +22,8 @@ public class Dialogue {
     public DialogueLine getNextLine() {
         if (hasMoreLines()) {
             currentLineIndex++;
+            System.out.println("Dialogue.getNextLine: New Index=" + currentLineIndex);
+
             return lines.get(currentLineIndex);
         }
         return null; // Hoặc ném Exception nếu không còn dòng nào
@@ -35,10 +37,14 @@ public class Dialogue {
     }
 
     public boolean hasMoreLines() {
-        return currentLineIndex < lines.size() - 1;
+        boolean moreLines = (currentLineIndex + 1 < lines.size());
+        System.out.println("Dialogue.hasMoreLines: Index=" + currentLineIndex + ", Size=" + lines.size() + ", More=" + moreLines);
+        return moreLines;
     }
 
     public void reset() {
         currentLineIndex = -1;
+        System.out.println("Dialogue: RESET called. currentLineIndex = " + currentLineIndex);
+
     }
 }
