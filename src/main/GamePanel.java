@@ -3,8 +3,10 @@ package main;
 import character.Character;
 import character.Player;
 import character.monster.MON_Bat;
+import character.monster.MON_GolemBoss;
 import character.monster.MON_GreenSlime;
 import character.monster.Monster;
+import data.SaveLoad;
 import projectile.Projectile;
 import tile.TileManager;
 import worldObject.WorldObject;
@@ -28,14 +30,17 @@ public class GamePanel extends JPanel implements Runnable {
     private final int ScreenHeight = tileSize * maxScreenRow; // 576 pixel
 
     // WORLD SETTINGS
-    private final int maxWorldCol = 50;
-    private final int maxWorldRow = 50;
+    public int maxWorldCol;
+    public int maxWorldRow;
+    private final int maxMap = 3;
     private final int worldWidth = tileSize * maxWorldCol;
     private final int worldHeight = tileSize * maxWorldRow;
     private UI ui = new UI(this);
     private DialogueManager dialogueManager = new DialogueManager(this);
     // Khởi tạo CombatSystem
     private events_system.CombatSystem combatSystem = new events_system.CombatSystem(this);
+    // Save Load
+    SaveLoad saveLoad =new SaveLoad(this);
 
     private int FPS = 60;
     private Character currentInteractingNPC = null;
@@ -90,6 +95,8 @@ public class GamePanel extends JPanel implements Runnable {
     public int getMaxWorldRow() {
         return maxWorldRow;
     }
+
+    public int getMaxMap() { return maxMap;}
 
     public int getWorldWidth() {
         return worldWidth;
@@ -171,8 +178,13 @@ public class GamePanel extends JPanel implements Runnable {
         return bat;
     }
 
+
+    public MON_GolemBoss[] getMON_GolemBoss() {
+        return golemBoss;
+    }
+
     private TileManager tileM = new TileManager(this);
-    ;
+    private SaveLoad saveLoadManager;
     private KeyHandler keyH = new KeyHandler(this);
     private Thread gameThread;
     private CollisionChecker cChecker = new CollisionChecker(this);
@@ -181,6 +193,7 @@ public class GamePanel extends JPanel implements Runnable {
     private WorldObject wObjects[] = new WorldObject[10];
     private character.Character npc[] = new character.Character[10];
     private MON_GreenSlime[] greenSlime = new MON_GreenSlime[10];
+    private MON_GolemBoss[] golemBoss = new MON_GolemBoss[10];
     private MON_Bat[] bat = new MON_Bat[10];
 
     public List<Projectile> projectiles = new ArrayList<>();
@@ -191,6 +204,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        this.saveLoadManager = new SaveLoad(this);
     }
 
     public void setupGame() {
@@ -199,12 +213,17 @@ public class GamePanel extends JPanel implements Runnable {
         gameState = titleState;
         aSetter.setGreenSlime();
         aSetter.setBat();
+        aSetter.setGolemBoss(); // Thêm boss
         playMusic(Sound.MUSIC_BACKGROUND);
         if (player != null) {
             player.setDefaultValues(); // << ĐÂY LÀ NƠI QUAN TRỌNG ĐỂ RESET PLAYER
         }
         projectiles.clear(); // Xóa danh sách projectile để tránh rò rỉ bộ nhớ
 
+    }
+
+    public SaveLoad getSaveLoadManager() {
+        return this.saveLoadManager;
     }
 
     public void playMusic(int soundIndex) {
@@ -291,7 +310,7 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             }
-
+            // quái vật bat
             for (int i = 0; i < bat.length; i++) {
                 if (bat[i] != null) {
                     if (bat[i].getCurrentHealth() > 0) {
@@ -300,6 +319,14 @@ public class GamePanel extends JPanel implements Runnable {
                         bat[i].update();
                     } else {
 
+                    }
+                }
+            }
+            // golemboss
+            for (int i = 0; i < golemBoss.length; i++) {
+                if (golemBoss[i] != null) {
+                    if (golemBoss[i].getCurrentHealth() > 0) {
+                        golemBoss[i].update();
                     }
                 }
             }
@@ -327,7 +354,7 @@ public class GamePanel extends JPanel implements Runnable {
                 combatSystem.checkPlayerMonsterCombat(player, greenSlime);
 
                 // 4b. Monster tự động tấn công Player khi có va chạm trực tiếp
-                combatSystem.handleMonsterCollisionAttack(player, greenSlime);
+                //combatSystem.handleMonsterCollisionAttack(player, greenSlime);
             }
 
             if (player != null && player.getCurrentHealth() > 0) {
@@ -336,6 +363,11 @@ public class GamePanel extends JPanel implements Runnable {
 
                 // 4b. Monster tự động tấn công Player khi có va chạm trực tiếp
                 combatSystem.handleMonsterCollisionAttack(player, bat);
+            }
+
+            if (player != null && player.getCurrentHealth() > 0) {
+                combatSystem.checkPlayerMonsterCombat(player, golemBoss);
+                combatSystem.handleMonsterCollisionAttack(player, golemBoss);
             }
 
         } else if (gameState == pauseState) {
@@ -389,6 +421,11 @@ public class GamePanel extends JPanel implements Runnable {
                     bat[i].draw(g2);
                 }
             }
+            for (int i = 0; i < golemBoss.length; i++) {
+                if (golemBoss[i] != null) {
+                    golemBoss[i].draw(g2);
+                }
+            }
             // Vẽ projectiles sau các đối tượng khác nhưng trước Player hoặc UI để nó bay phía trên
             for (Projectile p : projectiles) {
                 if (p.alive) { // Chỉ vẽ projectile còn "sống"
@@ -402,4 +439,6 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
     }
+
+
 }

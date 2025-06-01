@@ -2,6 +2,7 @@ package main;
 import character.*;
 import character.NPC_OldMan;
 import character.monster.MON_Bat;
+import character.monster.MON_GolemBoss;
 import character.monster.MON_GreenSlime;
 import character.monster.Monster;
 import item.Item_Key;
@@ -45,8 +46,8 @@ public class AssetSetter {
     }
     public void setNPC(){
         gp.getNpc()[0] = new NPC_OldMan(gp);
-        gp.getNpc()[0].worldX = gp.getTileSize()*21;
-        gp.getNpc()[0].worldY = gp.getTileSize()*21;
+        gp.getNpc()[0].worldX = gp.getTileSize()*25;
+        gp.getNpc()[0].worldY = gp.getTileSize()*24;
         gp.getNpc()[1] = new NPC_Princess(gp);
         gp.getNpc()[1].worldX = gp.getTileSize()*25;
         gp.getNpc()[1].worldY = gp.getTileSize()*25;
@@ -73,6 +74,12 @@ public class AssetSetter {
         gp.getMON_Bat()[1].worldX = gp.getTileSize()*26;
         gp.getMON_Bat()[1].worldY = gp.getTileSize()*33;
 
+    }
+    // Trong AssetSetter.java
+    public void setGolemBoss() {
+        gp.getMON_GolemBoss()[0] = new MON_GolemBoss(gp);
+        gp.getMON_GolemBoss()[0].worldX = gp.getTileSize() * 21;
+        gp.getMON_GolemBoss()[0].worldY = gp.getTileSize() * 21;
     }
 
 

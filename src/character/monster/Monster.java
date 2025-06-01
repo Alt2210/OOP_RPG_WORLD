@@ -14,19 +14,43 @@ public abstract class Monster extends Character {
 
     protected int exp;
     PathFinder pathFinder;
+    protected int contactDamageAmount;
+    protected int contactDamageCooldown;
+    protected final int CONTACT_DAMAGE_COOLDOWN_DURATION = 30; // Ví dụ: 0.5 giây Player miễn nhiễm sát thương chạm từ Monster này
 
     public Monster(GamePanel gp) {
         super(gp);
+        this.contactDamageCooldown = 0;
+    }
+    public int getContactDamageAmount() {
+        return contactDamageAmount;
     }
 
+    // Các phương thức quản lý cooldown sát thương chạm
+    public void updateContactDamageCooldown() {
+        if (contactDamageCooldown > 0) {
+            contactDamageCooldown--;
+        }
+    }
+
+    public boolean canDealContactDamage() {
+        return contactDamageCooldown == 0;
+    }
+
+    public void resetContactDamageCooldown() {
+        contactDamageCooldown = CONTACT_DAMAGE_COOLDOWN_DURATION;
+    }
     @Override
     public abstract void draw(Graphics2D g2);
 
     @Override
     public void update() {
         super.update(); // Gọi logic update của lớp Character (di chuyển, animation, cooldown)
-
+        updateContactDamageCooldown();
     }
+
+    public abstract void playerChasing();
+
     public void checkStartChasingOrNot(Character target, int distance, int rate) {
         if (getTileDistance(target) < distance) {
             int i = new Random().nextInt(rate);

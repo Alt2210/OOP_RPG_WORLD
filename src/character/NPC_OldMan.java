@@ -53,7 +53,7 @@ public class NPC_OldMan extends Character implements DialogueSpeaker {
     // Nếu Character không có setAction abstract, thì bỏ @Override
     public void setAction(){ //
         actionLockCounter++; //
-        if(actionLockCounter == 120){ //
+        if(actionLockCounter >= 120){ //
             Random random = new Random(); //
             int i = random.nextInt(100) + 1; //
             if(i <= 25){ //
@@ -73,8 +73,6 @@ public class NPC_OldMan extends Character implements DialogueSpeaker {
     // --- Triển khai phương thức của DialogueSpeaker (interface mới chỉ có initiateDialogue) ---
     @Override
     public void initiateDialogue(GamePanel gpReference) { // gpReference ở đây chính là this.gp
-        // NPC OldMan quyết định sẽ nói đoạn hội thoại nào (ở đây là defaultDialogue)
-        // và yêu cầu DialogueManager bắt đầu với đoạn đó, truyền chính nó (this) làm speaker.
         if (defaultDialogue != null) {
             gpReference.getDialogueManager().startDialogue(this, defaultDialogue);
         } else {
@@ -87,7 +85,12 @@ public class NPC_OldMan extends Character implements DialogueSpeaker {
         }
     }
 
-
+    @Override
+    public void update() {
+        // Gọi setAction() để NPC quyết định hướng di chuyển tiếp theo
+        setAction();
+        super.update();
+    }
     @Override
     public void draw(Graphics2D g2) { //
         BufferedImage image = null;
