@@ -37,8 +37,8 @@ public class MON_GolemBoss extends Monster {
 
     @Override
     public void setDefaultValues() {
-        worldX = gp.getTileSize() * 30;
-        worldY = gp.getTileSize() * 30;
+        worldX = gp.getTileSize() * 21;
+        worldY = gp.getTileSize() * 21;
         direction = "right";
         setName("GolemBoss");
         defaultSpeed = 1;
@@ -52,10 +52,11 @@ public class MON_GolemBoss extends Monster {
         ATTACK_COOLDOWN_DURATION = 60;
         contactDamageAmount = attack;
         // Tăng kích thước solidArea để bao phủ 3x3 ô
-        solidArea.x = 0;
-        solidArea.y = 0;
-        solidArea.width = gp.getTileSize() * BOSS_SIZE_MULTIPLIER;
-        solidArea.height = gp.getTileSize() * BOSS_SIZE_MULTIPLIER;
+        // Thiết lập solidArea cho kích thước 3x3 ô
+        solidArea.width = gp.getTileSize() * 2;  // 48 * 2 = 96 pixel
+        solidArea.height = gp.getTileSize() * 2; // 48 * 2 = 96 pixel
+        solidArea.x = (gp.getTileSize() * 3 - solidArea.width) / 2;  // Căn giữa: (144 - 96) / 2 = 24
+        solidArea.y = (gp.getTileSize() * 3 - solidArea.height) / 2; // Căn giữa: (144 - 96) / 2 = 24
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
         cip.getImage("/monster", "golemboss");
@@ -140,6 +141,7 @@ public class MON_GolemBoss extends Monster {
                 break;
         }
     }
+
 
     private void attemptLaserAttack() {
         laserAttackCounter++;

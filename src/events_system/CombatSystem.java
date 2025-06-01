@@ -60,7 +60,8 @@ public class CombatSystem {
             // Hoặc bạn có thể duyệt qua từng mảng quái vật riêng biệt như trong checkPlayerMonsterCombat
             Monster[] allMonstersToCheck[] = {
                     gp.getMON_GreenSlime(),
-                    gp.getMON_Bat()
+                    gp.getMON_Bat(),
+                    gp.getMON_GolemBoss(),
                     // Thêm các mảng quái vật khác ở đây nếu có
             };
 
