@@ -14,7 +14,7 @@ public class MON_GolemBoss extends Monster {
     private boolean isChargingLaser;
     private boolean isFiringLaser;
     private int laserChargeCounter;
-    private final int LASER_CHARGE_DURATION = 60;
+    private final int LASER_CHARGE_DURATION = 120;
     private final int CHARGING_PHASE_DURATION = 30;
     private int laserAttackCounter;
     private final int LASER_ATTACK_INTERVAL = 300;
