@@ -71,10 +71,13 @@ public class MON_GolemBoss extends Monster {
         int dx = target.getCenterX() - this.getCenterX();
         int dy = target.getCenterY() - this.getCenterY();
         double angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
         if (angle >= -45 && angle < 45) return "right";
-        if (angle >= 135 || angle < -135) return "left";
-        return this.direction;
+        else if (angle >= 45 && angle < 135) return "down";
+        else if (angle >= -135 && angle < -45) return "up";
+        else return "left";
     }
+
 
     public void playerChasing() {
         if (onPath && !isChargingLaser) {
@@ -186,6 +189,10 @@ public class MON_GolemBoss extends Monster {
 
     @Override
     public void update() {
+        if (!isChargingLaser) {
+            direction = getDirectionToTarget(gp.getPlayer());
+        }
+
         try {
             if (isChargingLaser) {
                 cip.setNumSprite(7);

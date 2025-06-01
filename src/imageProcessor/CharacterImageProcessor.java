@@ -21,6 +21,8 @@ public class CharacterImageProcessor extends ImageProcessor {
     private ArrayList<BufferedImage> chargeLeft;
     private ArrayList<BufferedImage> laserRight;
     private ArrayList<BufferedImage> laserLeft;
+    private ArrayList<BufferedImage> laserUp;
+    private ArrayList<BufferedImage> laserDown;
     private int laserSpriteCounter = 0;
     private int laserSpriteNum = 0;
     private final int LASER_FRAMES_PER_ANIMATION = 4; // Mỗi frame kéo dài 4 frame (30 / 7 ≈ 4.28)
@@ -39,6 +41,8 @@ public class CharacterImageProcessor extends ImageProcessor {
         chargeLeft = new ArrayList<>();
         laserRight = new ArrayList<>();
         laserLeft = new ArrayList<>();
+        laserUp = new ArrayList<>();
+        laserDown = new ArrayList<>();
     }
 
     @Override
@@ -115,6 +119,10 @@ public class CharacterImageProcessor extends ImageProcessor {
             return laserRight.get(adjustedSpriteNum);
         } else if (direction.equals("left") && laserLeft.size() > adjustedSpriteNum) {
             return laserLeft.get(adjustedSpriteNum);
+        } else if (direction.equals("up") && laserUp.size() > adjustedSpriteNum) {
+            return laserUp.get(adjustedSpriteNum);
+        } else if (direction.equals("down") && laserDown.size() > adjustedSpriteNum) {
+            return laserDown.get(adjustedSpriteNum);
         }
         return null;
     }
@@ -199,6 +207,8 @@ public class CharacterImageProcessor extends ImageProcessor {
             for (int i = 0; i < laserSpriteCount; i++) {
                 String LASER_RIGHT_PATH = folder + "/laserbeam_right" + (i + 1) + ".png";
                 String LASER_LEFT_PATH = folder + "/laserbeam_left" + (i + 1) + ".png";
+                String LASER_UP_PATH = folder + "/laserbeam_up" + (i + 1) + ".png";
+                String LASER_DOWN_PATH = folder + "/laserbeam_down" + (i + 1) + ".png";
                 BufferedImage image = setup(LASER_RIGHT_PATH);
                 if (image != null) laserRight.add(image);
                 else System.err.println("Không tải được: " + LASER_RIGHT_PATH);
@@ -206,18 +216,15 @@ public class CharacterImageProcessor extends ImageProcessor {
                 image = setup(LASER_LEFT_PATH);
                 if (image != null) laserLeft.add(image);
                 else System.err.println("Không tải được: " + LASER_LEFT_PATH);
-            }
-        }
 
-        // Đặt numSprite dựa trên trạng thái hiện tại
-        this.numSprite = Math.max(walkSpriteCount, Math.max(attackSpriteCount, chargeSpriteCount));
-        int minNonEmptySize = Integer.MAX_VALUE;
-        for (ArrayList<BufferedImage> list : new ArrayList[]{up, down, left, right, attackRight, attackLeft, chargeRight, chargeLeft}) {
-            if (list.size() > 0) {
-                minNonEmptySize = Math.min(minNonEmptySize, list.size());
+                image = setup(LASER_UP_PATH);
+                if (image != null) laserUp.add(image);
+                else System.err.println("Không tải được: " + LASER_UP_PATH);
+
+                image = setup(LASER_DOWN_PATH);
+                if (image != null) laserDown.add(image);
+                else System.err.println("Không tải được: " + LASER_DOWN_PATH);
             }
         }
-        this.numSprite = minNonEmptySize == Integer.MAX_VALUE ? 1 : Math.min(this.numSprite, minNonEmptySize);
-        System.out.println("Adjusted numSprite: " + this.numSprite);
     }
 }
