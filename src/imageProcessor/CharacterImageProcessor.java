@@ -2,12 +2,12 @@ package imageProcessor;
 
 import character.Character;
 import character.Player;
+import character.monster.MON_Bat;
+import character.monster.MON_GolemBoss;
 import main.GamePanel;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class CharacterImageProcessor extends ImageProcessor {
@@ -15,8 +15,15 @@ public class CharacterImageProcessor extends ImageProcessor {
     private ArrayList<BufferedImage> down;
     private ArrayList<BufferedImage> left;
     private ArrayList<BufferedImage> right;
-    private ArrayList<BufferedImage> attackRight; // THÊM MỚI: Sprite tấn công bên phải
-    private ArrayList<BufferedImage> attackLeft;  // THÊM MỚI: Sprite tấn công bên trái
+    private ArrayList<BufferedImage> attackRight;
+    private ArrayList<BufferedImage> attackLeft;
+    private ArrayList<BufferedImage> chargeRight;
+    private ArrayList<BufferedImage> chargeLeft;
+    private ArrayList<BufferedImage> laserRight;
+    private ArrayList<BufferedImage> laserLeft;
+    private int laserSpriteCounter = 0;
+    private int laserSpriteNum = 0;
+    private final int LASER_FRAMES_PER_ANIMATION = 4; // Mỗi frame kéo dài 4 frame (30 / 7 ≈ 4.28)
     private Character character;
 
     public CharacterImageProcessor(GamePanel gp, Character character) {
@@ -28,135 +35,189 @@ public class CharacterImageProcessor extends ImageProcessor {
         right = new ArrayList<>();
         attackRight = new ArrayList<>();
         attackLeft = new ArrayList<>();
+        chargeRight = new ArrayList<>();
+        chargeLeft = new ArrayList<>();
+        laserRight = new ArrayList<>();
+        laserLeft = new ArrayList<>();
     }
 
     @Override
     public BufferedImage getCurFrame() {
         if (character instanceof Player && ((Player) character).isAttacking()) {
             if (character.direction.equals("right") && attackRight.size() > 0) {
-                //System.out.println("Displaying attack right sprite, frame: " + (spriteNum % attackRight.size()) + ", attackRight size: " + attackRight.size());
                 return attackRight.get(spriteNum % attackRight.size());
             } else if (character.direction.equals("left") && attackLeft.size() > 0) {
-                //System.out.println("Displaying attack left sprite, frame: " + (spriteNum % attackLeft.size()) + ", attackLeft size: " + attackLeft.size());
                 return attackLeft.get(spriteNum % attackLeft.size());
-            } else if (attackRight.size() > 0) { // Mặc định dùng attackRight nếu hướng là "up" hoặc "down"
-                //System.out.println("Displaying attack right sprite (default), frame: " + (spriteNum % attackRight.size()) + ", attackRight size: " + attackRight.size());
+            } else if (attackRight.size() > 0) {
                 return attackRight.get(spriteNum % attackRight.size());
             } else if (attackLeft.size() > 0) {
-                //System.out.println("Displaying attack left sprite (fallback), frame: " + (spriteNum % attackLeft.size()) + ", attackLeft size: " + attackLeft.size());
                 return attackLeft.get(spriteNum % attackLeft.size());
-            } else {
-                System.out.println("Attack sprites not loaded, falling back to default");
-                if (right.size() > 0) {
-                    return right.get(spriteNum % right.size());
-                }
+            }
+        } else if (character instanceof MON_GolemBoss && ((MON_GolemBoss) character).isChargingLaser()) {
+            if (character.direction.equals("right") && chargeRight.size() > 0) {
+                return chargeRight.get(spriteNum % chargeRight.size());
+            } else if (character.direction.equals("left") && chargeLeft.size() > 0) {
+                return chargeLeft.get(spriteNum % chargeLeft.size());
+            } else if (chargeRight.size() > 0) {
+                return chargeRight.get(spriteNum % chargeRight.size());
+            } else if (chargeLeft.size() > 0) {
+                return chargeLeft.get(spriteNum % chargeLeft.size());
+            }
+        } else if (character instanceof MON_Bat && ((MON_Bat) character).isDashing()) {
+            if (character.direction.equals("right") && right.size() > 0) {
+                return right.get(spriteNum % right.size());
+            } else if (character.direction.equals("left") && left.size() > 0) {
+                return left.get(spriteNum % left.size());
+            } else if (right.size() > 0) {
+                return right.get(spriteNum % right.size());
+            } else if (left.size() > 0) {
+                return left.get(spriteNum % left.size());
             }
         }
 
         switch (character.direction) {
             case "up":
-                if (up.size() > 0) {
-                    return up.get(spriteNum % up.size());
-                }
+                if (up.size() > 0) return up.get(spriteNum % up.size());
+                break;
             case "down":
-                if (down.size() > 0) {
-                    return down.get(spriteNum % down.size());
-                }
+                if (down.size() > 0) return down.get(spriteNum % down.size());
+                break;
             case "left":
-                if (left.size() > 0) {
-                    return left.get(spriteNum % left.size());
-                }
+                if (left.size() > 0) return left.get(spriteNum % left.size());
+                break;
             case "right":
-                if (right.size() > 0) {
-                    return right.get(spriteNum % right.size());
-                }
-            default:
-                if (down.size() > 0) {
-                    return down.get(0);
-                }
-                BufferedImage defaultImage = new BufferedImage(48, 48, BufferedImage.TYPE_INT_ARGB);
-                Graphics2D g2 = defaultImage.createGraphics();
-                g2.setColor(Color.RED);
-                g2.fillRect(0, 0, 48, 48);
-                g2.dispose();
-                return defaultImage;
+                if (right.size() > 0) return right.get(spriteNum % right.size());
+                break;
         }
+
+        if (down.size() > 0) return down.get(0);
+        BufferedImage defaultImage = new BufferedImage(48, 48, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = defaultImage.createGraphics();
+        g2.setColor(Color.RED);
+        g2.fillRect(0, 0, 48, 48);
+        g2.dispose();
+        return defaultImage;
+    }
+
+    public BufferedImage getLaserFrame(String direction) {
+        laserSpriteCounter++;
+        if (laserSpriteCounter >= LASER_FRAMES_PER_ANIMATION) {
+            laserSpriteNum++;
+            // Chỉ sử dụng sprite 8-14 (index 7-13 trong danh sách)
+            if (laserSpriteNum >= 7) { // Đã chạy hết 7 frame (8-14)
+                laserSpriteNum = 0; // Reset về sprite 8 (index 7)
+            }
+            laserSpriteCounter = 0;
+        }
+
+        int adjustedSpriteNum = laserSpriteNum + 7; // Chuyển từ 0-6 thành 7-13 (sprite 8-14)
+        if (direction.equals("right") && laserRight.size() > adjustedSpriteNum) {
+            return laserRight.get(adjustedSpriteNum);
+        } else if (direction.equals("left") && laserLeft.size() > adjustedSpriteNum) {
+            return laserLeft.get(adjustedSpriteNum);
+        }
+        return null;
     }
 
     public void getImage(String folder, String name) {
-        int walkSpriteCount = 2;
-        if (name.equals("sodier")) walkSpriteCount = 5;
-        else if (name.equals("Princess")) walkSpriteCount = 7;
+        int walkSpriteCount = 4;
+        int chargeSpriteCount = 7;
+        int attackSpriteCount = 0;
+        int laserSpriteCount = 14;
 
+        if (name.equals("sodier")) {
+            walkSpriteCount = 5;
+            attackSpriteCount = 6;
+        } else if (name.equals("Princess")) {
+            walkSpriteCount = 7;
+        } else if (name.equals("golemboss")) {
+            walkSpriteCount = 4;
+            chargeSpriteCount = 7;
+        } else if (name.equals("oldman")) {
+            walkSpriteCount = 2;
+        } else if (name.equals("greenslime")) {
+            walkSpriteCount = 2;
+        } else if (name.equals("bat")) {
+            walkSpriteCount = 2;
+        }
+
+        // Tải sprite đi bộ
         for (int i = 0; i < walkSpriteCount; i++) {
-            BufferedImage image;
             String baseName = name + "_walkright";
             String UP_IMAGE_PATH = folder + "/" + baseName + (i + 1) + ".png";
             String RIGHT_IMAGE_PATH = folder + "/" + baseName + (i + 1) + ".png";
             String LEFT_IMAGE_PATH = folder + "/" + name + "_walkleft" + (i + 1) + ".png";
             String DOWN_IMAGE_PATH = folder + "/" + name + "_walkleft" + (i + 1) + ".png";
 
-            System.out.println("Loading: " + UP_IMAGE_PATH);
-            try {
-                image = setup(UP_IMAGE_PATH);
-                if (image == null) throw new IOException("Null image: " + UP_IMAGE_PATH);
-                up.add(image);
+            BufferedImage image = setup(UP_IMAGE_PATH);
+            if (image != null) up.add(image);
+            else System.err.println("Không tải được: " + UP_IMAGE_PATH);
 
-                image = setup(RIGHT_IMAGE_PATH);
-                if (image == null) throw new IOException("Null image: " + RIGHT_IMAGE_PATH);
-                right.add(image);
+            image = setup(RIGHT_IMAGE_PATH);
+            if (image != null) right.add(image);
+            else System.err.println("Không tải được: " + RIGHT_IMAGE_PATH);
 
-                image = setup(LEFT_IMAGE_PATH);
-                if (image == null) throw new IOException("Null image: " + LEFT_IMAGE_PATH);
-                left.add(image);
+            image = setup(LEFT_IMAGE_PATH);
+            if (image != null) left.add(image);
+            else System.err.println("Không tải được: " + LEFT_IMAGE_PATH);
 
-                image = setup(DOWN_IMAGE_PATH);
-                if (image == null) throw new IOException("Null image: " + DOWN_IMAGE_PATH);
-                down.add(image);
-            } catch (IOException e) {
-                System.err.println("Error loading walk sprite: " + e.getMessage());
-                e.printStackTrace();
-                System.exit(1);
-            }
+            image = setup(DOWN_IMAGE_PATH);
+            if (image != null) down.add(image);
+            else System.err.println("Không tải được: " + DOWN_IMAGE_PATH);
         }
 
-        if (name.equals("sodier")) {
-            int attackSpriteCount = 6;
-            // Tải sprite tấn công bên phải
+        // Tải sprite tấn công (nếu có)
+        if (attackSpriteCount > 0) {
             for (int i = 0; i < attackSpriteCount; i++) {
                 String ATTACK_RIGHT_PATH = folder + "/" + name + "_attackright" + (i + 1) + ".png";
-                System.out.println("Attempting to load: " + ATTACK_RIGHT_PATH);
-                BufferedImage image = setup(ATTACK_RIGHT_PATH);
-                if (image != null) {
-                    attackRight.add(image);
-                    System.out.println("Successfully loaded: " + ATTACK_RIGHT_PATH + ", size: " + image.getWidth() + "x" + image.getHeight());
-                } else {
-                    System.err.println("Failed to load attack right sprite: " + ATTACK_RIGHT_PATH);
-                }
-            }
-            System.out.println("Total loaded attack right sprites: " + attackRight.size());
-
-            // Tải sprite tấn công bên trái
-            for (int i = 0; i < attackSpriteCount; i++) {
                 String ATTACK_LEFT_PATH = folder + "/" + name + "_attackleft" + (i + 1) + ".png";
-                System.out.println("Attempting to load: " + ATTACK_LEFT_PATH);
-                BufferedImage image = setup(ATTACK_LEFT_PATH);
-                if (image != null) {
-                    attackLeft.add(image);
-                    System.out.println("Successfully loaded: " + ATTACK_LEFT_PATH + ", size: " + image.getWidth() + "x" + image.getHeight());
-                } else {
-                    System.err.println("Failed to load attack left sprite: " + ATTACK_LEFT_PATH);
-                }
-            }
-            System.out.println("Total loaded attack left sprites: " + attackLeft.size());
+                BufferedImage image = setup(ATTACK_RIGHT_PATH);
+                if (image != null) attackRight.add(image);
+                else System.err.println("Không tải được: " + ATTACK_RIGHT_PATH);
 
-            this.numSprite = (attackRight.size() > 0 || attackLeft.size() > 0) ? attackSpriteCount : walkSpriteCount;
-        } else {
-            this.numSprite = walkSpriteCount;
+                image = setup(ATTACK_LEFT_PATH);
+                if (image != null) attackLeft.add(image);
+                else System.err.println("Không tải được: " + ATTACK_LEFT_PATH);
+            }
         }
 
-        this.numSprite = Math.min(this.numSprite, Math.min(up.size(), Math.min(down.size(), Math.min(left.size(), right.size()))));
+        // Tải sprite tụ lực và tia laser (nếu là golemboss)
+        if (name.equals("golemboss")) {
+            for (int i = 0; i < chargeSpriteCount; i++) {
+                String CHARGE_RIGHT_PATH = folder + "/" + name + "_laserright" + (i + 1) + ".png";
+                String CHARGE_LEFT_PATH = folder + "/" + name + "_laserleft" + (i + 1) + ".png";
+                BufferedImage image = setup(CHARGE_RIGHT_PATH);
+                if (image != null) chargeRight.add(image);
+                else System.err.println("Không tải được: " + CHARGE_RIGHT_PATH);
+
+                image = setup(CHARGE_LEFT_PATH);
+                if (image != null) chargeLeft.add(image);
+                else System.err.println("Không tải được: " + CHARGE_LEFT_PATH);
+            }
+
+            // Tải sprite cho tia laser
+            for (int i = 0; i < laserSpriteCount; i++) {
+                String LASER_RIGHT_PATH = folder + "/laserbeam_right" + (i + 1) + ".png";
+                String LASER_LEFT_PATH = folder + "/laserbeam_left" + (i + 1) + ".png";
+                BufferedImage image = setup(LASER_RIGHT_PATH);
+                if (image != null) laserRight.add(image);
+                else System.err.println("Không tải được: " + LASER_RIGHT_PATH);
+
+                image = setup(LASER_LEFT_PATH);
+                if (image != null) laserLeft.add(image);
+                else System.err.println("Không tải được: " + LASER_LEFT_PATH);
+            }
+        }
+
+        // Đặt numSprite dựa trên trạng thái hiện tại
+        this.numSprite = Math.max(walkSpriteCount, Math.max(attackSpriteCount, chargeSpriteCount));
+        int minNonEmptySize = Integer.MAX_VALUE;
+        for (ArrayList<BufferedImage> list : new ArrayList[]{up, down, left, right, attackRight, attackLeft, chargeRight, chargeLeft}) {
+            if (list.size() > 0) {
+                minNonEmptySize = Math.min(minNonEmptySize, list.size());
+            }
+        }
+        this.numSprite = minNonEmptySize == Integer.MAX_VALUE ? 1 : Math.min(this.numSprite, minNonEmptySize);
         System.out.println("Adjusted numSprite: " + this.numSprite);
     }
-
 }

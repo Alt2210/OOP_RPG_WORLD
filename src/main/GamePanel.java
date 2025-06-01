@@ -3,6 +3,7 @@ package main;
 import character.Character;
 import character.Player;
 import character.monster.MON_Bat;
+import character.monster.MON_GolemBoss;
 import character.monster.MON_GreenSlime;
 import character.monster.Monster;
 import data.SaveLoad;
@@ -177,6 +178,11 @@ public class GamePanel extends JPanel implements Runnable {
         return bat;
     }
 
+
+    public MON_GolemBoss[] getMON_GolemBoss() {
+        return golemBoss;
+    }
+
     private TileManager tileM = new TileManager(this);
     private SaveLoad saveLoadManager;
     private KeyHandler keyH = new KeyHandler(this);
@@ -187,6 +193,7 @@ public class GamePanel extends JPanel implements Runnable {
     private WorldObject wObjects[] = new WorldObject[10];
     private character.Character npc[] = new character.Character[10];
     private MON_GreenSlime[] greenSlime = new MON_GreenSlime[10];
+    private MON_GolemBoss[] golemBoss = new MON_GolemBoss[10];
     private MON_Bat[] bat = new MON_Bat[10];
 
     public List<Projectile> projectiles = new ArrayList<>();
@@ -206,6 +213,7 @@ public class GamePanel extends JPanel implements Runnable {
         gameState = titleState;
         aSetter.setGreenSlime();
         aSetter.setBat();
+        aSetter.setGolemBoss(); // Thêm boss
         playMusic(Sound.MUSIC_BACKGROUND);
         if (player != null) {
             player.setDefaultValues(); // << ĐÂY LÀ NƠI QUAN TRỌNG ĐỂ RESET PLAYER
@@ -302,7 +310,7 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             }
-
+            // quái vật bat
             for (int i = 0; i < bat.length; i++) {
                 if (bat[i] != null) {
                     if (bat[i].getCurrentHealth() > 0) {
@@ -311,6 +319,14 @@ public class GamePanel extends JPanel implements Runnable {
                         bat[i].update();
                     } else {
 
+                    }
+                }
+            }
+            // golemboss
+            for (int i = 0; i < golemBoss.length; i++) {
+                if (golemBoss[i] != null) {
+                    if (golemBoss[i].getCurrentHealth() > 0) {
+                        golemBoss[i].update();
                     }
                 }
             }
@@ -347,6 +363,11 @@ public class GamePanel extends JPanel implements Runnable {
 
                 // 4b. Monster tự động tấn công Player khi có va chạm trực tiếp
                 combatSystem.handleMonsterCollisionAttack(player, bat);
+            }
+
+            if (player != null && player.getCurrentHealth() > 0) {
+                combatSystem.checkPlayerMonsterCombat(player, golemBoss);
+                combatSystem.handleMonsterCollisionAttack(player, golemBoss);
             }
 
         } else if (gameState == pauseState) {
@@ -400,6 +421,11 @@ public class GamePanel extends JPanel implements Runnable {
                     bat[i].draw(g2);
                 }
             }
+            for (int i = 0; i < golemBoss.length; i++) {
+                if (golemBoss[i] != null) {
+                    golemBoss[i].draw(g2);
+                }
+            }
             // Vẽ projectiles sau các đối tượng khác nhưng trước Player hoặc UI để nó bay phía trên
             for (Projectile p : projectiles) {
                 if (p.alive) { // Chỉ vẽ projectile còn "sống"
@@ -413,4 +439,6 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
     }
+
+
 }
