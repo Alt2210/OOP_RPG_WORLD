@@ -1,6 +1,7 @@
 package character;
 
 import dialogue.DialogueSpeaker;
+import item.Inventory;
 import main.GamePanel;
 import main.KeyHandler;
 import sound.Sound;
@@ -16,6 +17,8 @@ public class Player extends Character {
     public final int screenX;
     public final int screenY;
     private int hasKey;
+    public Inventory inventorysize;
+
 
     // THÊM MỚI: Bộ đếm thời gian tấn công
     private int attackAnimationCounter = 0;
@@ -24,6 +27,7 @@ public class Player extends Character {
     private final int FIREBALL_COOLDOWN_DURATION = 60; // Ví dụ: 1 giây (60 frames @ 60FPS)
     public Player(GamePanel gp, KeyHandler keyH) {
 
+        this.inventorysize = new Inventory(20);
         super(gp);
         cip.setNumSprite(5);
 
@@ -44,9 +48,13 @@ public class Player extends Character {
 
         setDefaultValues(); // Thiết lập worldX, worldY, speed, direction ban đầu.
         cip.getImage("/player", "sodier");      // Tải hình ảnh hoạt ảnh của Player.
+        setItems();
     }
 
 
+    public void setItems(){
+        inventorysize.addItem();
+    }
 
 
     public void setAction(){}

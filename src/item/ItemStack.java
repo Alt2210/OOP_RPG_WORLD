@@ -14,4 +14,10 @@ public class ItemStack {
     public void setQuantity(int quantity) { this.quantity = quantity; }
     public void addQuantity(int amount) { this.quantity += amount; }
     // Có thể thêm: canStack(ItemStack otherStack), mergeStack(ItemStack otherStack)
+    public void removeQuantity(int amount) {
+        this.quantity -= amount;
+        if (this.quantity < 0) {
+            this.quantity = 0;
+        }
+    }
 }

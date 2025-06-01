@@ -139,6 +139,30 @@ public class KeyHandler implements KeyListener {
                 skill1Pressed = false; // Đặt lại khi thả phím kỹ năng 1
                 // System.out.println("Skill 1 released: " + skill1Pressed);
             }
+            /*public void characterState() {
+                if(code == KeyEvent.VK_C) {
+                    gp.gameState = gp.playState;
+                }
+                if(code == KeyEvent.VK_W) {
+                    if(gp.getUi().slotRow !=0){
+                        gp.getUi().slotRow--;
+                    }
+                }
+                if(code == KeyEvent.VK_A) {
+                    if(gp.getUi().slotCol !=0){
+                        gp.getUi().slotCol--;
+                    }
+                }
+                if(code == KeyEvent.VK_S) {
+                    if(gp.getUi().slotRow !=3){
+                        gp.getUi().slotRow++;
+                    }
+                }
+                if(code == KeyEvent.VK_D) {
+                    if(gp.getUi().slotCol !=4){
+                        gp.getUi().slotCol++;
+                    }
+                }*/
         }
     }
 }

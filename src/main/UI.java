@@ -31,6 +31,8 @@ public class UI {
     private double playtime = 0.0;
     private DecimalFormat dFormat = new DecimalFormat("#0.00");
     protected int commandNum = 0;
+    public int slotCol = 0;
+    public int slotRow = 0;
 
     Color menuTextColor_Normal = Color.WHITE;
     Color menuTextColor_Selected = new Color(255, 220, 100);
@@ -574,5 +576,33 @@ public class UI {
         x = getXforCenteredText(exitText, g2, g2.getFont());
         y += gp.getTileSize(); // Dịch xuống một chút
         drawTextWithShadow(g2, exitText, x, y, Color.WHITE, menuTextShadowColor, 1);
+    }
+    public void drawIventory(Graphics2D g2) {
+        //Frame
+        int frameX = gp.getTileSize() * 9;
+        int frameY = gp.getTileSize();
+        int frameWidth = gp.getTileSize() * 6;
+        int frameHeight = gp.getTileSize() * 5;
+        drawSubWindow(frameX,frameY,frameWidth,frameHeight, g2);
+
+        //Slot
+        final int slotXstart = frameX + 20;
+        final int slotYstart = frameY + 20;
+        int slotX = slotXstart;
+        int slotY = slotYstart;
+
+        //Draw player's item
+        for(int i=0;i < gp.getPlayer().inventorysize;i++) {
+            g2.drawImage(gp.getPlayer().inventorysize.get(i));
+        }
+
+        //CURSOR
+        int cursorX = slotXstart + (gp.getTileSize() * slotCol);
+        int cursorY = slotYstart + (gp.getTileSize() * slotRow);
+        int cursorWidth = gp.getTileSize();
+        int cursorHeight = gp.getTileSize();
+        //Draw Cursor
+        g2.setColor(Color.white);
+        g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight,10,10);
     }
 }
