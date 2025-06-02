@@ -82,8 +82,8 @@ public abstract class Projectile {
         }
 
         // Kiểm tra tile có tồn tại và có thuộc tính collision không
-        if (gp.getTileM().tile[gp.getTileM().mapTileNum[tileCol][tileRow]] != null &&
-                gp.getTileM().tile[gp.getTileM().mapTileNum[tileCol][tileRow]].collision) {
+        if (gp.getTileM().tile[gp.getTileM().mapTileNum[gp.currentMap][tileCol][tileRow]] != null &&
+                gp.getTileM().tile[gp.getTileM().mapTileNum[gp.currentMap][tileCol][tileRow]].collision) {
             alive = false; // Va chạm với tile cứng
             return true;
         }

@@ -56,9 +56,9 @@ public class PathFinder {
 
         if (startCol < 0 || startCol >= gp.getMaxWorldCol() || startRow < 0 || startRow >= gp.getMaxWorldRow() ||
                 goalCol < 0 || goalCol >= gp.getMaxWorldCol() || goalRow < 0 || goalRow >= gp.getMaxWorldRow() ||
-                node[startCol][startRow] == null || node[goalCol][goalRow] == null) { // Kiểm tra node null
+                node[startCol][startRow] == null || node[goalCol][goalRow] == null) {
             System.err.println("PathFinder Error: Start or Goal node is out of bounds or null.");
-            goalReached = false; // Không thể tìm đường
+            goalReached = false;
             return;
         }
 
@@ -66,38 +66,57 @@ public class PathFinder {
         currentNode = startNode;
         goalNode = node[goalCol][goalRow];
 
-        // Thiết lập trạng thái ban đầu cho startNode
         startNode.gCost = 0;
-        calculateHCost(startNode); // Tính H cost cho startNode
+        calculateHCost(startNode);
         startNode.fCost = startNode.gCost + startNode.hCost;
-        startNode.open = true; // Mở startNode
+        startNode.open = true;
         openList.add(startNode);
 
-
-        // Đánh dấu các node solid
+        // Đánh dấu các node solid TỪ MAP HIỆN TẠI
         for (int r = 0; r < gp.getMaxWorldRow(); r++) {
             for (int c = 0; c < gp.getMaxWorldCol(); c++) {
                 if (node[c][r] == null) continue;
 
-                // Từ Tiles
-                int tileNum = gp.getTileM().mapTileNum[c][r]; // Giả sử mapTileNum là [col][row]
+                // Từ Tiles - SỬ DỤNG gp.currentMap
+                // Đảm bảo gp.currentMap là hợp lệ (0 <= gp.currentMap < gp.maxMap)
+                if (gp.currentMap < 0 || gp.currentMap >= gp.maxMap) {
+                    System.err.println("PathFinder Error: gp.currentMap (" + gp.currentMap + ") không hợp lệ!");
+                    return;
+                }
+                // Đảm bảo TileManager và mapTileNum đã được khởi tạo đúng
+                if (gp.getTileM() == null || gp.getTileM().mapTileNum == null ||
+                        gp.getTileM().mapTileNum[gp.currentMap] == null) {
+                    System.err.println("PathFinder Error: TileManager hoặc mapTileNum cho map hiện tại chưa được khởi tạo!");
+                    return;
+                }
+
+                // Kiểm tra biên cho truy cập mapTileNum[gp.currentMap][c][r]
+                if (c < 0 || c >= gp.getTileM().mapTileNum[gp.currentMap].length ||
+                        r < 0 || r >= gp.getTileM().mapTileNum[gp.currentMap][c].length) {
+                    System.err.println("PathFinder Warning: Truy cập ngoài biên mapTileNum cho map " + gp.currentMap + " tại (" + c + "," + r + "). Bỏ qua tile này.");
+                    continue;
+                }
+
+
+                int tileNum = gp.getTileM().mapTileNum[gp.currentMap][c][r];
+                // Giả sử mapTileNum là [mapIndex][col][row]
+
                 if (tileNum >= 0 && tileNum < gp.getTileM().tile.length &&
                         gp.getTileM().tile[tileNum] != null &&
                         gp.getTileM().tile[tileNum].collision) {
                     node[c][r].solid = true;
                 }
 
-
-                // Từ InteractiveTiles (CẦN HOÀN THIỆN LOGIC NÀY DỰA TRÊN GAME CỦA BẠN)
+                // Từ InteractiveTiles (Nếu bạn có hệ thống này, nó cũng cần nhận biết currentMap)
                 /*
-                if (gp.iTile != null && gp.iTile[gp.currentMap] != null) {
+                if (gp.iTile != null && gp.iTile[gp.currentMap] != null) { // Giả sử iTile là mảng 2 chiều [mapIndex][tileIndex]
                     for (InteractiveTile iTile : gp.iTile[gp.currentMap]) {
-                        if (iTile != null && iTile.isObstacle()) { // Giả sử có isObstacle()
+                        if (iTile != null && iTile.isObstacle()) {
                             int itCol = iTile.worldX / gp.getTileSize();
                             int itRow = iTile.worldY / gp.getTileSize();
                             if (itCol == c && itRow == r) {
                                 node[c][r].solid = true;
-                                break; // Node này đã solid, không cần kiểm tra iTile khác
+                                break;
                             }
                         }
                     }
