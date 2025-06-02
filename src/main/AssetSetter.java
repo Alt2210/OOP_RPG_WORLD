@@ -117,8 +117,8 @@ public class AssetSetter {
     private void setMap1_Monsters() {
         // Ví dụ, đặt Golem Boss ở map Dungeon
         gp.getMON_GolemBoss()[0] = new MON_GolemBoss(gp);
-        gp.getMON_GolemBoss()[0].worldX = gp.getTileSize() * 60;
-        gp.getMON_GolemBoss()[0].worldY = gp.getTileSize() * 60;
+        gp.getMON_GolemBoss()[0].worldX = gp.getTileSize() * 20;
+        gp.getMON_GolemBoss()[0].worldY = gp.getTileSize() * 20;
 
         gp.getMON_GreenSlime()[0] = new MON_GreenSlime(gp);
         gp.getMON_GreenSlime()[0].worldX = gp.getTileSize()*33; //
