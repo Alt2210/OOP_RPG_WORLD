@@ -1,4 +1,4 @@
-package ai;
+package pathfinder;
 
 public class Node {
     Node parent;

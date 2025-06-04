@@ -1,4 +1,4 @@
-package ai;
+package pathfinder;
 
 import character.Character; // Sửa lại import cho đúng package character của bạn
 import main.GamePanel;

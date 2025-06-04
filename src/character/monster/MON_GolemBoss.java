@@ -3,8 +3,8 @@ package character.monster;
 import character.Character;
 import character.Player;
 import main.GamePanel;
-import ai.Node;
-import ai.PathFinder;
+import pathfinder.Node;
+import pathfinder.PathFinder;
 import projectile.GolemArmProjectile;
 
 import java.awt.*;

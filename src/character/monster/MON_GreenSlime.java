@@ -3,13 +3,10 @@ package character.monster;
 import character.Character;
 import character.Player;
 import main.GamePanel;
-import projectile.Projectile;
 import projectile.Slimeball;
-import sound.Sound;
-import ai.*;
+import pathfinder.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 
 public class MON_GreenSlime extends Monster {
     private int projectileCooldown;
