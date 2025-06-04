@@ -17,7 +17,7 @@ public class Player extends Character {
     public final int screenX;
     public final int screenY;
     private int hasKey;
-    public Inventory inventorysize;
+    public Inventory inventory;
 
 
     // THÊM MỚI: Bộ đếm thời gian tấn công
@@ -32,8 +32,8 @@ public class Player extends Character {
     private final int FIREBALL_COOLDOWN_DURATION = 60; // Ví dụ: 1 giây (60 frames @ 60FPS)
     public Player(GamePanel gp, KeyHandler keyH) {
 
-        this.inventorysize = new Inventory(20);
         super(gp);
+        this.inventory = new Inventory(20);
         cip.setNumSprite(5);
 
         // Lưu tham chiếu đến KeyHandler.
@@ -58,7 +58,7 @@ public class Player extends Character {
 
 
     public void setItems(){
-        inventorysize.addItem();
+        //inventory.addItem(pickUpItem());
     }
 
 

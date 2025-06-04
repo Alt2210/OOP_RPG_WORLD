@@ -52,6 +52,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int dialogueState = 3;
     public final int victoryEndState = 4;
     public final int gameOverState = 5;
+    public final int PlayerState = 6;
     // Sound
     public Sound music = new Sound();
     public Sound soundEffect = new Sound();
