@@ -21,9 +21,16 @@ public class CharacterImageProcessor extends ImageProcessor {
     private ArrayList<BufferedImage> chargeLeft;
     private ArrayList<BufferedImage> laserRight;
     private ArrayList<BufferedImage> laserLeft;
+    private ArrayList<BufferedImage> laserUp;
+    private ArrayList<BufferedImage> laserDown;
+    private ArrayList<BufferedImage> armShotRight;
+    private ArrayList<BufferedImage> armShotLeft; // Thêm danh sách cho hướng trái
     private int laserSpriteCounter = 0;
     private int laserSpriteNum = 0;
-    private final int LASER_FRAMES_PER_ANIMATION = 4; // Mỗi frame kéo dài 4 frame (30 / 7 ≈ 4.28)
+    private int armShotSpriteCounter = 0;
+    private int armShotSpriteNum = 0;
+    private final int LASER_FRAMES_PER_ANIMATION = 4;
+    private final int ARM_SHOT_FRAMES_PER_ANIMATION = 6; // 60 frame cho 9 khung hình: 60/9 ≈ 6.67
     private Character character;
 
     public CharacterImageProcessor(GamePanel gp, Character character) {
@@ -39,6 +46,10 @@ public class CharacterImageProcessor extends ImageProcessor {
         chargeLeft = new ArrayList<>();
         laserRight = new ArrayList<>();
         laserLeft = new ArrayList<>();
+        laserUp = new ArrayList<>();
+        laserDown = new ArrayList<>();
+        armShotRight = new ArrayList<>();
+        armShotLeft = new ArrayList<>(); // Khởi tạo danh sách
     }
 
     @Override
@@ -53,15 +64,20 @@ public class CharacterImageProcessor extends ImageProcessor {
             } else if (attackLeft.size() > 0) {
                 return attackLeft.get(spriteNum % attackLeft.size());
             }
-        } else if (character instanceof MON_GolemBoss && ((MON_GolemBoss) character).isChargingLaser()) {
-            if (character.direction.equals("right") && chargeRight.size() > 0) {
-                return chargeRight.get(spriteNum % chargeRight.size());
-            } else if (character.direction.equals("left") && chargeLeft.size() > 0) {
-                return chargeLeft.get(spriteNum % chargeLeft.size());
-            } else if (chargeRight.size() > 0) {
-                return chargeRight.get(spriteNum % chargeRight.size());
-            } else if (chargeLeft.size() > 0) {
-                return chargeLeft.get(spriteNum % chargeLeft.size());
+        } else if (character instanceof MON_GolemBoss) {
+            MON_GolemBoss golemBoss = (MON_GolemBoss) character;
+            if (golemBoss.isChargingLaser()) {
+                if (character.direction.equals("right") && chargeRight.size() > 0) {
+                    return chargeRight.get(spriteNum % chargeRight.size());
+                } else if (character.direction.equals("left") && chargeLeft.size() > 0) {
+                    return chargeLeft.get(spriteNum % chargeLeft.size());
+                } else if (chargeRight.size() > 0) {
+                    return chargeRight.get(spriteNum % chargeRight.size());
+                } else if (chargeLeft.size() > 0) {
+                    return chargeLeft.get(spriteNum % chargeLeft.size());
+                }
+            } else if (golemBoss.isChargingArmShot()) {
+                return getArmShotFrame(); // Trả về khung hình hoạt ảnh "tháo cánh tay"
             }
         } else if (character instanceof MON_Bat && ((MON_Bat) character).isDashing()) {
             if (character.direction.equals("right") && right.size() > 0) {
@@ -103,20 +119,45 @@ public class CharacterImageProcessor extends ImageProcessor {
         laserSpriteCounter++;
         if (laserSpriteCounter >= LASER_FRAMES_PER_ANIMATION) {
             laserSpriteNum++;
-            // Chỉ sử dụng sprite 8-14 (index 7-13 trong danh sách)
-            if (laserSpriteNum >= 7) { // Đã chạy hết 7 frame (8-14)
-                laserSpriteNum = 0; // Reset về sprite 8 (index 7)
+            if (laserSpriteNum >= 7) {
+                laserSpriteNum = 0;
             }
             laserSpriteCounter = 0;
         }
 
-        int adjustedSpriteNum = laserSpriteNum + 7; // Chuyển từ 0-6 thành 7-13 (sprite 8-14)
+        int adjustedSpriteNum = laserSpriteNum + 7;
         if (direction.equals("right") && laserRight.size() > adjustedSpriteNum) {
             return laserRight.get(adjustedSpriteNum);
         } else if (direction.equals("left") && laserLeft.size() > adjustedSpriteNum) {
             return laserLeft.get(adjustedSpriteNum);
+        } else if (direction.equals("up") && laserUp.size() > adjustedSpriteNum) {
+            return laserUp.get(adjustedSpriteNum);
+        } else if (direction.equals("down") && laserDown.size() > adjustedSpriteNum) {
+            return laserDown.get(adjustedSpriteNum);
         }
         return null;
+    }
+
+    public BufferedImage getArmShotFrame() {
+        armShotSpriteCounter++;
+        if (armShotSpriteCounter >= ARM_SHOT_FRAMES_PER_ANIMATION) {
+            armShotSpriteNum++;
+            if (character.direction.equals("right") && armShotSpriteNum >= armShotRight.size()) {
+                armShotSpriteNum = 0;
+            } else if (character.direction.equals("left") && armShotSpriteNum >= armShotLeft.size()) {
+                armShotSpriteNum = 0;
+            }
+            armShotSpriteCounter = 0;
+        }
+
+        if (character.direction.equals("right") && armShotRight.size() > armShotSpriteNum) {
+            return armShotRight.get(armShotSpriteNum);
+        } else if (character.direction.equals("left") && armShotLeft.size() > armShotSpriteNum) {
+            return armShotLeft.get(armShotSpriteNum);
+        } else if (armShotRight.size() > armShotSpriteNum) { // Mặc định trả về right nếu hướng không hợp lệ
+            return armShotRight.get(armShotSpriteNum);
+        }
+        return null; // Tránh lỗi nếu danh sách rỗng
     }
 
     public void getImage(String folder, String name) {
@@ -181,7 +222,7 @@ public class CharacterImageProcessor extends ImageProcessor {
             }
         }
 
-        // Tải sprite tụ lực và tia laser (nếu là golemboss)
+        // Tải sprite tụ lực, tia laser và "tháo cánh tay" (nếu là golemboss)
         if (name.equals("golemboss")) {
             for (int i = 0; i < chargeSpriteCount; i++) {
                 String CHARGE_RIGHT_PATH = folder + "/" + name + "_laserright" + (i + 1) + ".png";
@@ -199,6 +240,8 @@ public class CharacterImageProcessor extends ImageProcessor {
             for (int i = 0; i < laserSpriteCount; i++) {
                 String LASER_RIGHT_PATH = folder + "/laserbeam_right" + (i + 1) + ".png";
                 String LASER_LEFT_PATH = folder + "/laserbeam_left" + (i + 1) + ".png";
+                String LASER_UP_PATH = folder + "/laserbeam_up" + (i + 1) + ".png";
+                String LASER_DOWN_PATH = folder + "/laserbeam_down" + (i + 1) + ".png";
                 BufferedImage image = setup(LASER_RIGHT_PATH);
                 if (image != null) laserRight.add(image);
                 else System.err.println("Không tải được: " + LASER_RIGHT_PATH);
@@ -206,18 +249,45 @@ public class CharacterImageProcessor extends ImageProcessor {
                 image = setup(LASER_LEFT_PATH);
                 if (image != null) laserLeft.add(image);
                 else System.err.println("Không tải được: " + LASER_LEFT_PATH);
-            }
-        }
 
-        // Đặt numSprite dựa trên trạng thái hiện tại
-        this.numSprite = Math.max(walkSpriteCount, Math.max(attackSpriteCount, chargeSpriteCount));
-        int minNonEmptySize = Integer.MAX_VALUE;
-        for (ArrayList<BufferedImage> list : new ArrayList[]{up, down, left, right, attackRight, attackLeft, chargeRight, chargeLeft}) {
-            if (list.size() > 0) {
-                minNonEmptySize = Math.min(minNonEmptySize, list.size());
+                image = setup(LASER_UP_PATH);
+                if (image != null) laserUp.add(image);
+                else System.err.println("Không tải được: " + LASER_UP_PATH);
+
+                image = setup(LASER_DOWN_PATH);
+                if (image != null) laserDown.add(image);
+                else System.err.println("Không tải được: " + LASER_DOWN_PATH);
+            }
+
+            // Tải sprite cho hoạt ảnh "tháo cánh tay" (hướng phải)
+            for (int i = 0; i < 9; i++) {
+                String ARM_SHOT_RIGHT_PATH = folder + "/golemboss_shotright" + (i + 1) + ".png";
+                BufferedImage image = setup(ARM_SHOT_RIGHT_PATH);
+                if (image != null) {
+                    armShotRight.add(image);
+                    System.out.println("Đã tải: " + ARM_SHOT_RIGHT_PATH);
+                } else {
+                    System.err.println("Không tải được: " + ARM_SHOT_RIGHT_PATH);
+                }
+            }
+            if (armShotRight.isEmpty()) {
+                System.err.println("Danh sách armShotRight rỗng! Hoạt ảnh tháo cánh tay (right) sẽ không hiển thị.");
+            }
+
+            // Tải sprite cho hoạt ảnh "tháo cánh tay" (hướng trái)
+            for (int i = 0; i < 9; i++) {
+                String ARM_SHOT_LEFT_PATH = folder + "/golemboss_shotleft" + (i + 1) + ".png";
+                BufferedImage image = setup(ARM_SHOT_LEFT_PATH);
+                if (image != null) {
+                    armShotLeft.add(image);
+                    System.out.println("Đã tải: " + ARM_SHOT_LEFT_PATH);
+                } else {
+                    System.err.println("Không tải được: " + ARM_SHOT_LEFT_PATH);
+                }
+            }
+            if (armShotLeft.isEmpty()) {
+                System.err.println("Danh sách armShotLeft rỗng! Hoạt ảnh tháo cánh tay (left) sẽ không hiển thị.");
             }
         }
-        this.numSprite = minNonEmptySize == Integer.MAX_VALUE ? 1 : Math.min(this.numSprite, minNonEmptySize);
-        System.out.println("Adjusted numSprite: " + this.numSprite);
     }
 }

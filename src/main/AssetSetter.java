@@ -1,14 +1,13 @@
 package main;
 import character.*;
-import character.NPC_OldMan;
 import character.monster.MON_Bat;
 import character.monster.MON_GolemBoss;
 import character.monster.MON_GreenSlime;
-import character.monster.Monster;
-import item.Item_Key;
 import worldObject.pickableObject.OBJ_Key;
 import worldObject.unpickableObject.OBJ_Chest;
 import worldObject.unpickableObject.OBJ_Door;
+import worldObject.unpickableObject.OBJ_Portal; // THÊM IMPORT CHO PORTAL
+
 
 public class AssetSetter {
     GamePanel gp;
@@ -16,71 +15,118 @@ public class AssetSetter {
     public AssetSetter(GamePanel gp) {
         this.gp = gp;
     }
+    public void setupMapAssets(int mapIndex) {
+        System.out.println("AssetSetter: Setting up assets for map " + mapIndex);
 
-    public void setWObjects() {
+        if (mapIndex == 0) { // Map "Plain"
+            setMap0_Objects();
+            setMap0_NPCs();
+            setMap0_Monsters();
+        } else if (mapIndex == 1) { // Map "Dungeon"
+            setMap1_Objects();
+            setMap1_NPCs();
+            setMap1_Monsters();
+        }
+        // Thêm else if cho các map khác nếu có
+        // else if (mapIndex == 2) { ... }
+    }
+    public void removeDeadMonster(MON_GreenSlime[] monsterArray, int index, int mapIndex) { //
+        if (monsterArray != null && index >= 0 && index < monsterArray.length && monsterArray[index] != null) { //
+            System.out.println("Removing " + monsterArray[index].getName() + " at index " + index + " from map " + mapIndex); //
+            monsterArray[index] = null; //
+        }
+    }
+
+    public void removeDeadMonster(MON_Bat[] monsterArray, int index, int mapIndex) { //
+        if (monsterArray != null && index >= 0 && index < monsterArray.length && monsterArray[index] != null) { //
+            System.out.println("Removing " + monsterArray[index].getName() + " at index " + index + " from map " + mapIndex); //
+            monsterArray[index] = null; //
+        }
+    }
+    public void removeDeadMonster(MON_GolemBoss[] monsterArray, int index, int mapIndex) { //
+        if (monsterArray != null && index >= 0 && index < monsterArray.length && monsterArray[index] != null) { //
+            System.out.println("Removing " + monsterArray[index].getName() + " at index " + index + " from map " + mapIndex); //
+            monsterArray[index] = null; //
+        }
+    }
+
+
+    // đặt objects, NPCs, Monsters cho map 0
+    private void setMap0_Objects() {
+        gp.getwObjects()[0] = new OBJ_Key(gp);
+        gp.getwObjects()[0].worldX = 20 * gp.getTileSize();
+        gp.getwObjects()[0].worldY = 20 * gp.getTileSize();
+
+        gp.getwObjects()[1] = new OBJ_Door();
+        gp.getwObjects()[1].worldX = 22 * gp.getTileSize();
+        gp.getwObjects()[1].worldY = 20 * gp.getTileSize();
+
+        // Portal từ Map 0 (Plain) đến Map 1 (Dungeon)
+        gp.getwObjects()[2] = new OBJ_Portal(gp, 1, 10, 12); // targetMap=1, playerTileX_onNewMap=10, playerTileY_onNewMap=12
+        gp.getwObjects()[2].worldX = 67 * gp.getTileSize(); // Vị trí portal trên map 0
+        gp.getwObjects()[2].worldY = 40 * gp.getTileSize(); // Vị trí portal trên map 0
+
+        System.out.println("Map 0 Objects Set. Portal to map 1 at (67,40) leading to (10,12) on map 1.");
+    }
+
+    private void setMap0_NPCs() {
+        gp.getNpc()[0] = new NPC_OldMan(gp);
+        gp.getNpc()[0].worldX = gp.getTileSize() * 15;
+        gp.getNpc()[0].worldY = gp.getTileSize() * 15;
+        System.out.println("Map 0 NPCs Set.");
+    }
+
+    private void setMap0_Monsters() {
+        gp.getMON_GreenSlime()[0] = new MON_GreenSlime(gp);
+        gp.getMON_GreenSlime()[0].worldX = gp.getTileSize() * 30;
+        gp.getMON_GreenSlime()[0].worldY = gp.getTileSize() * 30;
+
+        gp.getMON_Bat()[0] = new MON_Bat(gp);
+        gp.getMON_Bat()[0].worldX = gp.getTileSize()*35;
+        gp.getMON_Bat()[0].worldY = gp.getTileSize()*35;
+        System.out.println("Map 0 Monsters Set.");
+    }
+
+    // đặt objects, NPCs, Monsters cho map 1
+    private void setMap1_Objects() {
         gp.getwObjects()[0] = new OBJ_Key(gp);
         gp.getwObjects()[0].worldX = 35 * gp.getTileSize();
         gp.getwObjects()[0].worldY = 35 * gp.getTileSize();
 
-        gp.getwObjects()[1] = new OBJ_Key(gp);
-        gp.getwObjects()[1].worldX = 35 * gp.getTileSize();
-        gp.getwObjects()[1].worldY = 38 * gp.getTileSize();
+        // SỬA Ở ĐÂY: Gọi constructor không tham số cho OBJ_Chest
+        gp.getwObjects()[1] = new OBJ_Chest(); // Không truyền gp vào đây nữa
+        gp.getwObjects()[1].worldX = 40 * gp.getTileSize();
+        gp.getwObjects()[1].worldY = 40 * gp.getTileSize();
 
-        gp.getwObjects()[2] = new OBJ_Door();
-        gp.getwObjects()[2].worldX = 35 * gp.getTileSize();
-        gp.getwObjects()[2].worldY = 40 * gp.getTileSize();
-
-        gp.getwObjects()[3] = new OBJ_Door();
-        gp.getwObjects()[3].worldX = 35 * gp.getTileSize();
-        gp.getwObjects()[3].worldY = 42 * gp.getTileSize();
-
-        gp.getwObjects()[4] = new OBJ_Door();
-        gp.getwObjects()[4].worldX = 35 * gp.getTileSize();
-        gp.getwObjects()[4].worldY = 44 * gp.getTileSize();
-
-        gp.getwObjects()[5] = new OBJ_Chest();
-        gp.getwObjects()[5].worldX = 35 * gp.getTileSize();
-        gp.getwObjects()[5].worldY = 43 * gp.getTileSize();
-
-
+        // portal từ map 1 về map 0
+        int portalIndex = 2;
+        if(gp.getwObjects().length > portalIndex) {
+            gp.getwObjects()[portalIndex] = new OBJ_Portal(gp, 0, 26, 25);
+            gp.getwObjects()[portalIndex].worldX = 12 * gp.getTileSize();
+            gp.getwObjects()[portalIndex].worldY = 10 * gp.getTileSize();
+        }
     }
-    public void setNPC(){
-        gp.getNpc()[0] = new NPC_OldMan(gp);
-        gp.getNpc()[0].worldX = gp.getTileSize()*25;
-        gp.getNpc()[0].worldY = gp.getTileSize()*24;
-        gp.getNpc()[1] = new NPC_Princess(gp);
-        gp.getNpc()[1].worldX = gp.getTileSize()*25;
-        gp.getNpc()[1].worldY = gp.getTileSize()*25;
+
+    private void setMap1_NPCs() {
+        gp.getNpc()[0] = new NPC_Princess(gp);
+        gp.getNpc()[0].worldX = gp.getTileSize() * 50;
+        gp.getNpc()[0].worldY = gp.getTileSize() * 50;
+        System.out.println("Map 1 NPCs Set.");
     }
-    public void setGreenSlime(){
-        gp.getMON_GreenSlime()[0] = new MON_GreenSlime(gp);
-        gp.getMON_GreenSlime()[0].worldX = gp.getTileSize()*33;
-        gp.getMON_GreenSlime()[0].worldY = gp.getTileSize()*33;
 
-        gp.getMON_GreenSlime()[1] = new MON_GreenSlime(gp);
-        gp.getMON_GreenSlime()[1].worldX = gp.getTileSize()*34;
-        gp.getMON_GreenSlime()[1].worldY = gp.getTileSize()*33;
-
-        gp.getMON_GreenSlime()[2] = new MON_GreenSlime(gp);
-        gp.getMON_GreenSlime()[2].worldX = gp.getTileSize()*35;
-        gp.getMON_GreenSlime()[2].worldY = gp.getTileSize()*33;
-    }
-    public void setBat(){
-        gp.getMON_Bat()[0] = new MON_Bat(gp);
-        gp.getMON_Bat()[0].worldX = gp.getTileSize()*27;
-        gp.getMON_Bat()[0].worldY = gp.getTileSize()*33;
-
-        gp.getMON_Bat()[1] = new MON_Bat(gp);
-        gp.getMON_Bat()[1].worldX = gp.getTileSize()*26;
-        gp.getMON_Bat()[1].worldY = gp.getTileSize()*33;
-
-    }
-    // Trong AssetSetter.java
-    public void setGolemBoss() {
+    private void setMap1_Monsters() {
+        // Ví dụ, đặt Golem Boss ở map Dungeon
         gp.getMON_GolemBoss()[0] = new MON_GolemBoss(gp);
-        gp.getMON_GolemBoss()[0].worldX = gp.getTileSize() * 21;
-        gp.getMON_GolemBoss()[0].worldY = gp.getTileSize() * 21;
+        gp.getMON_GolemBoss()[0].worldX = gp.getTileSize() * 20;
+        gp.getMON_GolemBoss()[0].worldY = gp.getTileSize() * 20;
+
+        gp.getMON_GreenSlime()[0] = new MON_GreenSlime(gp);
+        gp.getMON_GreenSlime()[0].worldX = gp.getTileSize()*33; //
+        gp.getMON_GreenSlime()[0].worldY = gp.getTileSize()*33; //
+
+        gp.getMON_GreenSlime()[1] = new MON_GreenSlime(gp); //
+        gp.getMON_GreenSlime()[1].worldX = gp.getTileSize()*34; //
+        gp.getMON_GreenSlime()[1].worldY = gp.getTileSize()*33; //
+        System.out.println("Map 1 Monsters Set.");
     }
-
-
 }

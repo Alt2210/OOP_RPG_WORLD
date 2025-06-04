@@ -78,7 +78,7 @@ public class Player extends Character {
         attack = 10; // Giá trị tấn công của người chơi
         defense = 2; // Giá trị phòng thủ của người chơi
         attackRange = 100;
-        name = "a Duc ruc lua";
+        name = "a Dung chim to";
         maxMana = 500; // Ví dụ: Player có tối đa 500 Mana
         currentMana = maxMana;
         fireballManaCost = 10; // Ví dụ: Fireball tốn 10 Mana

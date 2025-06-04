@@ -15,56 +15,50 @@ public class TileManager {
 
     GamePanel gp;
     public Tile[] tile;
-    public int mapTileNum[][];
-    // boolean DrawPath = false; // Biến này có vẻ chưa được sử dụng
+    public int mapTileNum[][][]; // Mảng 3 chiều cho các map
     ArrayList<String> fileNames = new ArrayList<>();
     ArrayList<String> collisionStatus = new ArrayList<>();
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
 
-        // Đọc dữ liệu tile từ plain_tile.txt
+        // Đọc dữ liệu tile từ plain_tile.txt (giữ nguyên)
         InputStream isTileData = getClass().getResourceAsStream("/maps/plain_tile.txt");
         if (isTileData == null) {
-            System.err.println("LỖI NGHIÊM TRỌNG: Không thể tìm thấy tệp plain_tile.txt. Hãy kiểm tra đường dẫn trong thư mục resources/maps.");
+            System.err.println("LỖI NGHIÊM TRỌNG: Không thể tìm thấy tệp plain_tile.txt.");
             // Thoát hoặc ném một RuntimeException nếu đây là lỗi nghiêm trọng
             return;
         }
         BufferedReader brTileData = new BufferedReader(new InputStreamReader(isTileData));
-
         String line;
         try {
             while ((line = brTileData.readLine()) != null) {
-                fileNames.add(line); // Tên tệp ảnh
+                fileNames.add(line);
                 String collisionLine = brTileData.readLine();
                 if (collisionLine != null) {
                     collisionStatus.add(collisionLine);
                 } else {
                     System.err.println("Lỗi định dạng tệp plain_tile.txt: thiếu dòng collision cho tile " + line);
-                    // Có thể thêm một giá trị collision mặc định (ví dụ "false") hoặc xử lý lỗi khác
-                    collisionStatus.add("false"); // Ví dụ: mặc định là không va chạm nếu thiếu thông tin
+                    collisionStatus.add("false"); // Mặc định không va chạm
                 }
             }
             brTileData.close();
         } catch (IOException e) {
             System.err.println("Lỗi khi đọc plain_tile.txt");
             e.printStackTrace();
-            return; // Không thể tiếp tục nếu không đọc được thông tin tile
+            return;
         }
 
-        tile = new Tile[fileNames.size()]; // Khởi tạo mảng tile với kích thước chính xác
-        getTileImage(); // Điền vào mảng tile với các đối tượng Tile đã được tải ảnh
+        tile = new Tile[fileNames.size()];
+        getTileImage();
 
+        // Khởi tạo mảng 3 chiều cho map data
+        mapTileNum = new int[gp.maxMap][gp.getMaxWorldCol()][gp.getMaxWorldRow()];
 
-        if (gp.getMaxWorldCol() == 0 || gp.getMaxWorldRow() == 0) {
-            System.out.println("Cảnh báo: gp.maxWorldCol/Row là 0. Sử dụng kích thước mặc định 100x100 cho plain.txt. Hãy đảm bảo GamePanel cung cấp kích thước này.");
-            gp.maxWorldCol = 100;
-            gp.maxWorldRow = 100;
-        }
-        mapTileNum = new int[gp.getMaxWorldCol()][gp.getMaxWorldRow()];
-
-
-        loadMap("/maps/dungeon.txt"); // Tải dữ liệu map tile numbers
+        // Tải dữ liệu cho từng map
+        loadMap("/maps/plain.txt", 0); // Map 0
+        loadMap("/maps/dungeon.txt", 1); // Map 1
+        // Thêm các lời gọi loadMap khác nếu bạn có nhiều hơn 2 map
     }
 
     public BufferedImage setup(String imagePathInTilesFolder) {
@@ -73,15 +67,14 @@ public class TileManager {
             String fullPath = "/tiles/" + imagePathInTilesFolder;
             InputStream is = getClass().getResourceAsStream(fullPath);
             if (is == null) {
-                System.err.println("Lỗi: Không tìm thấy tệp ảnh tile: " + fullPath + " (Đường dẫn đầy đủ từ gốc resources)");
-                // Tạo ảnh báo lỗi để dễ debug
+                System.err.println("Lỗi: Không tìm thấy tệp ảnh tile: " + fullPath);
                 image = new BufferedImage(gp.getTileSize(), gp.getTileSize(), BufferedImage.TYPE_INT_ARGB);
                 Graphics2D g2 = image.createGraphics();
-                g2.setColor(Color.MAGENTA); // Màu dễ nhận biết
+                g2.setColor(Color.MAGENTA);
                 g2.fillRect(0, 0, gp.getTileSize(), gp.getTileSize());
                 g2.setFont(new Font("Arial", Font.BOLD, 8));
                 g2.setColor(Color.BLACK);
-                g2.drawString("ERR", 5, gp.getTileSize()/2);
+                g2.drawString("ERR", 5, gp.getTileSize() / 2);
                 g2.dispose();
                 return image;
             }
@@ -90,10 +83,9 @@ public class TileManager {
         } catch (IOException e) {
             System.err.println("Lỗi IO khi đọc tệp ảnh tile: " + imagePathInTilesFolder);
             e.printStackTrace();
-            // Tạo ảnh báo lỗi
             image = new BufferedImage(gp.getTileSize(), gp.getTileSize(), BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2 = image.createGraphics();
-            g2.setColor(Color.ORANGE); // Màu khác cho lỗi IO
+            g2.setColor(Color.ORANGE);
             g2.fillRect(0, 0, gp.getTileSize(), gp.getTileSize());
             g2.dispose();
         }
@@ -102,62 +94,52 @@ public class TileManager {
 
     public void getTileImage() {
         if (fileNames.size() != collisionStatus.size()) {
-            System.err.println("LỖI NGHIÊM TRỌNG: Số lượng fileNames (" + fileNames.size() + ") không khớp với collisionStatus (" + collisionStatus.size() + ") trong plain_tile.txt.");
-            return; // Không thể tiếp tục an toàn
+            System.err.println("LỖI NGHIÊM TRỌNG: Số lượng fileNames không khớp với collisionStatus.");
+            return;
         }
         if (tile == null || tile.length != fileNames.size()) {
-            System.err.println("LỖI NGHIÊM TRỌNG: Mảng 'tile' chưa được khởi tạo hoặc có kích thước không đúng.");
-            tile = new Tile[fileNames.size()]; // Cố gắng khởi tạo lại nếu bị null
+            tile = new Tile[fileNames.size()];
         }
 
         for (int i = 0; i < fileNames.size(); i++) {
             String fileName = fileNames.get(i);
-            boolean collision = collisionStatus.get(i).equalsIgnoreCase("true"); // Dùng equalsIgnoreCase cho chắc chắn
-
-            tile[i] = new Tile(); // Khởi tạo đối tượng Tile cho mỗi phần tử mảng
-
-            tile[i].image = setup(fileName); // Tải hình ảnh
-            tile[i].collision = collision;   // Gán thuộc tính va chạm
-
-            if (tile[i].image == null) { // Kiểm tra sau khi gọi setup
-                System.err.println("Cảnh báo: Không thể tải hình ảnh cho tile '" + fileName + "' (index " + i + "). Tile này sẽ không được vẽ đúng.");
-                // Ảnh báo lỗi đã được tạo trong hàm setup nếu is == null hoặc có IOException
+            boolean collision = collisionStatus.get(i).equalsIgnoreCase("true");
+            tile[i] = new Tile();
+            tile[i].image = setup(fileName);
+            tile[i].collision = collision;
+            if (tile[i].image == null) {
+                System.err.println("Cảnh báo: Không thể tải hình ảnh cho tile '" + fileName + "'.");
             }
         }
         System.out.println("TileManager: Đã xử lý " + fileNames.size() + " định nghĩa tile.");
     }
 
-    public void loadMap(String filePath) {
+    public void loadMap(String filePath, int mapIndex) {
+        if (mapIndex < 0 || mapIndex >= gp.maxMap) {
+            System.err.println("Lỗi: mapIndex " + mapIndex + " không hợp lệ. Phải nằm trong khoảng 0 đến " + (gp.maxMap - 1));
+            return;
+        }
         try {
             InputStream is = getClass().getResourceAsStream(filePath);
             if (is == null) {
-                System.err.println("LỖI NGHIÊM TRỌNG: Không thể tìm thấy tệp map: " + filePath);
+                System.err.println("LỖI NGHIÊM TRỌNG: Không thể tìm thấy tệp map: " + filePath + " cho map index " + mapIndex);
+                // Điền map này bằng tile 0 (hoặc tile mặc định) để tránh NullPointerException khi vẽ
+                for (int r = 0; r < gp.getMaxWorldRow(); r++) {
+                    for (int c = 0; c < gp.getMaxWorldCol(); c++) {
+                        mapTileNum[mapIndex][c][r] = 0;
+                    }
+                }
                 return;
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-            // Đảm bảo mapTileNum đã được khởi tạo với kích thước chính xác
-            if (mapTileNum == null || mapTileNum.length != gp.getMaxWorldCol() ||
-                    (gp.getMaxWorldCol() > 0 && (mapTileNum[0] == null || mapTileNum[0].length != gp.getMaxWorldRow()))) {
-                System.err.println("LỖI NGHIÊM TRỌNG: mapTileNum chưa được khởi tạo đúng kích thước ("
-                        + gp.getMaxWorldCol() + "x" + gp.getMaxWorldRow() + ") trong loadMap.");
-                // Cố gắng khởi tạo lại nếu có thể, mặc dù lý tưởng là nó đã phải đúng từ constructor
-                if (gp.getMaxWorldCol() > 0 && gp.getMaxWorldRow() > 0) {
-                    mapTileNum = new int[gp.getMaxWorldCol()][gp.getMaxWorldRow()];
-                } else {
-                    System.err.println("Không thể khởi tạo mapTileNum do kích thước map không hợp lệ.");
-                    br.close();
-                    return;
-                }
-            }
-
             int row = 0;
-            String line;
-            while (row < gp.getMaxWorldRow() && (line = br.readLine()) != null) {
-                String numbers[] = line.trim().split("\\s+"); // Trim và split bằng một hoặc nhiều khoảng trắng
+            String mapLine; // Đổi tên biến 'line' để tránh xung đột với biến 'line' trong constructor
+            while (row < gp.getMaxWorldRow() && (mapLine = br.readLine()) != null) {
+                String numbers[] = mapLine.trim().split("\\s+");
 
                 if (numbers.length < gp.getMaxWorldCol()) {
-                    System.err.println("Cảnh báo: Dòng " + (row + 1) + " trong " + filePath + " có " + numbers.length + " cột, cần " + gp.getMaxWorldCol() + " cột. Sẽ điền phần thiếu bằng tile 0.");
+                    System.err.println("Cảnh báo: Dòng " + (row + 1) + " trong " + filePath + " (map " + mapIndex + ") có " + numbers.length + " cột, cần " + gp.getMaxWorldCol() + " cột. Sẽ điền phần thiếu bằng tile 0.");
                 }
 
                 for (int col = 0; col < gp.getMaxWorldCol(); col++) {
@@ -165,61 +147,85 @@ public class TileManager {
                         try {
                             int num = Integer.parseInt(numbers[col]);
                             if (num >= 0 && num < tile.length) {
-                                mapTileNum[col][row] = num;
+                                mapTileNum[mapIndex][col][row] = num;
                             } else {
-                                System.err.println("Cảnh báo: Tile number " + num + " (tại [" + col + "," + row + "] trong " + filePath + ") không hợp lệ (ngoài khoảng 0-" + (tile.length - 1) + "). Sử dụng tile 0.");
-                                mapTileNum[col][row] = 0;
+                                System.err.println("Cảnh báo: Tile number " + num + " (tại [" + col + "," + row + "] trong " + filePath + ", map " + mapIndex + ") không hợp lệ. Sử dụng tile 0.");
+                                mapTileNum[mapIndex][col][row] = 0;
                             }
                         } catch (NumberFormatException e) {
-                            System.err.println("Lỗi định dạng số '" + numbers[col] + "' tại [" + col + "," + row + "] trong " + filePath + ". Sử dụng tile 0.");
-                            mapTileNum[col][row] = 0;
+                            System.err.println("Lỗi định dạng số '" + numbers[col] + "' tại [" + col + "," + row + "] trong " + filePath + ", map " + mapIndex + ". Sử dụng tile 0.");
+                            mapTileNum[mapIndex][col][row] = 0;
                         }
                     } else {
-                        // Nếu dòng ngắn hơn maxWorldCol, điền các ô còn thiếu
-                        mapTileNum[col][row] = 0; // Tile mặc định
+                        mapTileNum[mapIndex][col][row] = 0; // Điền các ô còn thiếu nếu dòng ngắn
                     }
                 }
                 row++;
             }
 
             if (row < gp.getMaxWorldRow()) {
-                System.err.println("Cảnh báo: Tệp map " + filePath + " chỉ có " + row + " dòng, cần " + gp.getMaxWorldRow() + " dòng. Các dòng còn thiếu sẽ được điền bằng tile 0.");
+                System.err.println("Cảnh báo: Tệp map " + filePath + " (map " + mapIndex + ") chỉ có " + row + " dòng, cần " + gp.getMaxWorldRow() + " dòng. Các dòng còn thiếu sẽ được điền bằng tile 0.");
                 for (int r = row; r < gp.getMaxWorldRow(); r++) {
                     for (int c = 0; c < gp.getMaxWorldCol(); c++) {
-                        mapTileNum[c][r] = 0; // Tile mặc định
+                        mapTileNum[mapIndex][c][r] = 0;
                     }
                 }
             }
             br.close();
-            System.out.println("TileManager: Đã tải map " + filePath + " với kích thước " + gp.getMaxWorldCol() + "x" + gp.getMaxWorldRow());
+            System.out.println("TileManager: Đã tải map " + filePath + " vào index " + mapIndex);
         } catch (IOException e) {
-            System.err.println("Lỗi IO khi tải map: " + filePath);
+            System.err.println("Lỗi IO khi tải map: " + filePath + " cho map index " + mapIndex);
             e.printStackTrace();
         } catch (Exception e) {
-            System.err.println("Lỗi không xác định khi tải map: " + filePath);
+            System.err.println("Lỗi không xác định khi tải map: " + filePath + " cho map index " + mapIndex);
             e.printStackTrace();
         }
     }
 
     public void draw(Graphics2D g2) {
-        if (tile == null || mapTileNum == null) {
-            System.err.println("TileManager.draw(): Mảng 'tile' hoặc 'mapTileNum' là null. Không thể vẽ map.");
+        if (tile == null || mapTileNum == null || gp.getPlayer() == null) {
+            System.err.println("TileManager.draw(): Một trong các thành phần (tile, mapTileNum, player) là null. Không thể vẽ map.");
             g2.setColor(Color.BLACK);
             g2.fillRect(0,0,gp.getScreenWidth(), gp.getScreenHeight());
-            g2.setColor(Color.WHITE);
-            g2.drawString("LỖI TẢI MAP", 50,50);
+            g2.setColor(Color.RED);
+            g2.setFont(new Font("Arial", Font.BOLD, 20));
+            g2.drawString("LỖI TẢI DỮ LIỆU MAP HOẶC PLAYER", 50,50);
             return;
         }
 
         int worldCol = 0;
         int worldRow = 0;
 
+        int currentMapIndex = gp.currentMap;
+        if (currentMapIndex < 0 || currentMapIndex >= gp.maxMap) {
+            System.err.println("Lỗi: currentMapIndex (" + currentMapIndex + ") không hợp lệ trong TileManager.draw(). Vẽ map 0 mặc định.");
+            currentMapIndex = 0; // Fallback về map 0
+            if (currentMapIndex >= gp.maxMap) { // Nếu maxMap cũng không hợp lệ (ví dụ 0) thì không thể vẽ
+                g2.setColor(Color.DARK_GRAY);
+                g2.fillRect(0,0,gp.getScreenWidth(), gp.getScreenHeight());
+                g2.setColor(Color.YELLOW);
+                g2.drawString("LỖI: Không có map nào để vẽ.", 50, 100);
+                return;
+            }
+        }
+
+
         while (worldCol < gp.getMaxWorldCol() && worldRow < gp.getMaxWorldRow()) {
-            int tileNum = 0; // Giá trị mặc định an toàn
-            if (worldCol < mapTileNum.length && worldRow < mapTileNum[worldCol].length) {
-                tileNum = mapTileNum[worldCol][worldRow];
-            } else {
-                System.err.println("Lỗi truy cập mapTileNum ngoài giới hạn tại draw: " + worldCol + ", " + worldRow);
+            int tileNum = 0;
+            // Truy cập mảng 3 chiều với map hiện tại
+            try {
+                tileNum = mapTileNum[currentMapIndex][worldCol][worldRow];
+            } catch(ArrayIndexOutOfBoundsException e) {
+                System.err.println("Lỗi nghiêm trọng: Truy cập mapTileNum["+currentMapIndex+"]["+worldCol+"]["+worldRow+"] ngoài giới hạn! Kích thước: " +
+                        mapTileNum.length + "x" + (mapTileNum.length > 0 ? mapTileNum[0].length : "N/A") + "x" +
+                        (mapTileNum.length > 0 && mapTileNum[0].length > 0 ? mapTileNum[0][0].length : "N/A"));
+                // Không làm gì thêm để tránh crash vòng lặp
+                worldCol++;
+                if (worldCol == gp.getMaxWorldCol()) {
+                    worldCol = 0;
+                    worldRow++;
+                }
+                continue;
             }
 
 
@@ -228,18 +234,17 @@ public class TileManager {
             int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
             int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
 
-            // Chỉ vẽ những tile trong màn hình
             if (screenX > -gp.getTileSize() && screenX < gp.getScreenWidth() &&
                     screenY > -gp.getTileSize() && screenY < gp.getScreenHeight()) {
 
                 if (tileNum >= 0 && tileNum < tile.length && tile[tileNum] != null && tile[tileNum].image != null) {
                     g2.drawImage(tile[tileNum].image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
                 } else {
-                    // Vẽ tile báo lỗi nếu tileNum không hợp lệ, tile[tileNum] là null, hoặc ảnh của nó là null
-                    g2.setColor(new Color(255, 0, 255, 150)); // Màu Magenta mờ
+                    g2.setColor(new Color(255, 0, 255, 150));
                     g2.fillRect(screenX, screenY, gp.getTileSize(), gp.getTileSize());
                     g2.setColor(Color.BLACK);
                     g2.drawRect(screenX, screenY, gp.getTileSize()-1, gp.getTileSize()-1);
+
                 }
             }
 
