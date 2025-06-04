@@ -1,6 +1,7 @@
 package main; // Hoặc package của bạn
 
 import character.Player;
+import item.ItemStack;
 // import worldObject.pickableObject.OBJ_Key;
 
 import javax.imageio.ImageIO;
@@ -115,6 +116,8 @@ public class UI {
             drawDialogueScreen(g2);
         } else if (gp.gameState == gp.gameOverState){
             drawGameOverScreen(g2);
+        } else if (gp.gameState == gp.PlayerState){
+            drawIventory(g2);
         }
     }
 
@@ -577,6 +580,7 @@ public class UI {
         y += gp.getTileSize(); // Dịch xuống một chút
         drawTextWithShadow(g2, exitText, x, y, Color.WHITE, menuTextShadowColor, 1);
     }
+
     public void drawIventory(Graphics2D g2) {
         //Frame
         int frameX = gp.getTileSize() * 9;
@@ -590,10 +594,19 @@ public class UI {
         final int slotYstart = frameY + 20;
         int slotX = slotXstart;
         int slotY = slotYstart;
+        int slotsSize = gp.getTileSize()+3;
 
         //Draw player's item
-        for(int i=0;i < gp.getPlayer().inventorysize;i++) {
-            g2.drawImage(gp.getPlayer().inventorysize.get(i));
+        for(int i=0;i < gp.getPlayer().inventory.getItemStack();i++) {
+            g2.drawImage(gp.getPlayer().inventory.getItemStack(i).getItem().getItp().getCurFrame(),slotX,slotY,null);
+
+            slotX += slotsSize;
+
+            if(i == 4 || i == 9 || i == 14) {
+                slotX = slotXstart;
+                slotY += slotsSize;
+
+            }
         }
 
         //CURSOR
@@ -604,5 +617,31 @@ public class UI {
         //Draw Cursor
         g2.setColor(Color.white);
         g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight,10,10);
+        g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
+        //Description Frame
+        int dFrameX = frameX;
+        int dFrameY = frameY + frameHeight;
+        int dFrameWidth = frameWidth;
+        int dFrameHeight = gp.getTileSize() * 3;
+        drawSubWindow(dFrameX,dFrameY,dFrameWidth,dFrameHeight,g2);
+        //Draw Description
+        int textX = dFrameX + 20;
+        int textY = dFrameY + gp.getTileSize();
+        g2.setFont(g2.getFont().deriveFont(28F));
+
+        int itemIndex = getItemIndexOnSlot();
+
+        if(itemIndex < gp.getPlayer().inventory.getItemStack()){
+            for(String line: gp.getPlayer().inventory.getItemStack(itemIndex).getItem().getDescription().split("\n")){
+                g2.drawString(line, textX, textY);
+                textY += 32;
+            }
+        }
+
+    }
+
+    public int getItemIndexOnSlot() {
+        int itemIndex = slotCol + (slotCol*5);
+        return itemIndex;
     }
 }

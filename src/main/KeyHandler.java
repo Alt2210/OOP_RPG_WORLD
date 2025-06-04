@@ -89,6 +89,9 @@ public class KeyHandler implements KeyListener {
             if (code == KeyEvent.VK_ESCAPE) {
                 // gp.gameState = gp.titleState; // Ví dụ: quay về màn hình chính
             }
+            if (code == KeyEvent.VK_C) {
+                gp.gameState = gp.PlayerState; // Chuyển sang trạng thái túi đồ
+            }
         } else if (gp.gameState == gp.pauseState) {
             if (code == KeyEvent.VK_P) {
                 gp.gameState = gp.playState;
@@ -115,6 +118,22 @@ public class KeyHandler implements KeyListener {
             if (code == KeyEvent.VK_ESCAPE) {
                 System.exit(0);
             }
+        } else if (gp.gameState == gp.PlayerState) {
+            if (code == KeyEvent.VK_C) {
+                gp.gameState = gp.playState;
+            }
+            if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+                gp.getUi().slotRow--;
+            }
+            if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+                gp.getUi().slotRow++;
+            }
+            if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+                gp.getUi().slotCol--;
+            }
+            if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+                gp.getUi().slotCol++;
+            }
         }
     }
 
@@ -122,73 +141,28 @@ public class KeyHandler implements KeyListener {
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
 
-<<<<<<< HEAD
-        // Chỉ cần reset các cờ liên quan đến trạng thái playState
-        // Các hành động trong titleState, dialogueState, etc. thường là "nhấn một lần".
-        if (gp.gameState == gp.playState || gp.gameState == gp.titleState /*hoặc bất kỳ state nào dùng các phím này*/) {
-            if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { upPressed = false; }
-            if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { downPressed = false; }
-            if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) { leftPressed = false; }
-            if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) { rightPressed = false; }
+        if (gp.gameState == gp.playState || gp.gameState == gp.titleState) {
+            if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+                upPressed = false;
+            }
+            if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+                downPressed = false;
+            }
+            if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+                leftPressed = false;
+            }
+            if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+                rightPressed = false;
+            }
             if (code == KeyEvent.VK_SPACE) {
-                attackPressed = false; // Đặt lại khi thả phím tấn công
-                // System.out.println("Space released (attack): " + attackPressed);
+                attackPressed = false;
             }
             if (code == KeyEvent.VK_ENTER) {
-                enterPressed = false; // Reset cờ enter
+                enterPressed = false;
             }
             if (code == KeyEvent.VK_U) {
-                skill1Pressed = false; // Đặt lại khi thả phím kỹ năng 1
-                // System.out.println("Skill 1 released: " + skill1Pressed);
+                skill1Pressed = false;
             }
-            /*public void characterState() {
-                if(code == KeyEvent.VK_C) {
-                    gp.gameState = gp.playState;
-                }
-                if(code == KeyEvent.VK_W) {
-                    if(gp.getUi().slotRow !=0){
-                        gp.getUi().slotRow--;
-                    }
-                }
-                if(code == KeyEvent.VK_A) {
-                    if(gp.getUi().slotCol !=0){
-                        gp.getUi().slotCol--;
-                    }
-                }
-                if(code == KeyEvent.VK_S) {
-                    if(gp.getUi().slotRow !=3){
-                        gp.getUi().slotRow++;
-                    }
-                }
-                if(code == KeyEvent.VK_D) {
-                    if(gp.getUi().slotCol !=4){
-                        gp.getUi().slotCol++;
-                    }
-                }*/
-=======
-
-        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-            upPressed = false;
-        }
-        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-            downPressed = false;
-        }
-        if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
-            leftPressed = false;
-        }
-        if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-            rightPressed = false;
-        }
-        if (code == KeyEvent.VK_SPACE) {
-            attackPressed = false;
-        }
-        if (code == KeyEvent.VK_ENTER) {
-            enterPressed = false;
-        }
-        if (code == KeyEvent.VK_U) {
-            skill1Pressed = false; // Đặt lại khi thả phím kỹ năng 1
-            // System.out.println("Skill 1 released: " + skill1Pressed);
->>>>>>> daaa7ff62ea1d5b086c8cc898443dc62fba7f6a4
         }
     }
 }
