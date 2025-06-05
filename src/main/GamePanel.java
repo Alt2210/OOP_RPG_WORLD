@@ -70,6 +70,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int PlayerState = 6;
 
 
+
     public int getOriginalTileSize() {
         return originalTileSize;
     }
@@ -87,10 +88,14 @@ public class GamePanel extends JPanel implements Runnable {
     public int getScale() {
         return this.scale;
     }
+
+    public UI getUi() {
+        return ui;
+    }
+
     public TileManager getTileM() { return tileM; }
     public CollisionChecker getcChecker() { return cChecker; }
     public AssetSetter getaSetter() { return aSetter; }
-    public UI getUi() { return ui; }
     public KeyHandler getKeyH() { return keyH; }
     public DialogueManager getDialogueManager() { return dialogueManager; }
     public int getFPS() { return FPS; }

@@ -71,19 +71,71 @@ public class AssetSetter {
 
     private void setMap0_NPCs() {
         gp.getNpc()[0] = new NPC_OldMan(gp);
-        gp.getNpc()[0].worldX = gp.getTileSize() * 15;
-        gp.getNpc()[0].worldY = gp.getTileSize() * 15;
+        gp.getNpc()[0].worldX = gp.getTileSize() * 50;
+        gp.getNpc()[0].worldY = gp.getTileSize() * 92;
         System.out.println("Map 0 NPCs Set.");
     }
 
     private void setMap0_Monsters() {
         gp.getMON_GreenSlime()[0] = new MON_GreenSlime(gp);
-        gp.getMON_GreenSlime()[0].worldX = gp.getTileSize() * 30;
-        gp.getMON_GreenSlime()[0].worldY = gp.getTileSize() * 30;
+        gp.getMON_GreenSlime()[0].worldX = gp.getTileSize() * 43;
+        gp.getMON_GreenSlime()[0].worldY = gp.getTileSize() * 86;
+
+        gp.getMON_GreenSlime()[1] = new MON_GreenSlime(gp);
+        gp.getMON_GreenSlime()[1].worldX = gp.getTileSize() * 33;
+        gp.getMON_GreenSlime()[1].worldY = gp.getTileSize() * 91;
+
+        gp.getMON_GreenSlime()[2] = new MON_GreenSlime(gp);
+        gp.getMON_GreenSlime()[2].worldX = gp.getTileSize() * 31;
+        gp.getMON_GreenSlime()[2].worldY = gp.getTileSize() * 67;
+
+        gp.getMON_GreenSlime()[3] = new MON_GreenSlime(gp);
+        gp.getMON_GreenSlime()[3].worldX = gp.getTileSize() * 44;
+        gp.getMON_GreenSlime()[3].worldY = gp.getTileSize() * 63;
+
+        gp.getMON_GreenSlime()[4] = new MON_GreenSlime(gp);
+        gp.getMON_GreenSlime()[4].worldX = gp.getTileSize() * 12;
+        gp.getMON_GreenSlime()[4].worldY = gp.getTileSize() * 42;
+
+        gp.getMON_GreenSlime()[5] = new MON_GreenSlime(gp);
+        gp.getMON_GreenSlime()[5].worldX = gp.getTileSize() * 22;
+        gp.getMON_GreenSlime()[5].worldY = gp.getTileSize() * 46;
+
+        gp.getMON_GreenSlime()[6] = new MON_GreenSlime(gp);
+        gp.getMON_GreenSlime()[6].worldX = gp.getTileSize() * 41;
+        gp.getMON_GreenSlime()[6].worldY = gp.getTileSize() * 37;
+
+        gp.getMON_GreenSlime()[7] = new MON_GreenSlime(gp);
+        gp.getMON_GreenSlime()[7].worldX = gp.getTileSize() * 56;
+        gp.getMON_GreenSlime()[7].worldY = gp.getTileSize() * 31;
+
+        gp.getMON_GreenSlime()[8] = new MON_GreenSlime(gp);
+        gp.getMON_GreenSlime()[8].worldX = gp.getTileSize() * 73;
+        gp.getMON_GreenSlime()[8].worldY = gp.getTileSize() * 25;
+
+        gp.getMON_GreenSlime()[9] = new MON_GreenSlime(gp);
+        gp.getMON_GreenSlime()[9].worldX = gp.getTileSize() * 83;
+        gp.getMON_GreenSlime()[9].worldY = gp.getTileSize() * 35;
 
         gp.getMON_Bat()[0] = new MON_Bat(gp);
         gp.getMON_Bat()[0].worldX = gp.getTileSize()*35;
         gp.getMON_Bat()[0].worldY = gp.getTileSize()*35;
+
+        gp.getMON_Bat()[1] = new MON_Bat(gp);
+        gp.getMON_Bat()[1].worldX = gp.getTileSize()*9;
+        gp.getMON_Bat()[1].worldY = gp.getTileSize()*51;
+
+        gp.getMON_Bat()[2] = new MON_Bat(gp);
+        gp.getMON_Bat()[2].worldX = gp.getTileSize()*4;
+        gp.getMON_Bat()[2].worldY = gp.getTileSize()*29;
+
+        gp.getMON_Bat()[3] = new MON_Bat(gp);
+        gp.getMON_Bat()[3].worldX = gp.getTileSize()*53;
+        gp.getMON_Bat()[3].worldY = gp.getTileSize()*33;
+
+        gp.getMON_Bat()[4] = new MON_Bat(gp);
+        gp.getMON_Bat()[4].worldX = gp.getTileSize()*67;
+        gp.getMON_Bat()[4].worldY = gp.getTileSize()*39;
         System.out.println("Map 0 Monsters Set.");
     }
 
@@ -109,16 +161,16 @@ public class AssetSetter {
 
     private void setMap1_NPCs() {
         gp.getNpc()[0] = new NPC_Princess(gp);
-        gp.getNpc()[0].worldX = gp.getTileSize() * 50;
-        gp.getNpc()[0].worldY = gp.getTileSize() * 50;
+        gp.getNpc()[0].worldX = gp.getTileSize() * 75;
+        gp.getNpc()[0].worldY = gp.getTileSize() * 85;
         System.out.println("Map 1 NPCs Set.");
     }
 
     private void setMap1_Monsters() {
         // Ví dụ, đặt Golem Boss ở map Dungeon
         gp.getMON_GolemBoss()[0] = new MON_GolemBoss(gp);
-        gp.getMON_GolemBoss()[0].worldX = gp.getTileSize() * 20;
-        gp.getMON_GolemBoss()[0].worldY = gp.getTileSize() * 20;
+        gp.getMON_GolemBoss()[0].worldX = gp.getTileSize() * 60;
+        gp.getMON_GolemBoss()[0].worldY = gp.getTileSize() * 60;
 
         gp.getMON_GreenSlime()[0] = new MON_GreenSlime(gp);
         gp.getMON_GreenSlime()[0].worldX = gp.getTileSize()*33; //
