@@ -66,21 +66,13 @@ public class GamePanel extends JPanel implements Runnable {
     public final int dialogueState = 3;
     public final int victoryEndState = 4;
     public final int gameOverState = 5;
-<<<<<<< HEAD
-    public final int PlayerState = 6;
-    // Sound
-    public Sound music = new Sound();
-    public Sound soundEffect = new Sound();
 
-    public UI getUi() {
-        return ui;
-    }
+    public final int PlayerState = 6;
+
 
     public int getOriginalTileSize() {
         return originalTileSize;
     }
-=======
->>>>>>> 086d28c9370ac879061539cdbb8eb5a943e779ae
 
     private Character currentInteractingNPC = null;
     private int FPS = 60;
