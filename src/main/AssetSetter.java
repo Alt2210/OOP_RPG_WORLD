@@ -84,6 +84,10 @@ public class AssetSetter {
     }
 
     private void setMap0_Monsters() {
+        gp.getMON_GolemBoss()[1] = new MON_GolemBoss(gp);
+        gp.getMON_GolemBoss()[1].worldX = gp.getTileSize() * 10;
+        gp.getMON_GolemBoss()[1].worldY = gp.getTileSize() * 85;
+
         gp.getMON_GreenSlime()[0] = new MON_GreenSlime(gp);
         gp.getMON_GreenSlime()[0].worldX = gp.getTileSize() * 30;
         gp.getMON_GreenSlime()[0].worldY = gp.getTileSize() * 30;

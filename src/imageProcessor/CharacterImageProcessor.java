@@ -176,7 +176,7 @@ public class CharacterImageProcessor extends ImageProcessor {
             case "golemboss":
                 walkSpriteCount = 4;
                 golemChargeFrames = 7;
-                golemLaserFrames = 7;
+                golemLaserFrames = 14;
                 golemArmShotFrames = 9;
                 break;
             default:
@@ -297,7 +297,7 @@ public class CharacterImageProcessor extends ImageProcessor {
                 BufferedImage imgL = setup(lPath); if (imgL != null) chargeLeft.add(imgL);
             }
             // Tải ảnh laser
-            for (int i = 1; i <= golemLaserFrames; i++) {
+            for (int i = 9; i <= golemLaserFrames; i++) {
                 String[] laserDirs = {"right", "left","up","down"};
                 @SuppressWarnings("unchecked")
                 ArrayList<BufferedImage>[] laserLists = new ArrayList[]{laserRight, laserLeft, laserUp, laserDown};
