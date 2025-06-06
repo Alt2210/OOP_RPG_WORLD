@@ -72,7 +72,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int characterSelectState = 6;
 
     public final int PlayerState = 6;
-
+    public final int InventoryState = 7;
 
 
     public int getOriginalTileSize() {
@@ -149,7 +149,6 @@ public class GamePanel extends JPanel implements Runnable {
         // Đặt các thực thể cho map hiện tại (ban đầu là currentMap = 0)
         aSetter.setupMapAssets(currentMap);
 
-        gameState = titleState;
         playMusic(Sound.MUSIC_BACKGROUND);
         if (player != null) {
             player.setDefaultValues();

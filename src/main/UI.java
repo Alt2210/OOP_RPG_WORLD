@@ -121,7 +121,7 @@ public class UI {
             drawDialogueScreen(g2);
         } else if (gp.gameState == gp.gameOverState){
             drawGameOverScreen(g2);
-        } else if (gp.gameState == gp.PlayerState){
+        } else if (gp.gameState == gp.InventoryState){
             drawIventory(g2);
         }
     }
@@ -564,8 +564,8 @@ public class UI {
         int slotsSize = gp.getTileSize()+3;
 
         //Draw player's item
-        for(int i=0;i < gp.getPlayer().inventory.getItemStack();i++) {
-            g2.drawImage(gp.getPlayer().inventory.getItemStack(i).getItem().getItp().getCurFrame(),slotX,slotY,null);
+        for(int i=0;i < gp.getPlayer().getInventory().getItemStack();i++) {
+            g2.drawImage(gp.getPlayer().getInventory().getItemStack(i).getItem().getItp().getCurFrame(),slotX,slotY,null);
 
             slotX += slotsSize;
 
@@ -598,8 +598,8 @@ public class UI {
 
         int itemIndex = getItemIndexOnSlot();
 
-        if(itemIndex < gp.getPlayer().inventory.getItemStack()){
-            for(String line: gp.getPlayer().inventory.getItemStack(itemIndex).getItem().getDescription().split("\n")){
+        if(itemIndex < gp.getPlayer().getInventory().getItemStack()){
+            for(String line: gp.getPlayer().getInventory().getItemStack(itemIndex).getItem().getDescription().split("\n")){
                 g2.drawString(line, textX, textY);
                 textY += 32;
             }

@@ -1,4 +1,5 @@
 package character.Role;
+import item.Inventory;
 
 import character.Character;
 import character.NPC_Princess;
@@ -16,6 +17,7 @@ public abstract class Player extends character.Character {
     public final int screenY;
     protected int hasKey = 0;
     protected String characterClassIdentifier;
+    protected Inventory inventory;
 
     private boolean canInteractWithCurrentNPC = true; // Cho phép tương tác với NPC hiện tại đang va chạm
     private Character currentlyCollidingNPC = null;   // NPC hiện tại đang va chạm
@@ -26,6 +28,7 @@ public abstract class Player extends character.Character {
 
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
+        this.inventory = new Inventory(20);
         this.keyH = keyH;
         this.screenX = gp.getScreenWidth() / 2 - (gp.getTileSize() / 2);
         this.screenY = gp.getScreenHeight() / 2 - (gp.getTileSize() / 2);
@@ -33,6 +36,10 @@ public abstract class Player extends character.Character {
         solidArea = new Rectangle(8, 16, 32, 32);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
     }
 
     protected abstract void loadCharacterSprites();
