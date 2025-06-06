@@ -1,6 +1,8 @@
 package main;
 
 import character.Role.Player;
+import item.ItemStack;
+// import worldObject.pickableObject.OBJ_Key;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -31,7 +33,9 @@ public class UI {
     public String currentDialogue = "";
     private double playtime = 0.0;
     private DecimalFormat dFormat = new DecimalFormat("#0.00");
-    public int commandNum = 0;
+    protected int commandNum = 0;
+    public int slotCol = 0;
+    public int slotRow = 0;
 
     Color menuTextColor_Normal = Color.WHITE;
     Color menuTextColor_Selected = new Color(255, 220, 100);
@@ -117,6 +121,8 @@ public class UI {
             drawDialogueScreen(g2);
         } else if (gp.gameState == gp.gameOverState){
             drawGameOverScreen(g2);
+        } else if (gp.gameState == gp.PlayerState){
+            drawIventory(g2);
         }
     }
 
@@ -278,6 +284,8 @@ public class UI {
                     } else break;
                 }
             }
+
+            // messageCounter vẫn hoạt động như cũ
             messageCounter++;
             if (messageCounter > 120) {
                 messageCounter = 0;
@@ -286,6 +294,7 @@ public class UI {
         }
     }
 
+    // Phương thức wrapText (đảm bảo bạn đã có nó trong lớp UI)
     private List<String> wrapText(String text, FontMetrics fm, int availableWidth) {
         List<String> lines = new ArrayList<>();
         if (text == null || text.isEmpty() || fm == null || availableWidth <= 0) {
@@ -303,8 +312,12 @@ public class UI {
             }
             currentLine.append(word).append(" ");
         }
+
         if (currentLine.length() > 0) {
             lines.add(currentLine.toString().trim());
+        }
+        if (lines.isEmpty() && text.isEmpty()) {
+            lines.add("");
         }
         return lines;
     }
@@ -327,6 +340,7 @@ public class UI {
         String[] menuItems = {"New Game", "Load Game", "Quit"};
         int menuItemHeight = fmMenu.getHeight() + 10;
         int menuItemsTotalHeight = menuItemHeight * menuItems.length;
+
         int contentHeight = Math.max(menuItemsTotalHeight, characterDisplaySize);
         int menuHeight = contentHeight + menuPadding * 2;
 
@@ -386,6 +400,7 @@ public class UI {
         }
     }
 
+
     public void drawPauseScreen(Graphics2D g2) {
         g2.setFont(pixelFont_Large);
         String text = "PAUSED";
@@ -399,6 +414,7 @@ public class UI {
         g2.fillRect(0, 0, gp.getScreenWidth(), gp.getScreenHeight());
 
         int yOffset = -gp.getTileSize();
+
         g2.setFont(pixelFont_Medium);
         String text1 = "You found the Princess!";
         int x1 = getXforCenteredText(text1, g2, g2.getFont());
@@ -427,6 +443,7 @@ public class UI {
 
         g2.setFont(pixelFont_Small);
         g2.setColor(Color.white);
+
         int dialogueX = x + gp.getTileSize() / 2;
         FontMetrics fm = g2.getFontMetrics();
         int currentY = y + fm.getAscent() + gp.getTileSize() / 3;
@@ -529,5 +546,69 @@ public class UI {
         } else {
             drawTextWithShadow(g2, text, x, y, menuTextColor_Normal, menuTextShadowColor, 1);
         }
+    }
+
+    public void drawIventory(Graphics2D g2) {
+        //Frame
+        int frameX = gp.getTileSize() * 9;
+        int frameY = gp.getTileSize();
+        int frameWidth = gp.getTileSize() * 6;
+        int frameHeight = gp.getTileSize() * 5;
+        drawSubWindow(frameX,frameY,frameWidth,frameHeight, g2);
+
+        //Slot
+        final int slotXstart = frameX + 20;
+        final int slotYstart = frameY + 20;
+        int slotX = slotXstart;
+        int slotY = slotYstart;
+        int slotsSize = gp.getTileSize()+3;
+
+        //Draw player's item
+        for(int i=0;i < gp.getPlayer().inventory.getItemStack();i++) {
+            g2.drawImage(gp.getPlayer().inventory.getItemStack(i).getItem().getItp().getCurFrame(),slotX,slotY,null);
+
+            slotX += slotsSize;
+
+            if(i == 4 || i == 9 || i == 14) {
+                slotX = slotXstart;
+                slotY += slotsSize;
+
+            }
+        }
+
+        //CURSOR
+        int cursorX = slotXstart + (gp.getTileSize() * slotCol);
+        int cursorY = slotYstart + (gp.getTileSize() * slotRow);
+        int cursorWidth = gp.getTileSize();
+        int cursorHeight = gp.getTileSize();
+        //Draw Cursor
+        g2.setColor(Color.white);
+        g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight,10,10);
+        g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
+        //Description Frame
+        int dFrameX = frameX;
+        int dFrameY = frameY + frameHeight;
+        int dFrameWidth = frameWidth;
+        int dFrameHeight = gp.getTileSize() * 3;
+        drawSubWindow(dFrameX,dFrameY,dFrameWidth,dFrameHeight,g2);
+        //Draw Description
+        int textX = dFrameX + 20;
+        int textY = dFrameY + gp.getTileSize();
+        g2.setFont(g2.getFont().deriveFont(28F));
+
+        int itemIndex = getItemIndexOnSlot();
+
+        if(itemIndex < gp.getPlayer().inventory.getItemStack()){
+            for(String line: gp.getPlayer().inventory.getItemStack(itemIndex).getItem().getDescription().split("\n")){
+                g2.drawString(line, textX, textY);
+                textY += 32;
+            }
+        }
+
+    }
+
+    public int getItemIndexOnSlot() {
+        int itemIndex = slotCol + (slotCol*5);
+        return itemIndex;
     }
 }

@@ -8,6 +8,7 @@ public class Item {
     protected String type;
     protected int id;
     protected ItemImageProcessor itp;
+    protected String description;
 
     public enum ItemType {
         WEAPON,
@@ -54,6 +55,14 @@ public class Item {
         this.itp = itp;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public void useItem(){}
 
     public Item(){
@@ -61,6 +70,7 @@ public class Item {
         id = -1;
         type = "UNKNOWN";
         itp = null;
+        description = "Null";
     }
 
 

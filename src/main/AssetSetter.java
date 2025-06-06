@@ -92,6 +92,23 @@ public class AssetSetter {
         gp.getMON_Bat()[0].worldX = gp.getTileSize()*35;
         gp.getMON_Bat()[0].worldY = gp.getTileSize()*35;
 
+        gp.getMON_Bat()[1] = new MON_Bat(gp);
+        gp.getMON_Bat()[1].worldX = gp.getTileSize()*9;
+        gp.getMON_Bat()[1].worldY = gp.getTileSize()*51;
+
+        gp.getMON_Bat()[2] = new MON_Bat(gp);
+        gp.getMON_Bat()[2].worldX = gp.getTileSize()*4;
+        gp.getMON_Bat()[2].worldY = gp.getTileSize()*29;
+
+        gp.getMON_Bat()[3] = new MON_Bat(gp);
+        gp.getMON_Bat()[3].worldX = gp.getTileSize()*53;
+        gp.getMON_Bat()[3].worldY = gp.getTileSize()*33;
+
+        gp.getMON_Bat()[4] = new MON_Bat(gp);
+        gp.getMON_Bat()[4].worldX = gp.getTileSize()*67;
+        gp.getMON_Bat()[4].worldY = gp.getTileSize()*39;
+        System.out.println("Map 0 Monsters Set.");
+
         gp.getMON_Orc()[0] = new MON_Orc(gp);
         gp.getMON_Orc()[0].worldX = gp.getTileSize() * 25; // Vị trí ví dụ
         gp.getMON_Orc()[0].worldY = gp.getTileSize() * 35; // Vị trí ví dụ
@@ -120,16 +137,16 @@ public class AssetSetter {
 
     private void setMap1_NPCs() {
         gp.getNpc()[0] = new NPC_Princess(gp);
-        gp.getNpc()[0].worldX = gp.getTileSize() * 50;
-        gp.getNpc()[0].worldY = gp.getTileSize() * 50;
+        gp.getNpc()[0].worldX = gp.getTileSize() * 75;
+        gp.getNpc()[0].worldY = gp.getTileSize() * 85;
         System.out.println("Map 1 NPCs Set.");
     }
 
     private void setMap1_Monsters() {
         // Ví dụ, đặt Golem Boss ở map Dungeon
         gp.getMON_GolemBoss()[0] = new MON_GolemBoss(gp);
-        gp.getMON_GolemBoss()[0].worldX = gp.getTileSize() * 20;
-        gp.getMON_GolemBoss()[0].worldY = gp.getTileSize() * 20;
+        gp.getMON_GolemBoss()[0].worldX = gp.getTileSize() * 60;
+        gp.getMON_GolemBoss()[0].worldY = gp.getTileSize() * 60;
 
         gp.getMON_GreenSlime()[0] = new MON_GreenSlime(gp);
         gp.getMON_GreenSlime()[0].worldX = gp.getTileSize()*33; //

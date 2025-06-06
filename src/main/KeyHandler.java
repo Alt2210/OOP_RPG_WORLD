@@ -116,6 +116,30 @@ public class KeyHandler implements KeyListener {
                 System.out.println("Astrologer selected!");
                 gp.setPlayer(new Astrologer(gp, this));
             }
+            if (code == KeyEvent.VK_C) {
+                gp.gameState = gp.PlayerState; // Chuyển sang trạng thái túi đồ
+            }
+        } else if (gp.gameState == gp.pauseState) {
+            if (code == KeyEvent.VK_P) {
+                gp.gameState = gp.playState;
+            }
+        } else if (gp.gameState == gp.dialogueState) {
+            if (code == KeyEvent.VK_ENTER) {
+                if (gp.getDialogueManager() != null) { // Không cần kiểm tra getInteractingNPC ở đây nữa
+                    gp.getDialogueManager().advance();
+                }
+            }
+        } else if (gp.gameState == gp.gameOverState) {
+            if (code == KeyEvent.VK_ENTER) {
+                gp.resetGameForNewSession();
+                gp.gameState = gp.titleState;
+            }
+            if (code == KeyEvent.VK_ESCAPE) {
+                System.exit(0);
+            }
+        } else if (gp.gameState == gp.victoryEndState) {
+            if (code == KeyEvent.VK_ENTER) {
+                gp.resetGameForNewSession();
 
             // Sau khi đã có đối tượng player, setup game và chuyển sang playState
             gp.resetGameForNewSession();
@@ -155,6 +179,25 @@ public class KeyHandler implements KeyListener {
             } else if (gp.getUi().commandNum == 1) { // Quit
                 gp.gameState = gp.titleState;
                 gp.resetGameForNewSession(); // Reset để lần sau vào New Game là game mới
+            }
+            if (code == KeyEvent.VK_ESCAPE) {
+                System.exit(0);
+            }
+        } else if (gp.gameState == gp.PlayerState) {
+            if (code == KeyEvent.VK_C) {
+                gp.gameState = gp.playState;
+            }
+            if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+                gp.getUi().slotRow--;
+            }
+            if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+                gp.getUi().slotRow++;
+            }
+            if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+                gp.getUi().slotCol--;
+            }
+            if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+                gp.getUi().slotCol++;
             }
         }
     }

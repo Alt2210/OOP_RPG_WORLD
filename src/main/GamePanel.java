@@ -71,6 +71,14 @@ public class GamePanel extends JPanel implements Runnable {
     public final int gameOverState = 5;
     public final int characterSelectState = 6;
 
+    public final int PlayerState = 6;
+
+
+
+    public int getOriginalTileSize() {
+        return originalTileSize;
+    }
+
     private Character currentInteractingNPC = null;
     private int FPS = 60;
     public int getTileSize() { return tileSize; }
@@ -84,10 +92,14 @@ public class GamePanel extends JPanel implements Runnable {
     public int getScale() {
         return this.scale;
     }
+
+    public UI getUi() {
+        return ui;
+    }
+
     public TileManager getTileM() { return tileM; }
     public CollisionChecker getcChecker() { return cChecker; }
     public AssetSetter getaSetter() { return aSetter; }
-    public UI getUi() { return ui; }
     public KeyHandler getKeyH() { return keyH; }
     public DialogueManager getDialogueManager() { return dialogueManager; }
     public int getFPS() { return FPS; }

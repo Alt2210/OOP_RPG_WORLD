@@ -16,6 +16,7 @@ public class Item_Key extends Item {
         type = "QUEST_ITEM";
         itp = new ItemImageProcessor(gp);
         itp.getImage("/objects", "key");
+        description = "[" + name + "]\nAn item to open doors";
     }
 
 
