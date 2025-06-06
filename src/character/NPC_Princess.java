@@ -20,6 +20,7 @@ public class NPC_Princess extends Character implements DialogueSpeaker {
 
         this.direction = "down";  // Hướng mặc định ban đầu (ví dụ: hướng xuống để chào đón Player)
         this.speed = 1;
+        this.setName("Peach");
 
         // Đặt numSprite sau khi cip (CharacterImageProcessor) đã chắc chắn được khởi tạo trong super(gp)
         if (this.cip != null) {
@@ -59,7 +60,7 @@ public class NPC_Princess extends Character implements DialogueSpeaker {
 
         if (this.cip != null) {
 
-            this.cip.getImage("/npc", "Princess"); //
+            this.cip.getImage("/npc", "princess"); //
             }
     }
 

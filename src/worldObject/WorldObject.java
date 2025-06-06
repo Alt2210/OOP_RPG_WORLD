@@ -1,6 +1,6 @@
 package worldObject;
 
-import character.Player;
+import character.Role.Player;
 import main.GamePanel;
 
 import java.awt.*;

@@ -1,7 +1,7 @@
 package character.monster;
 
 import character.Character;
-import character.Player;
+import character.Role.Player;
 import main.GamePanel;
 import pathfinder.Node;
 import pathfinder.PathFinder;

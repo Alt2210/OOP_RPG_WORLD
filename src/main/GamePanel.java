@@ -1,10 +1,12 @@
 package main;
 
 import character.Character;
-import character.Player;
+import character.Role.Player;
+import character.Role.*;
 import character.monster.MON_Bat;
 import character.monster.MON_GolemBoss;
 import character.monster.MON_GreenSlime;
+import character.monster.MON_Orc;
 import data.SaveLoad;
 import projectile.Projectile;
 import tile.TileManager;
@@ -49,12 +51,13 @@ public class GamePanel extends JPanel implements Runnable {
 
 
     // ENTITY AND OBJECT
-    private Player player = new Player(this, keyH);
+    private Player player;
     public WorldObject wObjects[] = new WorldObject[20];
     public Character npc[] = new Character[10];
     public MON_GreenSlime[] greenSlime = new MON_GreenSlime[20];
     public MON_Bat[] bat = new MON_Bat[10];
     public MON_GolemBoss[] golemBoss = new MON_GolemBoss[5];
+    public MON_Orc[] orc = new MON_Orc[10];
     public List<Projectile> projectiles = new ArrayList<>();
 
 
@@ -66,6 +69,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int dialogueState = 3;
     public final int victoryEndState = 4;
     public final int gameOverState = 5;
+    public final int characterSelectState = 6;
 
     private Character currentInteractingNPC = null;
     private int FPS = 60;
@@ -91,10 +95,15 @@ public class GamePanel extends JPanel implements Runnable {
     public Character getInteractingNPC() { return currentInteractingNPC; }
     public void setInteractingNPC(Character npc) { this.currentInteractingNPC = npc; }
     public WorldObject[] getwObjects() { return wObjects; }
+    public events_system.CombatSystem getCombatSystem() {return combatSystem;}
     public Character[] getNpc() { return npc; }
     public MON_GreenSlime[] getMON_GreenSlime() { return greenSlime; }
     public MON_Bat[] getMON_Bat() { return bat; }
     public MON_GolemBoss[] getMON_GolemBoss() { return golemBoss; }
+    public MON_Orc[] getMON_Orc() { return orc; }
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 
     public void playMusic(int soundIndex) { //
         music.loop(soundIndex); //
@@ -225,6 +234,15 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             }
+            for (int i = 0; i < orc.length; i++) {
+                if (orc[i] != null) {
+                    if (orc[i].getCurrentHealth() > 0) {
+                        orc[i].update();
+                    } else {
+                        aSetter.removeDeadMonster(orc, i, currentMap); // Tạo phương thức removeDeadMonster cho MON_Orc trong AssetSetter
+                    }
+                }
+            }
             for (int i = 0; i < golemBoss.length; i++) {
                 if (golemBoss[i] != null) {
                     if (golemBoss[i].getCurrentHealth() > 0) {
@@ -253,7 +271,7 @@ public class GamePanel extends JPanel implements Runnable {
                 combatSystem.checkPlayerMonsterCombat(player, greenSlime);
                 combatSystem.checkPlayerMonsterCombat(player, bat);
                 combatSystem.checkPlayerMonsterCombat(player, golemBoss);
-                // Không cần gọi handleMonsterCollisionAttack riêng vì checkPlayer trong CollisionChecker đã xử lý sát thương chạm
+                combatSystem.checkPlayerMonsterCombat(player, orc);
             }
 
         } else if (gameState == pauseState) {
@@ -274,6 +292,9 @@ public class GamePanel extends JPanel implements Runnable {
         for (int i = 0; i < greenSlime.length; i++) {
             greenSlime[i] = null;
         }
+        for (int i = 0; i < orc.length; i++) {
+            orc[i] = null;
+        }
         for (int i = 0; i < bat.length; i++) {
             bat[i] = null;
         }
@@ -285,43 +306,63 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
 
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+        // Vẽ màn hình tiêu đề
         if (gameState == titleState) {
             ui.draw(g2);
-        } else {
+        }
+        // THÊM MỚI: Vẽ màn hình chọn nhân vật
+        else if (gameState == characterSelectState) {
+            ui.draw(g2); // Chỉ cần vẽ UI cho màn hình này
+        }
+        // Các trạng thái còn lại (play, pause, dialogue, v.v.)
+        else {
+            // Vẽ thế giới game
             tileM.draw(g2);
 
+            // Vẽ các đối tượng
             for (int i = 0; i < wObjects.length; i++) {
                 if (wObjects[i] != null) {
                     wObjects[i].draw(g2, this);
                 }
             }
 
+            // Vẽ NPC
             for (int i = 0; i < npc.length; i++) {
                 if (npc[i] != null) {
                     npc[i].draw(g2);
                 }
             }
+            // Vẽ quái vật...
             for (MON_GreenSlime slime : greenSlime) {
                 if (slime != null) slime.draw(g2);
             }
-            for (MON_Bat currentBat : bat) { // Đổi tên biến để tránh xung đột
+            for (MON_Orc currentOrc : orc) {
+                if (currentOrc != null) currentOrc.draw(g2);
+            }
+            for (MON_Bat currentBat : bat) {
                 if (currentBat != null) currentBat.draw(g2);
             }
             for (MON_GolemBoss boss : golemBoss) {
                 if (boss != null) boss.draw(g2);
             }
+            // Vẽ projectiles...
             for (Projectile p : projectiles) {
                 if (p.isAlive()) {
                     p.draw(g2);
                 }
             }
+
+            // Vẽ người chơi
             if (player != null) {
                 player.draw(g2);
             }
+
+            // Vẽ UI trên cùng
             ui.draw(g2);
         }
         g2.dispose();

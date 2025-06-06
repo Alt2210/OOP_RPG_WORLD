@@ -3,6 +3,7 @@ import character.*;
 import character.monster.MON_Bat;
 import character.monster.MON_GolemBoss;
 import character.monster.MON_GreenSlime;
+import character.monster.MON_Orc;
 import worldObject.pickableObject.OBJ_Key;
 import worldObject.unpickableObject.OBJ_Chest;
 import worldObject.unpickableObject.OBJ_Door;
@@ -49,6 +50,12 @@ public class AssetSetter {
             monsterArray[index] = null; //
         }
     }
+    public void removeDeadMonster(MON_Orc[] monsterArray, int index, int mapIndex) {
+        if (monsterArray != null && index >= 0 && index < monsterArray.length && monsterArray[index] != null) {
+            System.out.println("Removing " + monsterArray[index].getName() + " at index " + index + " from map " + mapIndex);
+            monsterArray[index] = null;
+        }
+    }
 
 
     // đặt objects, NPCs, Monsters cho map 0
@@ -84,7 +91,11 @@ public class AssetSetter {
         gp.getMON_Bat()[0] = new MON_Bat(gp);
         gp.getMON_Bat()[0].worldX = gp.getTileSize()*35;
         gp.getMON_Bat()[0].worldY = gp.getTileSize()*35;
-        System.out.println("Map 0 Monsters Set.");
+
+        gp.getMON_Orc()[0] = new MON_Orc(gp);
+        gp.getMON_Orc()[0].worldX = gp.getTileSize() * 25; // Vị trí ví dụ
+        gp.getMON_Orc()[0].worldY = gp.getTileSize() * 35; // Vị trí ví dụ
+
     }
 
     // đặt objects, NPCs, Monsters cho map 1

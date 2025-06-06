@@ -1,6 +1,6 @@
 package worldObject.pickableObject;
 
-import character.Player;
+import character.Role.Player;
 import item.Item;
 import item.Item_Key;
 import main.GamePanel;

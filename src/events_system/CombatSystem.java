@@ -1,7 +1,7 @@
 package events_system;
 
 import character.Character;
-import character.Player;
+import character.Role.Player;
 import character.monster.Monster;
 import main.GamePanel;
 import projectile.Projectile;
@@ -21,7 +21,7 @@ public class CombatSystem {
         System.out.println("    Attacker (" + attacker.getName() + ") canAttack: " + attacker.canAttack() + " (Cooldown: " + attacker.getAttackCooldown() + ")");
         System.out.println("    Target (" + target.getName() + ") currentHealth: " + target.getCurrentHealth());
 
-        if (attacker.canAttack() && target.getCurrentHealth() > 0) {
+        if ( target.getCurrentHealth() > 0) {
             int damage = attacker.getAttack();
             int defense = target.getDefense();
 
@@ -252,22 +252,7 @@ public class CombatSystem {
             return;
         }
 
-        if (gp.getKeyH().attackPressed && player.canAttack()) {
-            for (int i = 0; i < monsters.length; i++) {
-                Monster monster = monsters[i];
-                if (monster != null && monster.getCurrentHealth() > 0) {
-                    if (isWithinAttackRange(player, monster)) {
-                        System.out.println("[" + System.currentTimeMillis() + "] checkPlayerMonsterCombat: Player tấn công " + monster.getName() + " trong tầm đánh hình quạt.");
-                        performAttack(player, monster);
-                        if (monster.getCurrentHealth() <= 0) {
-                            System.out.println("    " + monster.getName() + " đã bị Player đánh bại.");
-                            monsters[i] = null;
-                        }
-                        break;
-                    }
-                }
-            }
-        } else {
+
             int monsterIndex = gp.getcChecker().checkEntity(player, monsters);
             if (monsterIndex != 999) {
                 Monster monster = monsters[monsterIndex];
@@ -281,7 +266,7 @@ public class CombatSystem {
                 }
             }
         }
-    }
+
 
     public void handleMonsterCollisionAttack(Player player, Monster[] monsters) {
         if (player == null || player.getCurrentHealth() <= 0) {
@@ -299,6 +284,44 @@ public class CombatSystem {
                         }
                     } else {
                         System.out.println("    " + monster.getName() + " KHÔNG THỂ tấn công (cooldown: " + monster.getAttackCooldown() + ").");
+                    }
+                }
+            }
+        }
+    }
+    public void checkAoEAttack(Character caster, int centerX, int centerY, int radius) {
+        // Lấy danh sách tất cả quái vật cần kiểm tra
+        // (Lưu ý: Nếu bạn đã gộp các mảng quái vật lại thì chỉ cần một vòng lặp)
+        Monster[][] allMonsters = {
+                gp.getMON_GreenSlime(),
+                gp.getMON_Bat(),
+                gp.getMON_Orc(),
+                gp.getMON_GolemBoss()
+        };
+
+        for (Monster[] monsterArray : allMonsters) {
+            if (monsterArray == null) continue;
+
+            for (int i = 0; i < monsterArray.length; i++) {
+                Monster target = monsterArray[i];
+                if (target != null && target.getCurrentHealth() > 0) {
+                    // Tính khoảng cách từ tâm AoE đến tâm của quái vật
+                    // Lấy ranh giới hitbox của quái vật
+                    int monsterLeft = target.worldX + target.solidArea.x;
+                    int monsterRight = monsterLeft + target.solidArea.width;
+                    int monsterTop = target.worldY + target.solidArea.y;
+                    int monsterBottom = monsterTop + target.solidArea.height;
+
+                    // Tìm điểm gần nhất trên hitbox của quái vật tới tâm của AoE
+                    // Bằng cách "kẹp" (clamp) tọa độ tâm AoE vào trong ranh giới của hitbox
+                    int closestX = Math.max(monsterLeft, Math.min(centerX, monsterRight));
+                    int closestY = Math.max(monsterTop, Math.min(centerY, monsterBottom));
+
+                    // Tính khoảng cách từ tâm AoE đến điểm gần nhất này
+                    double distance = Math.sqrt(Math.pow(centerX - closestX, 2) + Math.pow(centerY - closestY, 2));
+                    // Nếu quái vật nằm trong bán kính của vụ nổ, gây sát thương
+                    if (distance <= radius) {
+                        performAttack(caster, target);
                     }
                 }
             }

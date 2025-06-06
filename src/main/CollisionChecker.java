@@ -1,7 +1,7 @@
 package main;
 
 import character.Character;
-import character.Player;
+import character.Role.Player;
 import character.monster.Monster; // Quan trọng: Thêm import cho Monster
 
 import java.awt.Rectangle;

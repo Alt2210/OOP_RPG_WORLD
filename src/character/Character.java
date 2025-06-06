@@ -1,9 +1,9 @@
 package character;
 
+import character.Role.Player;
 import imageProcessor.CharacterImageProcessor;
 import main.GamePanel;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public abstract class Character {
 
@@ -106,9 +106,6 @@ public abstract class Character {
     public int getAttackCooldown() {
         return attackCooldown;
     }
-    public int getCurrentHealth() {
-        return currentHealth;
-    }
     public int getMaxMana() {
         return maxMana;
     }
@@ -120,8 +117,37 @@ public abstract class Character {
         this.currentMana = Math.max(0, Math.min(currentMana, maxMana));
     }
 
+    public int getCurrentHealth() { // Bạn đã có phương thức này
+        return currentHealth;
+    }
+
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
+
+    public void setCurrentHealth(int currentHealth) {
+        this.currentHealth = currentHealth;
+        // Đảm bảo máu hiện tại không bao giờ âm hoặc vượt quá máu tối đa
+        if (this.currentHealth < 0) {
+            this.currentHealth = 0;
+        }
+        if (this.currentHealth > this.maxHealth) {
+            this.currentHealth = this.maxHealth;
+        }
+    }
+
     public void spendMana(int amount) {
         this.currentMana = Math.max(0, this.currentMana - amount);
+    }
+
+    public boolean isAttacking() {
+        return false;
     }
     public void update() {
         collisionOn = false;

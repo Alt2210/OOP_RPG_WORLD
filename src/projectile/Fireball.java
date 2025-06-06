@@ -169,7 +169,7 @@ public class Fireball extends Projectile {
         }
 
         // Kiểm tra va chạm với quái vật (nếu caster là Player)
-//        if (caster instanceof character.Player) { // Đảm bảo import character.Player
+//        if (caster instanceof character.Role.Player) { // Đảm bảo import character.Role.Player
 //            for (Monster monster : gp.getMON_GreenSlime()) { // Lấy danh sách quái vật từ GamePanel
 //                if (monster != null && monster.getCurrentHealth() > 0) {
 //                    // Cập nhật vị trí solidArea của fireball và monster cho kiểm tra chính xác

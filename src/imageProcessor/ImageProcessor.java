@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public abstract class ImageProcessor {
-    private GamePanel gp;
+    protected GamePanel gp;
     protected int numSprite;
     protected int spriteCounter = 0;
     protected int spriteNum = 0;

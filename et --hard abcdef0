@@ -1,0 +1,95 @@
+* [33mf2e137b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m orc
+* [33m086d28c[m dat lai vi tri golem thoi chu k co gi dau
+*   [33mafc3a0a[m Merge pull request #14 from Alt2210/DDungz
+[32m|[m[33m\[m  
+[32m|[m * [33m61451e2[m[33m ([m[1;31morigin/DDungz[m[33m)[m cap nhap tinh nang dich chuyen giua cac map
+[32m|[m * [33mca38875[m them chuc nang dich chuyen giua cac map
+* [33m|[m [33m9ed0fff[m update chiêu mới cho boss
+[33m|[m[33m/[m  
+* [33md1bb593[m update fix boss
+* [33m4d28ff0[m update fix boss
+* [33mdaaa7ff[m update tao them con Boss
+* [33m87f8e43[m update tao them con Boss
+* [33m5c8f111[m fix lai Bat tan cong
+*   [33mcbe59b0[m Merge pull request #13 from Alt2210/TDuong
+[34m|[m[35m\[m  
+[34m|[m * [33mafdc766[m[33m ([m[1;31morigin/TDuong[m[33m)[m Fix bug release skill's key
+[34m|[m[34m/[m  
+* [33m2a32807[m fix bug dialogue va monster interact
+*   [33m7b3623f[m Merge branch 'main' of https://github.com/Alt2210/OOP_RPG_WORLD
+[36m|[m[1;31m\[m  
+[36m|[m *   [33m5f0c1ae[m Merge pull request #12 from Alt2210/DDung
+[36m|[m [1;32m|[m[1;33m\[m  
+[36m|[m [1;32m|[m * [33md0176b9[m[33m ([m[1;31morigin/DDung[m[33m)[m update smth
+[36m|[m * [1;33m|[m   [33m3e86d32[m Merge pull request #11 from Alt2210/TDuong
+[36m|[m [1;34m|[m[1;35m\[m [1;33m\[m  
+[36m|[m [1;34m|[m * [1;33m|[m [33mfc47d5b[m Cap nhat projectile Slimeball cho Monster_Slime
+* [1;34m|[m [1;35m|[m [1;33m|[m [33mba275ca[m fix  bug monster tuong tac voi player
+* [1;34m|[m [1;35m|[m [1;33m|[m [33ma58dae7[m Merge branch 'main' of https://github.com/Alt2210/OOP_RPG_WORLD
+[1;36m|[m[1;34m\[m[1;34m|[m [1;35m|[m [1;33m|[m 
+[1;36m|[m * [1;35m|[m [1;33m|[m [33m1d20cb2[m Merge pull request #10 from Alt2210/TDuong
+[1;36m|[m [32m|[m[1;35m\[m[1;35m|[m [1;33m|[m 
+[1;36m|[m [32m|[m * [1;33m|[m [33m6c88a1d[m  Cap nhat logic CombatSystem voi Projectile
+* [32m|[m [33m|[m [1;33m|[m [33m1f60a30[m fix bug vo han dialogue
+[34m|[m[32m\[m[32m|[m [33m|[m [1;33m|[m 
+[34m|[m * [33m|[m [1;33m|[m [33m993921a[m Merge pull request #9 from Alt2210/TDuong
+[34m|[m [36m|[m[33m\[m[33m|[m [1;33m|[m 
+[34m|[m [36m|[m * [1;33m|[m [33m2bc05c0[m them projectile
+[34m|[m [36m|[m[36m/[m [1;33m/[m  
+[34m|[m * [1;33m|[m [33m4649c9c[m update them Monster Bat, Bat co kha nang luot
+[34m|[m * [1;33m|[m [33me669d83[m update tam danh cho character
+[34m|[m * [1;33m|[m [33mb35c26e[m update tam danh cho character
+[34m|[m * [1;33m|[m [33mf21c491[m Merge pull request #8 from Alt2210/DDung
+[34m|[m [1;32m|[m[1;33m\[m[1;33m|[m 
+[34m|[m [1;32m|[m * [33ma6fd132[m new map
+[34m|[m [1;32m|[m[1;32m/[m  
+* [1;32m/[m [33m39c5e95[m Fix vo tan dialogue
+[1;32m|[m[1;32m/[m  
+* [33ma4cfe96[m fix monster damage bug
+* [33m19b50d9[m screen and sound
+* [33m27d515d[m game menu and sound
+* [33m819d46c[m fix interaction with object
+* [33m3545b42[m fix size when attack
+* [33m307f225[m update 1.3
+* [33ma25b541[m update 1.3
+* [33m72531bd[m update them attack quai, nhan damage quai, them pakage eventsystem chua combatsystem trong do, hoat anh dam nhau
+*   [33m66906a0[m Merge remote-tracking branch 'origin/main'
+[1;34m|[m[1;35m\[m  
+[1;34m|[m *   [33macc10ff[m Merge pull request #7 from Alt2210/DDung
+[1;34m|[m [1;36m|[m[31m\[m  
+[1;34m|[m [1;36m|[m * [33m72db0ab[m  create testing map
+[1;34m|[m [1;36m|[m[1;36m/[m  
+* [1;36m/[m [33mef44d4f[m update them attack quai, nhan damage quai, them pakage eventsystem chua combatsystemt trong do
+[1;36m|[m[1;36m/[m  
+* [33m9618108[m ai
+*   [33m58628e7[m Merge branch 'main' of https://github.com/Alt2210/OOP_RPG_WORLD
+[32m|[m[33m\[m  
+[32m|[m *   [33mb94e880[m Merge pull request #5 from Alt2210/Alt2
+[32m|[m [34m|[m[35m\[m  
+[32m|[m [34m|[m * [33m24b8c5a[m[33m ([m[1;32mAlt2[m[33m)[m fix bug
+[32m|[m [34m|[m *   [33mee3b91c[m Merge branch 'main' into Alt2
+[32m|[m [34m|[m [36m|[m[34m\[m  
+[32m|[m [34m|[m [36m|[m[34m/[m  
+[32m|[m [34m|[m[34m/[m[36m|[m   
+[32m|[m * [36m|[m [33m5d50ef0[m update thêm class abstract Monster, tạo quái greenSlime
+[32m|[m * [36m|[m   [33m7242184[m Merge branch 'Alt2'
+[32m|[m [1;32m|[m[1;33m\[m [36m\[m  
+[32m|[m [1;32m|[m [1;33m|[m * [33mc17eeb5[m fix conflict
+[32m|[m [1;32m|[m [1;33m|[m *   [33mae3e88c[m update game event
+[32m|[m [1;32m|[m [1;33m|[m [1;34m|[m[1;33m\[m  
+[32m|[m [1;32m|[m [1;33m|[m [1;34m|[m[1;33m/[m  
+[32m|[m [1;32m|[m [1;33m|[m[1;33m/[m[1;34m|[m   
+[32m|[m [1;32m|[m * [1;34m|[m [33md6cb7e6[m update thanh máu character, thêm thuộc tính HP cho character
+[32m|[m [1;32m|[m * [1;34m|[m [33mc0b8e0a[m update xoa superItem, xoa tao gamepanel trong cac item
+[32m|[m [1;32m|[m * [1;34m|[m [33mb9b6a03[m update superItem thanh abstract
+[32m|[m [1;32m|[m [1;35m|[m * [33ma9313d1[m Xu ly su kien game, doc them o reame
+[32m|[m [1;32m|[m [1;35m|[m[1;35m/[m  
+[32m|[m [1;32m|[m * [33mac13e5a[m version 1.1
+* [1;32m|[m [1;35m|[m [33mf9d5345[m thay doi
+[1;32m|[m[1;32m/[m [1;35m/[m  
+* [1;35m/[m [33mdd0e212[m update pick up item
+[1;35m|[m[1;35m/[m  
+* [33m8a4cbc6[m them npc
+* [33m943ac49[m update
+* [33m3979e3d[m ddasd
+* [33me1d39fc[m ddasd

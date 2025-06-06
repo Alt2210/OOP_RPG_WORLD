@@ -1,7 +1,7 @@
 package character.monster;
 
 import character.Character;
-import character.Player;
+import character.Role.Player;
 import main.GamePanel;
 import pathfinder.Node;
 import pathfinder.PathFinder;
@@ -18,7 +18,7 @@ public class MON_GolemBoss extends Monster {
     private final int LASER_CHARGE_DURATION = 120;
     private final int CHARGING_PHASE_DURATION = 30;
     private int laserAttackCounter;
-    private final int LASER_ATTACK_INTERVAL = 300;
+    private final int LASER_ATTACK_INTERVAL = 600;
     private Rectangle laserHitbox;
     private final int BOSS_SIZE_MULTIPLIER = 3;
 
@@ -60,7 +60,7 @@ public class MON_GolemBoss extends Monster {
         defense = 2;
         exp = 50;
         attackRange = gp.getTileSize() * 3;
-        ATTACK_COOLDOWN_DURATION = 60;
+        ATTACK_COOLDOWN_DURATION = 600;
         contactDamageAmount = attack;
         solidArea.width = gp.getTileSize() * 2;
         solidArea.height = gp.getTileSize() * 2;
