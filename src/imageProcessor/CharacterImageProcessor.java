@@ -152,6 +152,13 @@ public class CharacterImageProcessor extends ImageProcessor {
         int golemLaserFrames = 0;
         int golemArmShotFrames = 0;
 
+        String baseIdentifier = characterIdentifier;
+        if (characterIdentifier.startsWith("skeletonlord_phase2")) {
+            baseIdentifier = "skeletonlord_phase2"; // Sử dụng baseIdentifier để tải ảnh phase 2
+        } else if (characterIdentifier.startsWith("skeletonlord")) {
+            baseIdentifier = "skeletonlord";
+        }
+
         switch (characterIdentifier) {
             case "sodier": // Giữ nguyên "sodier" theo yêu cầu
                 walkSpriteCount = 5;
@@ -178,6 +185,14 @@ public class CharacterImageProcessor extends ImageProcessor {
                 golemChargeFrames = 7;
                 golemLaserFrames = 14;
                 golemArmShotFrames = 9;
+                break;
+            case "skeletonlord":
+                walkSpriteCount = 2; // Số frame cho đi bộ
+                bodyAttackSpriteCount = 2; // Số frame cho tấn công cận chiến
+                break;
+            case "skeletonlord_phase2":
+                walkSpriteCount = 2; // Số frame cho đi bộ Phase 2
+                bodyAttackSpriteCount = 2; // Số frame cho tấn công cận chiến Phase 2
                 break;
             default:
                 System.err.println("CIP.getImage: Tên định danh nhân vật không xác định: '" + characterIdentifier + "'.");

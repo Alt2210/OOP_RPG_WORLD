@@ -16,9 +16,17 @@ public class MON_SkeletonLord extends Monster {
     private int attackAnimationCounter = 0;
     // Thời gian cho mỗi frame của animation tấn công, giả sử attack có 2 frame thì 30/2 = 15 frame game/1 frame animation
     private final int ATTACK_ANIMATION_DURATION = 30;
-    private final int ORC_ATTACK_RANGE_TILES = 1;     // Orc tấn công khi Player cách 1 ô
-    private final int ORC_ATTACK_CHECK_INTERVAL = 45; // Tần suất Orc thử tấn công (ví dụ: mỗi 45 frame)
+    private final int MELEE_ATTACK_RANGE_TILES = 1;     // Skeleton Lord tấn công khi Player cách 1 ô (giống Orc)
+    private final int ATTACK_CHECK_INTERVAL = 45; // Tần suất Skeleton Lord thử tấn công (giống Orc)
     private int attackCheckCounter = 0;
+
+    // Biến cho phase (chỉ dùng để đổi ảnh)
+    private int currentPhase;
+    public static final int PHASE_ONE = 1;
+    public static final int PHASE_TWO = 2;
+    private final int PHASE_TWO_HEALTH_THRESHOLD; // Ngưỡng máu để chuyển phase (ví dụ: 50% max health)
+    private boolean phaseChanged = false; // Cờ để đảm bảo logic chuyển phase chỉ chạy một lần
+
 
     public MON_SkeletonLord(GamePanel gp) {
         super(gp);
@@ -31,6 +39,8 @@ public class MON_SkeletonLord extends Monster {
 
         direction = "down";
         setDefaultValues();
+        this.PHASE_TWO_HEALTH_THRESHOLD = (int) (maxHealth * 0.5); // 50% máu
+        this.currentPhase = PHASE_ONE; // Bắt đầu ở phase 1
     }
 
     @Override
@@ -38,31 +48,32 @@ public class MON_SkeletonLord extends Monster {
         worldX = gp.getTileSize() * 30;
         worldY = gp.getTileSize() * 40;
 
-        setName("Orc");
+        setName("Skeleton Lord"); // Đổi tên
         defaultSpeed = 1;
         speed = defaultSpeed;
-        maxHealth = 100;
+        maxHealth = 500; // Tăng máu
         currentHealth = maxHealth;
-        attack = 12;
-        defense = 3;
-        exp = 15;
-        contactDamageAmount = 5;
+        attack = 15; // Tăng sát thương (phù hợp boss)
+        defense = 5; // Tăng phòng thủ (phù hợp boss)
+        exp = 100; // Tăng EXP
+        contactDamageAmount = 8; // Sát thương chạm
 
-        // Thiết lập Cooldown cho đòn tấn công của Orc
-        this.ATTACK_COOLDOWN_DURATION = 120; // Ví dụ: Orc chỉ có thể tấn công mỗi 2 giây (120 frames @ 60FPS)
+        // Thiết lập Cooldown cho đòn tấn công của Skeleton Lord (giống Orc nhưng có thể điều chỉnh)
+        this.ATTACK_COOLDOWN_DURATION = 90; // Ví dụ: 1.5 giây (90 frames @ 60FPS)
 
-        // Tầm đánh hitbox, có thể sử dụng cho CombatSystem hoặc logic riêng
-        this.attackRange = gp.getTileSize()*2; // Tầm đánh hiệu quả của đòn tấn công là 1 tile
-        int size =gp.getTileSize()*5;
-        solidArea.x = 48;
-        solidArea.y = 48;
-        solidArea.width = size - 48*2;
-        solidArea.height = size - 48;
+        // Tầm đánh hitbox (giữ nguyên Orc logic là 1 tile tiếp xúc)
+        this.attackRange = gp.getTileSize();
+
+        // Kích thước solidArea lớn hơn cho boss (giữ nguyên logic bạn đã có)
+        int bossBaseSize = gp.getTileSize() * 3; // Ví dụ: 3x3 tiles cho tổng kích thước
+        solidArea.x = (bossBaseSize - gp.getTileSize()) / 2; // Căn giữa hitbox
+        solidArea.y = (bossBaseSize - gp.getTileSize()) / 2; // Căn giữa hitbox
+        solidArea.width = gp.getTileSize(); // Giữ hitbox là 1 tile
+        solidArea.height = gp.getTileSize();
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
-        // CharacterImageProcessor sẽ tải ảnh đi bộ và tấn công cho "orc"
-        // Đảm bảo CharacterImageProcessor được cấu hình để xử lý "orc" với 2 frame/hướng cho đi bộ và tấn công
+        // Tải ảnh cho Skeleton Lord Phase 1 ban đầu
         cip.getImage("/monster", "skeletonlord");
     }
 
@@ -70,14 +81,15 @@ public class MON_SkeletonLord extends Monster {
         return this.attacking;
     }
 
+    // Sao chép logic tấn công từ MON_Orc.attemptToAttackPlayer
     private void attemptToAttackPlayer(Player player) {
         attackCheckCounter++;
-        if (attackCheckCounter < ORC_ATTACK_CHECK_INTERVAL) {
+        if (attackCheckCounter < ATTACK_CHECK_INTERVAL) {
             return; // Chưa đến lúc kiểm tra tấn công
         }
         attackCheckCounter = 0; // Reset bộ đếm
 
-        if (getTileDistance(player) <= ORC_ATTACK_RANGE_TILES && canAttack()) { // canAttack() kiểm tra attackCooldown
+        if (getTileDistance(player) <= MELEE_ATTACK_RANGE_TILES && canAttack()) { // canAttack() kiểm tra attackCooldown
             attacking = true;
             attackAnimationCounter = ATTACK_ANIMATION_DURATION;
             speed = 0; // Orc đứng yên khi thực hiện hành động tấn công
@@ -85,11 +97,11 @@ public class MON_SkeletonLord extends Monster {
             // Quay mặt về phía Player khi tấn công
             int playerCenterX = player.worldX + player.solidArea.x + player.solidArea.width / 2;
             int playerCenterY = player.worldY + player.solidArea.y + player.solidArea.height / 2;
-            int orcCenterX = this.worldX + this.solidArea.x + this.solidArea.width / 2;
-            int orcCenterY = this.worldY + this.solidArea.y + this.solidArea.height / 2;
+            int monsterCenterX = this.worldX + this.solidArea.x + this.solidArea.width / 2;
+            int monsterCenterY = this.worldY + this.solidArea.y + this.solidArea.height / 2;
 
-            int dx = playerCenterX - orcCenterX;
-            int dy = playerCenterY - orcCenterY;
+            int dx = playerCenterX - monsterCenterX;
+            int dy = playerCenterY - monsterCenterY;
 
             if (Math.abs(dx) > Math.abs(dy)) {
                 direction = (dx > 0) ? "right" : "left";
@@ -98,7 +110,7 @@ public class MON_SkeletonLord extends Monster {
             }
 
             // Tạo hitbox cho đòn tấn công của Orc
-            Rectangle orcAttackHitbox = new Rectangle();
+            Rectangle monsterAttackHitbox = new Rectangle();
             // Kích thước hitbox có thể khác với kích thước sprite, tùy vào animation
             int hitboxWidth = gp.getTileSize();
             int hitboxHeight = gp.getTileSize();
@@ -108,22 +120,22 @@ public class MON_SkeletonLord extends Monster {
 
             switch (direction) {
                 case "up":
-                    orcAttackHitbox.setBounds(solidRectCenterX - hitboxWidth / 2,
+                    monsterAttackHitbox.setBounds(solidRectCenterX - hitboxWidth / 2,
                             worldY + solidArea.y - hitboxHeight,
                             hitboxWidth, hitboxHeight);
                     break;
                 case "down":
-                    orcAttackHitbox.setBounds(solidRectCenterX - hitboxWidth / 2,
+                    monsterAttackHitbox.setBounds(solidRectCenterX - hitboxWidth / 2,
                             worldY + solidArea.y + solidArea.height,
                             hitboxWidth, hitboxHeight);
                     break;
                 case "left":
-                    orcAttackHitbox.setBounds(worldX + solidArea.x - hitboxWidth,
+                    monsterAttackHitbox.setBounds(worldX + solidArea.x - hitboxWidth,
                             solidRectCenterY - hitboxHeight / 2,
                             hitboxWidth, hitboxHeight);
                     break;
                 case "right":
-                    orcAttackHitbox.setBounds(worldX + solidArea.x + solidArea.width,
+                    monsterAttackHitbox.setBounds(worldX + solidArea.x + solidArea.width,
                             solidRectCenterY - hitboxHeight / 2,
                             hitboxWidth, hitboxHeight);
                     break;
@@ -134,7 +146,7 @@ public class MON_SkeletonLord extends Monster {
                     player.solidArea.width,
                     player.solidArea.height);
 
-            if (orcAttackHitbox.intersects(playerBounds)) {
+            if (monsterAttackHitbox.intersects(playerBounds)) {
                 // gp.playSoundEffect(SOUND_ORC_ATTACK_HIT); // Thêm âm thanh nếu có
                 gp.getCombatSystem().performAttack(this, player);
             }
@@ -142,27 +154,44 @@ public class MON_SkeletonLord extends Monster {
         }
     }
 
+    // Sao chép logic update từ MON_Orc
     @Override
     public void update() {
+        // Kiểm tra chuyển phase (chỉ để thay đổi ảnh, không ảnh hưởng cơ chế tấn công/di chuyển)
+        if (currentPhase == PHASE_ONE && currentHealth <= PHASE_TWO_HEALTH_THRESHOLD && !phaseChanged) {
+            currentPhase = PHASE_TWO;
+            phaseChanged = true; // Đặt cờ để chỉ chuyển phase một lần
+            gp.getUi().showMessage("Skeleton Lord đã tiến hóa! Nó trở nên mạnh mẽ và đáng sợ hơn!");
+            System.out.println("Skeleton Lord transitioned to Phase 2!");
+
+            // Tải lại sprite cho Phase 2 (thông qua CharacterImageProcessor)
+            cip.getImage("/monster", "skeletonlord_phase2");
+            // Optionally, increase speed/attack in Phase 2, but for now, we only change images.
+            // speed = defaultSpeed + 1;
+            // attack = attack + 5;
+        }
+
+
         if (attacking) {
             attackAnimationCounter--;
             if (attackAnimationCounter <= 0) {
                 attacking = false;
-                speed = defaultSpeed;
+                speed = defaultSpeed; // Trở lại tốc độ mặc định sau khi tấn công
             }
         } else {
-            speed = defaultSpeed;
+            speed = defaultSpeed; // Luôn đảm bảo tốc độ mặc định khi không tấn công
             Player player = gp.getPlayer();
             if (player != null && player.getCurrentHealth() > 0) {
-                attemptToAttackPlayer(player);
+                attemptToAttackPlayer(player); // Sử dụng phương thức giống Orc
             }
             if(!attacking) {
-                playerChasing();
+                playerChasing(); // Sử dụng phương thức giống Orc
             }
         }
         super.update(); // Gọi Character.update() để di chuyển và gọi cip.update()
     }
 
+    // Sao chép logic tìm đường từ MON_Orc.playerChasing()
     @Override
     public void playerChasing() {
         Player player = gp.getPlayer();
@@ -172,7 +201,6 @@ public class MON_SkeletonLord extends Monster {
             getRandomDirection(120);
             return;
         }
-
 
         if (onPath) {
             checkStopChasingOrNot(player, 15, 100);
@@ -190,10 +218,10 @@ public class MON_SkeletonLord extends Monster {
                     Node nextNode = pathFinder.pathList.get(0);
                     int nextNodeCenterX = nextNode.col * gp.getTileSize() + gp.getTileSize() / 2;
                     int nextNodeCenterY = nextNode.row * gp.getTileSize() + gp.getTileSize() / 2;
-                    int currentOrcCenterX = worldX + solidArea.x + solidArea.width / 2;
-                    int currentOrcCenterY = worldY + solidArea.y + solidArea.height / 2;
-                    int deltaX = nextNodeCenterX - currentOrcCenterX;
-                    int deltaY = nextNodeCenterY - currentOrcCenterY;
+                    int currentMonsterCenterX = worldX + solidArea.x + solidArea.width / 2;
+                    int currentMonsterCenterY = worldY + solidArea.y + solidArea.height / 2;
+                    int deltaX = nextNodeCenterX - currentMonsterCenterX;
+                    int deltaY = nextNodeCenterY - currentMonsterCenterY;
 
                     float threshold = speed * 0.8f;
                     if (Math.abs(deltaX) > Math.abs(deltaY)) { // Ưu tiên di chuyển theo trục có chênh lệch lớn hơn
@@ -217,103 +245,95 @@ public class MON_SkeletonLord extends Monster {
         }
     }
 
+    // Sao chép logic damageReaction từ MON_Orc
     @Override
     public void damageReaction(Character attacker) {
         super.damageReaction(attacker);
-        attacking = false;
-        attackAnimationCounter = 0;
-        speed = defaultSpeed; // Đảm bảo Orc có thể di chuyển sau khi nhận sát thương
+        attacking = false; // Đảm bảo không còn trong trạng thái tấn công
+        attackAnimationCounter = 0; // Reset animation counter
+        speed = defaultSpeed; // Đảm bảo Skeleton Lord có thể di chuyển sau khi nhận sát thương
+        onPath = true; // Bắt đầu đuổi theo người chơi sau khi nhận sát thương
+    }
+
+    @Override
+    protected void onDeath(Character attacker) {
+        checkDrop();
+        gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
+        gp.gameState = gp.victoryEndState; // Kết thúc game khi boss chết
     }
 
     public void checkDrop() {
         int i = new Random().nextInt(100) + 1;
-        if (i < 50) {
-            gp.getUi().showMessage(getName() + " dropped a Bronze Coin!");
-        } else if (i < 75) {
-            gp.getUi().showMessage(getName() + " dropped a Heart!");
+        if (i < 30) {
+            gp.getUi().showMessage(getName() + " dropped a rare item!");
+        } else if (i < 70) {
+            gp.getUi().showMessage(getName() + " dropped some Gold!");
         } else {
-            gp.getUi().showMessage(getName() + " dropped a Mana Crystal!");
+            gp.getUi().showMessage(getName() + " dropped a Health Potion!");
         }
     }
 
+    // Phần draw() của Skeleton Lord (đã được tối ưu tốt, giữ nguyên)
     @Override
     public void draw(Graphics2D g2) {
-        BufferedImage image = cip.getCurFrame(); // CharacterImageProcessor sẽ tự chọn frame (đi bộ/tấn công)
+        BufferedImage image = cip.getCurFrame();
 
         if (image != null) {
-            // Vị trí trên màn hình của góc trên-trái của ô tile chuẩn mà Orc đang đứng
             int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
             int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
 
-            // Kích thước vẽ mặc định (cho đi bộ hoặc nếu không có logic tấn công đặc biệt)
-            int drawWidth = gp.getTileSize();
-            int drawHeight = gp.getTileSize();
-            int drawOffsetX = 0; // Độ lệch X để vẽ so với screenX
-            int drawOffsetY = 0; // Độ lệch Y để vẽ so với screenY
+            int originalImageWidth = image.getWidth();
+            int originalImageHeight = image.getHeight();
 
-            if (attacking) { // Nếu Orc đang trong trạng thái animation tấn công
-                // Giả sử worldX, worldY là điểm tham chiếu trên cùng bên trái của ô tile chuẩn
-                // mà Orc chiếm giữ khi không tấn công.
-                // Ảnh tấn công sẽ được căn chỉnh dựa trên điểm này.
+            int drawWidth = originalImageWidth * gp.getScale();
+            int drawHeight = originalImageHeight * gp.getScale();
 
-                switch (direction) {
-                    case "up":
-                        drawWidth = gp.getTileSize();       // Rộng 1 tile (16px gốc -> 48px scaled)
-                        drawHeight = gp.getTileSize() * 2;    // Cao 2 tile (32px gốc -> 96px scaled)
-                        // Vẽ dịch lên trên 1 tile để phần chân/thân dưới của sprite tấn công (cao 2 tile)
-                        // khớp với vị trí của sprite đi bộ (cao 1 tile).
-                        // Tức là, điểm (worldX, worldY - tileSize) sẽ là góc trên-trái của ảnh tấn công.
-                        drawOffsetX = 0; // Không lệch ngang so với vị trí tile chuẩn
-                        drawOffsetY = -gp.getTileSize();
-                        break;
-                    case "down":
-                        drawWidth = gp.getTileSize();
-                        drawHeight = gp.getTileSize() * 2;
-                        // Nếu worldY là đỉnh của ô tile chuẩn, và ảnh tấn công xuống cao 2 tile
-                        // thì không cần drawOffsetY nếu bạn muốn nó phủ xuống dưới từ worldY.
-                        // Hoặc nếu bạn muốn tâm của phần thân Orc vẫn giữ nguyên, bạn có thể cần điều chỉnh.
-                        // Giả sử worldY là đỉnh, sprite sẽ bắt đầu từ (worldX, worldY).
-                        drawOffsetX = 0;
-                        drawOffsetY = 0; // Hoặc ví dụ: -gp.getTileSize()/2 nếu muốn căn giữa khác
-                        break;
-                    case "left":
-                        drawWidth = gp.getTileSize() * 2;   // Rộng 2 tile
-                        drawHeight = gp.getTileSize();     // Cao 1 tile
-                        // Vẽ dịch sang trái 1 tile để phần bên phải của sprite tấn công (rộng 2 tile)
-                        // khớp với vị trí của sprite đi bộ (rộng 1 tile).
-                        // Tức là, điểm (worldX - tileSize, worldY) sẽ là góc trên-trái của ảnh tấn công.
-                        drawOffsetX = -gp.getTileSize();
-                        drawOffsetY = 0; // Không lệch dọc so với vị trí tile chuẩn
-                        break;
-                    case "right":
-                        drawWidth = gp.getTileSize() * 2;
-                        drawHeight = gp.getTileSize();
-                        // Nếu worldX là cạnh trái của ô tile chuẩn, và sprite tấn công sang phải rộng 2 tile,
-                        // thì không cần drawOffsetX nếu bạn muốn nó phủ sang phải từ worldX.
-                        drawOffsetX = 0;
-                        drawOffsetY = 0;
-                        break;
+            int solidScreenX = screenX + solidArea.x;
+            int solidScreenY = screenY + solidArea.y;
+
+            int actualDrawX = solidScreenX;
+            int actualDrawY = solidScreenY;
+
+            if (attacking) {
+                if (direction.equals("up") || direction.equals("down")) {
+                    int drawOffsetX = (drawWidth - gp.getTileSize()) / 2;
+                    int drawOffsetY = drawHeight - gp.getTileSize();
+
+                    if(direction.equals("up")) {
+                        actualDrawY = solidScreenY - (drawHeight - gp.getTileSize());
+                        actualDrawX = solidScreenX - drawOffsetX;
+                    } else if (direction.equals("down")) {
+                        actualDrawX = solidScreenX - drawOffsetX;
+                        actualDrawY = solidScreenY - (drawHeight - gp.getTileSize());
+                    }
                 }
+                else if (direction.equals("left") || direction.equals("right")) {
+                    int drawOffsetX = drawWidth - gp.getTileSize();
+                    int drawOffsetY = (drawHeight - gp.getTileSize()) / 2;
+
+                    if(direction.equals("left")) {
+                        actualDrawX = solidScreenX - (drawWidth - gp.getTileSize());
+                        actualDrawY = solidScreenY - drawOffsetY;
+                    } else if (direction.equals("right")) {
+                        actualDrawX = solidScreenX;
+                        actualDrawY = solidScreenY - drawOffsetY;
+                    }
+                }
+            } else {
+                int drawOffsetX = (drawWidth - gp.getTileSize()) / 2;
+                int drawOffsetY = drawHeight - gp.getTileSize();
+
+                actualDrawX = solidScreenX - drawOffsetX;
+                actualDrawY = solidScreenY - drawOffsetY;
             }
 
-            // Tính toán vị trí vẽ thực tế trên màn hình
-            int actualDrawX = screenX + drawOffsetX;
-            int actualDrawY = screenY + drawOffsetY;
-
-            // Culling: Chỉ vẽ nếu một phần của sprite (đã tính offset và kích thước mới) nằm trong màn hình
-            if (actualDrawX + drawWidth > 0 && actualDrawX < gp.getScreenWidth() &&
-                    actualDrawY + drawHeight > 0 && actualDrawY < gp.getScreenHeight()) {
+            if (screenX + (gp.getTileSize()*3) > 0 && screenX - (gp.getTileSize()*3) < gp.getScreenWidth() &&
+                    screenY + (gp.getTileSize()*3) > 0 && screenY - (gp.getTileSize()*3) < gp.getScreenHeight()) {
 
                 g2.drawImage(image, actualDrawX, actualDrawY, drawWidth, drawHeight, null);
             }
 
-            // Vẽ thanh máu ở vị trí cố định so với ô tile gốc của Orc (screenX, screenY),
-            // không bị ảnh hưởng bởi offset/resize của sprite tấn công.
-            // Điều kiện culling cho thanh máu:
-            if (screenX + gp.getTileSize() > 0 && screenX < gp.getScreenWidth() &&
-                    screenY + gp.getTileSize() > 0 && screenY < gp.getScreenHeight()) {
-                drawHealthBar(g2, screenX, screenY);
-            }
+            drawHealthBar(g2, screenX, screenY);
         }
     }
 }

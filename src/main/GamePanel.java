@@ -3,10 +3,7 @@ package main;
 import character.Character;
 import character.Role.Player;
 import character.Role.*;
-import character.monster.MON_Bat;
-import character.monster.MON_GolemBoss;
-import character.monster.MON_GreenSlime;
-import character.monster.MON_Orc;
+import character.monster.*;
 import data.SaveLoad;
 import projectile.Projectile;
 import tile.TileManager;
@@ -58,6 +55,7 @@ public class GamePanel extends JPanel implements Runnable {
     public MON_Bat[] bat = new MON_Bat[10];
     public MON_GolemBoss[] golemBoss = new MON_GolemBoss[5];
     public MON_Orc[] orc = new MON_Orc[10];
+    public MON_SkeletonLord[] skeletonLord = new MON_SkeletonLord[10];
     public List<Projectile> projectiles = new ArrayList<>();
 
 
@@ -113,6 +111,7 @@ public class GamePanel extends JPanel implements Runnable {
     public MON_Bat[] getMON_Bat() { return bat; }
     public MON_GolemBoss[] getMON_GolemBoss() { return golemBoss; }
     public MON_Orc[] getMON_Orc() { return orc; }
+    public MON_SkeletonLord[] getSkeletonLord(){return skeletonLord; }
     public void setPlayer(Player player) {
         this.player = player;
     }
@@ -236,6 +235,15 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             }
+            for (int i = 0; i < skeletonLord.length; i++) {
+                if (skeletonLord[i] != null) {
+                    if (skeletonLord[i].getCurrentHealth() > 0) {
+                        skeletonLord[i].update();
+                    } else {
+                        aSetter.removeDeadMonster(skeletonLord, i, currentMap);
+                    }
+                }
+            }
             for (int i = 0; i < bat.length; i++) {
                 if (bat[i] != null) {
                     if (bat[i].getCurrentHealth() > 0) {
@@ -351,6 +359,9 @@ public class GamePanel extends JPanel implements Runnable {
             // Vẽ quái vật...
             for (MON_GreenSlime slime : greenSlime) {
                 if (slime != null) slime.draw(g2);
+            }
+            for (MON_SkeletonLord lord : skeletonLord) {
+                if (lord != null) lord.draw(g2);
             }
             for (MON_Orc currentOrc : orc) {
                 if (currentOrc != null) currentOrc.draw(g2);

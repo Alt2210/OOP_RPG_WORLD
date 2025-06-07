@@ -28,7 +28,7 @@ public class Astrologer extends Player {
         // Đặt các chỉ số riêng của Astrologer
         worldX = gp.getTileSize() * 10;
         worldY = gp.getTileSize() * 20;
-        speed = 20;
+        speed = 10;
         direction = "down";
         hasKey = 0;
         maxHealth = 80;

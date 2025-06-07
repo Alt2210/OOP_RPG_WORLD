@@ -1,9 +1,6 @@
 package main;
 import character.*;
-import character.monster.MON_Bat;
-import character.monster.MON_GolemBoss;
-import character.monster.MON_GreenSlime;
-import character.monster.MON_Orc;
+import character.monster.*;
 import worldObject.pickableObject.OBJ_Key;
 import worldObject.unpickableObject.OBJ_Chest;
 import worldObject.unpickableObject.OBJ_Door;
@@ -51,6 +48,12 @@ public class AssetSetter {
         }
     }
     public void removeDeadMonster(MON_Orc[] monsterArray, int index, int mapIndex) {
+        if (monsterArray != null && index >= 0 && index < monsterArray.length && monsterArray[index] != null) {
+            System.out.println("Removing " + monsterArray[index].getName() + " at index " + index + " from map " + mapIndex);
+            monsterArray[index] = null;
+        }
+    }
+    public void removeDeadMonster(MON_SkeletonLord[] monsterArray, int index, int mapIndex) {
         if (monsterArray != null && index >= 0 && index < monsterArray.length && monsterArray[index] != null) {
             System.out.println("Removing " + monsterArray[index].getName() + " at index " + index + " from map " + mapIndex);
             monsterArray[index] = null;
@@ -143,6 +146,10 @@ public class AssetSetter {
         gp.getMON_Bat()[4] = new MON_Bat(gp);
         gp.getMON_Bat()[4].worldX = gp.getTileSize()*67;
         gp.getMON_Bat()[4].worldY = gp.getTileSize()*39;
+
+        gp.getSkeletonLord()[0] = new MON_SkeletonLord(gp);
+        gp.getMON_GreenSlime()[0].worldX = gp.getTileSize() * 49;
+        gp.getMON_GreenSlime()[0].worldY = gp.getTileSize() * 91;
         System.out.println("Map 0 Monsters Set.");
 
     }
