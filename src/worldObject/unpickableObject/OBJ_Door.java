@@ -1,6 +1,6 @@
 package worldObject.unpickableObject;
 
-import character.Role.Player;
+import character.role.Player;
 import main.GamePanel;
 import sound.Sound;
 import worldObject.WorldObject;

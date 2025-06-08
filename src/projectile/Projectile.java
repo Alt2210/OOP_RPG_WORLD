@@ -89,4 +89,8 @@ public abstract class Projectile {
         }
         return false;
     }
+
+    public boolean isSingleHit() {
+        return true;
+    }
 }

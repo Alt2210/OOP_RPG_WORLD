@@ -1,7 +1,6 @@
 package main;
 
-import character.Role.Player;
-import item.ItemStack;
+import character.role.Player;
 // import worldObject.pickableObject.OBJ_Key;
 
 import javax.imageio.ImageIO;

@@ -1,27 +1,20 @@
-package character.Role;
+package character.role;
 
 import character.monster.Monster;
 import main.GamePanel;
 import main.KeyHandler;
-import projectile.Fireball;
-import sound.Sound;
+import skill.S_Fireball;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Soldier extends Player {
 
-    // Thuộc tính riêng của Soldier: kỹ năng Fireball
-    private int fireballManaCost;
-    private int fireballCooldown;
-    private final int FIREBALL_COOLDOWN_DURATION = 60;
-
     public Soldier(GamePanel gp, KeyHandler keyH) {
         super(gp, keyH);
-        this.characterClassIdentifier = "sodier";
+        this.characterClassIdentifier = "soldier";
         setDefaultValues();
     }
-
 
     @Override
     public void setDefaultValues() {
@@ -40,12 +33,10 @@ public class Soldier extends Player {
         this.ATTACK_COOLDOWN_DURATION = 45;
         this.currentAttackStateDuration = 30;
 
-        // Đặt giá trị cho kỹ năng Fireball
-        this.fireballManaCost = 10;
-        this.fireballCooldown = 0;
-
         setName("sodier");
         loadCharacterSprites();
+
+        addSkill(new S_Fireball(this, gp));
     }
 
     @Override
@@ -101,11 +92,6 @@ public class Soldier extends Player {
     public void update() {
         super.update(); // Gọi Player.update() để xử lý input và logic chung
 
-        // Giảm cooldown cho Fireball
-        if (fireballCooldown > 0) {
-            fireballCooldown--;
-        }
-
 
         if (!isAttacking() && cip != null && "sodier".equals(this.characterClassIdentifier)) {
             if(cip.getNumSprite() != 5) {
@@ -114,42 +100,6 @@ public class Soldier extends Player {
         }
     }
 
-    @Override
-    protected void handleSkillInputs() {
-        // Xử lý input cho kỹ năng Fireball của riêng Soldier
-        if (keyH.skill1Pressed && fireballCooldown == 0 && currentMana >= fireballManaCost && !isAttacking()) {
-            castFireball();
-        }
-    }
-
-    private void castFireball() {
-        this.attackStateCounter = 15;
-
-        spendMana(fireballManaCost);
-        fireballCooldown = FIREBALL_COOLDOWN_DURATION;
-        gp.getUi().showMessage("Fireball! -" + fireballManaCost + " MP");
-        gp.playSoundEffect(Sound.SFX_FIREBALL_SHOOT);
-
-        Fireball fireball = new Fireball(gp);
-        int playerSolidCenterX = worldX + solidArea.x + solidArea.width / 2;
-        int playerSolidCenterY = worldY + solidArea.y + solidArea.height / 2;
-        // ... (Logic tính toán vị trí spawn của fireball như cũ) ...
-        int fireballHitboxWidth = fireball.solidArea.width;
-        int fireballHitboxHeight = fireball.solidArea.height;
-        int fireballSpawnCenterX = playerSolidCenterX;
-        int fireballSpawnCenterY = playerSolidCenterY;
-        int gap = 2;
-        int offsetX = solidArea.width / 2 + fireballHitboxWidth / 2 + gap;
-        int offsetY = solidArea.height / 2 + fireballHitboxHeight / 2 + gap;
-        switch (direction) {
-            case "up": fireballSpawnCenterY -= offsetY; break;
-            case "down": fireballSpawnCenterY += offsetY; break;
-            case "left": fireballSpawnCenterX -= offsetX; break;
-            case "right": fireballSpawnCenterX += offsetX; break;
-        }
-        fireball.set(fireballSpawnCenterX, fireballSpawnCenterY, this.direction, this, this.attack * 2);
-        gp.projectiles.add(fireball);
-    }
     @Override
     public void checkAttack() {
         // Tạo một vùng hitbox cho đòn tấn công của Soldier

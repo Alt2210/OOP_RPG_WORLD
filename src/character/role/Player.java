@@ -1,4 +1,4 @@
-package character.Role;
+package character.role;
 import item.Inventory;
 
 import character.Character;
@@ -6,9 +6,12 @@ import character.NPC_Princess;
 import dialogue.DialogueSpeaker;
 import main.GamePanel;
 import main.KeyHandler;
+import skill.Skill;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Player extends character.Character {
     protected boolean attackDamageAppliedThisSwing = false;
@@ -26,6 +29,9 @@ public abstract class Player extends character.Character {
     protected int attackStateCounter = 0;
     protected int currentAttackStateDuration = 30;
 
+    protected ArrayList<Skill> skills;
+    protected Map<Skill, Integer> skillCooldowns;
+
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
         this.inventory = new Inventory(20);
@@ -36,6 +42,9 @@ public abstract class Player extends character.Character {
         solidArea = new Rectangle(8, 16, 32, 32);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+
+        this.skills = new ArrayList<>();
+        this.skillCooldowns = new HashMap<>();
     }
 
     public Inventory getInventory() {
@@ -44,7 +53,6 @@ public abstract class Player extends character.Character {
 
     protected abstract void loadCharacterSprites();
     protected abstract void performNormalAttackAction();
-    protected abstract void handleSkillInputs(); // Lớp con sẽ tự xử lý các kỹ năng của mình
     protected abstract void drawCharacterSpecifics(Graphics2D g2);
 
     @Override
@@ -52,8 +60,60 @@ public abstract class Player extends character.Character {
         return this.attackStateCounter > 0;
     }
 
+    protected void addSkill(Skill skill) {
+        this.skills.add(skill);
+        this.skillCooldowns.put(skill, 0); // Ban đầu không có cooldown
+    }
+
+    public void activateSkill(int skillIndex) {
+        // Kiểm tra xem index có hợp lệ không
+        if (skillIndex < 0 || skillIndex >= skills.size()) {
+            return;
+        }
+
+        Skill skillToUse = skills.get(skillIndex);
+
+        // Kiểm tra cooldown
+        if (skillCooldowns.get(skillToUse) > 0) {
+            gp.getUi().showMessage(skillToUse.getName() + " is on cooldown!");
+            return;
+        }
+
+        // Kiểm tra mana
+        if (this.currentMana < skillToUse.getManaCost()) {
+            gp.getUi().showMessage("Not enough mana!");
+            return;
+        }
+
+        // Tất cả điều kiện đều thỏa mãn -> sử dụng kỹ năng
+        //spendMana(skillToUse.getManaCost());
+        skillToUse.activate(this, gp);
+
+        // Đặt lại cooldown cho kỹ năng vừa sử dụng
+        skillCooldowns.put(skillToUse, skillToUse.getCooldownDuration());
+    }
+
+
     @Override
     public void update() {
+
+        for (Skill skill : skillCooldowns.keySet()) {
+            int currentCd = skillCooldowns.get(skill);
+            if (currentCd > 0) {
+                skillCooldowns.put(skill, currentCd - 1);
+            }
+        }
+
+        if (!isAttacking()) { // Chỉ xử lý input mới khi không đang trong hành động tấn công
+            // ... (xử lý input di chuyển và tấn công thường)
+
+            // Thay thế handleSkillInputs() bằng logic mới
+            if (keyH.skill1Pressed) {
+                activateSkill(0); // Kích hoạt kỹ năng ở vị trí số 0 (ví dụ Fireball)
+            }
+            // Bạn có thể thêm else if (keyH.skill2Pressed) { activateSkill(1); } sau này
+        }
+
         // ====================================================================
         //  PHẦN 1: XỬ LÝ LOGIC KHI PLAYER ĐANG TRONG TRẠNG THÁI TẤN CÔNG
         // ====================================================================
@@ -84,7 +144,7 @@ public abstract class Player extends character.Character {
             if (keyH.attackPressed && canAttack()) {
                 performNormalAttackAction();
             }
-            handleSkillInputs();
+
 
             // --- 2b. Xử lý Input cho Di chuyển ---
             boolean isTryingToMove = (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed);

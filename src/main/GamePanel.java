@@ -1,8 +1,7 @@
 package main;
 
 import character.Character;
-import character.Role.Player;
-import character.Role.*;
+import character.role.Player;
 import character.monster.*;
 import data.SaveLoad;
 import projectile.Projectile;

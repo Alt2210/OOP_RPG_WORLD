@@ -1,7 +1,7 @@
 package data;
 
 import main.GamePanel;
-import character.Role.Player;
+import character.role.Player;
 
 import java.io.*;
 

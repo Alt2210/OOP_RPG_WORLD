@@ -1,7 +1,9 @@
-package character.Role;
+package character.role;
 
 import main.GamePanel;
 import main.KeyHandler;
+import skill.S_StellaField;
+
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public class Astrologer extends Player {
         this.characterClassIdentifier = "astrologist";
         this.normalAttackEffectFrames = new ArrayList<>();
         setDefaultValues();
+        addSkill(new S_StellaField(this, this.gp));
     }
 
     @Override
@@ -117,11 +120,7 @@ public class Astrologer extends Player {
         // khi nó kiểm tra va chạm của hitbox hiệu ứng với monster.
     }
 
-    @Override
-    protected void handleSkillInputs() {
-        // Nơi để thêm logic cho các kỹ năng khác của Astrologer sau này
-        // Ví dụ: if (keyH.skill2Pressed && ...) { castBlink(); }
-    }
+
 
     @Override
     public void update() {

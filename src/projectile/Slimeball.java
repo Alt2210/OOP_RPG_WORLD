@@ -2,7 +2,6 @@ package projectile;
 
 import character.Character;
 import main.GamePanel;
-import sound.Sound; // Nếu bạn muốn âm thanh riêng cho Slimeball
 
 import javax.imageio.ImageIO;
 import java.awt.*;

@@ -1,7 +1,7 @@
 package character.monster;
 
 import character.Character;
-import character.Role.Player;
+import character.role.Player;
 import main.GamePanel;
 import projectile.Slimeball;
 import pathfinder.*;
@@ -31,7 +31,7 @@ public class MON_GreenSlime extends Monster {
         setName("Green Slime");
         defaultSpeed = 1;
         speed = defaultSpeed;
-        maxHealth = 500;
+        maxHealth = 75;
         currentHealth = maxHealth;
         attack = 5;
         defense = 0;

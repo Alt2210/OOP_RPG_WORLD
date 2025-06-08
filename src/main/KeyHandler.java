@@ -67,9 +67,9 @@ public class KeyHandler implements KeyListener {
             } else if (code == KeyEvent.VK_ENTER) {
                 // Tạo Player dựa trên lựa chọn
                 if (gp.getUi().commandNum == 0) {
-                    gp.setPlayer(new character.Role.Soldier(gp, this));
+                    gp.setPlayer(new character.role.Soldier(gp, this));
                 } else if (gp.getUi().commandNum == 1) {
-                    gp.setPlayer(new character.Role.Astrologer(gp, this));
+                    gp.setPlayer(new character.role.Astrologer(gp, this));
                 }
                 // Sau khi Player được tạo, tiến hành setup và bắt đầu game
                 gp.setupGame();

@@ -1,6 +1,6 @@
 package worldObject.unpickableObject;
 
-import character.Role.Player;
+import character.role.Player;
 import main.GamePanel; // Quan trọng: import GamePanel
 import worldObject.WorldObject;
 

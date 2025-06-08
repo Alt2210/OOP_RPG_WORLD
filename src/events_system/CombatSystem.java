@@ -1,7 +1,7 @@
 package events_system;
 
 import character.Character;
-import character.Role.Player;
+import character.role.Player;
 import character.monster.Monster;
 import main.GamePanel;
 import projectile.Projectile;
@@ -79,27 +79,28 @@ public class CombatSystem {
                         );
 
                         if (projectileBounds.intersects(monsterBounds)) {
-                            // ĐÃ TRÚNG MỤC TIÊU!
-                            System.out.println("[" + System.currentTimeMillis() + "] CombatSystem.processProjectileImpacts: " +
-                                    projectile.getCaster().getName() + "'s projectile trúng " + monster.getName());
+                            // Va chạm đã xảy ra.
+                            // StellarField không gây sát thương ở đây, nó có bộ đếm riêng.
+                            // Chúng ta chỉ cần xử lý cho các projectile thông thường.
+                            if (projectile.isSingleHit()) {
+                                System.out.println("[" + System.currentTimeMillis() + "] CombatSystem.processProjectileImpacts: " +
+                                        projectile.getCaster().getName() + "'s projectile trúng " + monster.getName());
 
-                            int projectileDamageValue = projectile.getDamageValue();
-                            int actualDamageDealt = monster.receiveDamage(projectileDamageValue, projectile.getCaster());
+                                int projectileDamageValue = projectile.getDamageValue();
+                                int actualDamageDealt = monster.receiveDamage(projectileDamageValue, projectile.getCaster());
 
-                            gp.getUi().showMessage(projectile.getCaster().getName() + " bắn trúng " +
-                                    monster.getName() + " gây " + actualDamageDealt + " sát thương!");
+                                gp.getUi().showMessage(projectile.getCaster().getName() + " bắn trúng " +
+                                        monster.getName() + " gây " + actualDamageDealt + " sát thương!");
 
-                            gp.playSoundEffect(Sound.SFX_FIREBALL_HIT); // Âm thanh trúng
-                            projectile.setAlive(false); // Projectile biến mất sau khi trúng
+                                gp.playSoundEffect(Sound.SFX_FIREBALL_HIT);
+                                projectile.setAlive(false); // Chỉ biến mất nếu là single-hit
 
-                            if (monster.getCurrentHealth() <= 0) {
-                                System.out.println("    " + monster.getName() + " đã bị projectile đánh bại.");
-                                // GamePanel sẽ chịu trách nhiệm loại bỏ monster khỏi mảng (ví dụ: đặt thành null)
-                                // trong vòng lặp cập nhật quái vật của nó, sau khi kiểm tra currentHealth.
-                                // Hoặc, bạn có thể có một cơ chế sự kiện ở đây.
-                                monsterArray[i] = null;
+                                if (monster.getCurrentHealth() <= 0) {
+                                    System.out.println("    " + monster.getName() + " đã bị projectile đánh bại.");
+                                    monsterArray[i] = null;
+                                }
+                                return; // Dừng lại vì projectile single-hit đã hoàn thành nhiệm vụ.
                             }
-                            return; // Projectile chỉ trúng một mục tiêu rồi biến mất
                         }
                     }
                 }

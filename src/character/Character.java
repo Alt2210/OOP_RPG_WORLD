@@ -1,6 +1,6 @@
 package character;
 
-import character.Role.Player;
+import character.role.Player;
 import imageProcessor.CharacterImageProcessor;
 import main.GamePanel;
 import java.awt.*;
@@ -53,6 +53,7 @@ public abstract class Character {
         cip = new CharacterImageProcessor(gp, this);
         // THÊM MỚI: Khởi tạo attackCooldown
         attackCooldown = 0;
+
     }
 
     public abstract void draw(Graphics2D g2);

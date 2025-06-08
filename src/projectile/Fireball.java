@@ -1,41 +1,18 @@
 package projectile;
 
 import character.Character;
-import character.monster.Monster; // Để kiểm tra va chạm với Monster
+import imageProcessor.SkillImageProcessor;
 import main.GamePanel;
-import sound.Sound; // Để sử dụng âm thanh
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 
 public class Fireball extends Projectile {
 
+    SkillImageProcessor sip;
 
-    private ArrayList<BufferedImage> imagesUp;
-    private ArrayList<BufferedImage> imagesDown;
-    private ArrayList<BufferedImage> imagesLeft;
-    private ArrayList<BufferedImage> imagesRight;
-
-    private int spriteCounter = 0;
-    private int spriteNum = 0;
-    private int numFramesPerDirection = 2; // Giả sử bạn có 2 frame cho mỗi hướng (vd: _1.png, _2.png)
-    private int animationSpeed = 10;       // Số frame game trước khi chuyển sang frame hoạt ảnh tiếp theo của fireball
-
-    public Fireball(GamePanel gp) {
+    public Fireball(GamePanel gp, SkillImageProcessor sip) {
         super(gp);
-        // Các giá trị mặc định cho Fireball sẽ được đặt trong phương thức set()
-        // hoặc khi đối tượng được tạo và cấu hình bởi caster.
-        imagesUp = new ArrayList<>();
-        imagesDown = new ArrayList<>();
-        imagesLeft = new ArrayList<>();
-        imagesRight = new ArrayList<>();
-        // Tải hình ảnh Fireball
-        loadDirectionalImages();
-        // Đặt kích thước solidArea dựa trên một trong các ảnh (ví dụ: imageDown) hoặc một giá trị cố định nếu bạn muốn.
         if (gp != null) { // Thêm kiểm tra null cho gp
             solidArea.width = (int) (gp.getTileSize() * 0.75); // Kích thước mới cho Fireball
             solidArea.height = (int) (gp.getTileSize() * 0.75); // Kích thước mới cho Fireball
@@ -43,56 +20,9 @@ public class Fireball extends Projectile {
             solidArea.width = 36; // Giá trị mặc định nếu gp null
             solidArea.height = 36; // Giá trị mặc định nếu gp null
         }
-    }
-    private void loadDirectionalImages() {
-        String[] directionNames = {"up", "down", "left", "right"};
-        @SuppressWarnings("unchecked") // Bỏ cảnh báo type safety cho mảng ArrayList generic
-        ArrayList<BufferedImage>[] imageLists = new ArrayList[]{imagesUp, imagesDown, imagesLeft, imagesRight};
-        for (int i = 0; i < directionNames.length; i++) {
-            for (int frame = 1; frame <= numFramesPerDirection; frame++) {
-                String path = "/projectile/fireball_" + directionNames[i] + "_" + frame + ".png";
-                try {
-                    InputStream is = getClass().getResourceAsStream(path);
-                    if (is == null) {
-                        System.err.println("Cảnh báo: Không tìm thấy ảnh Fireball tại: " + path + ". Bỏ qua frame này.");
-                        // Nếu frame đầu tiên của một hướng không tồn tại, thêm placeholder để tránh lỗi
-                        if (frame == 1) {
-                            imageLists[i].add(createPlaceholderImage()); // Thêm placeholder
-                            if(numFramesPerDirection > 1) { // Nếu dự kiến có nhiều frame
-                                imageLists[i].add(createPlaceholderImage()); // Thêm placeholder cho frame thứ 2 (nếu có)
-                            }
-                        }
-                        continue; // Bỏ qua việc tải frame này
-                    }
-                    imageLists[i].add(ImageIO.read(is));
-                } catch (IOException e) {
-                    System.err.println("Lỗi khi tải ảnh Fireball: " + path + " - " + e.getMessage());
-                    // Nếu có lỗi, thêm placeholder để đảm bảo danh sách không rỗng và có đủ số frame như mong đợi
-                    imageLists[i].add(createPlaceholderImage());
-                    if(numFramesPerDirection > 1 && imageLists[i].size() < numFramesPerDirection) {
-                        imageLists[i].add(createPlaceholderImage());
-                    }
-                }
-            }
-            // Đảm bảo mỗi hướng có ít nhất một ảnh (placeholder nếu không tải được)
-            if (imageLists[i].isEmpty()) {
-                for(int f=0; f < numFramesPerDirection; f++){
-                    imageLists[i].add(createPlaceholderImage());
-                }
-            }
-        }
+        this.sip = sip;
     }
 
-    private BufferedImage createPlaceholderImage() {
-        BufferedImage placeholder = new BufferedImage(solidArea.width, solidArea.height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = placeholder.createGraphics();
-        g.setColor(Color.ORANGE);
-        g.fillOval(0, 0, solidArea.width, solidArea.height);
-        g.setColor(Color.YELLOW);
-        g.drawOval(0,0, solidArea.width-1, solidArea.height-1);
-        g.dispose();
-        return placeholder;
-    }
     @Override
     public void set(int startWorldX, int startWorldY, String direction, Character caster, int damage) {
         this.worldX = startWorldX - solidArea.width / 2;   // Căn giữa fireball tại điểm xuất phát
@@ -106,27 +36,7 @@ public class Fireball extends Projectile {
         this.maxRange = 10 * gp.getTileSize(); // Tầm bay tối đa (ví dụ: 10 ô)
         this.alive = true;
         this.distanceTraveled = 0;
-        this.spriteNum = 0; // Bắt đầu từ frame đầu tiên của hoạt ảnh
-        this.spriteCounter = 0; // Reset bộ đếm cho hoạt ảnh
     }
-    private BufferedImage getCurrentImageFrame() {
-        ArrayList<BufferedImage> currentImageList;
-        switch (direction) {
-            case "up":    currentImageList = imagesUp;    break;
-            case "down":  currentImageList = imagesDown;  break;
-            case "left":  currentImageList = imagesLeft;  break;
-            case "right": currentImageList = imagesRight; break;
-            default:      currentImageList = imagesDown;  break; // Mặc định
-        }
-
-        if (currentImageList != null && !currentImageList.isEmpty()) {
-            int actualFramesInList = currentImageList.size();
-            if (actualFramesInList == 0) return createPlaceholderImage(); // Không có ảnh nào cho hướng này
-            return currentImageList.get(spriteNum % actualFramesInList); // Dùng modulo để lặp qua các frame
-        }
-        return createPlaceholderImage(); // Fallback
-    }
-
 
     @Override
     public void update() {
@@ -151,16 +61,7 @@ public class Fireball extends Projectile {
 
         distanceTraveled += Math.sqrt(Math.pow(worldX - prevWorldX, 2) + Math.pow(worldY - prevWorldY, 2));
         // Cập nhật hoạt ảnh
-        spriteCounter++;
-        if (spriteCounter > animationSpeed) {
-            spriteNum++;
-            // Không cần lấy `actualNumFramesForCurrentDirection` ở đây vì `getCurrentImageFrame` đã xử lý modulo
-            // Nếu bạn muốn spriteNum reset dựa trên numFramesPerDirection cố định:
-            if (spriteNum >= numFramesPerDirection) {
-                spriteNum = 0;
-            }
-            spriteCounter = 0;
-        }
+        sip.update();
         // Kiểm tra va chạm với tile (tại tâm của projectile)
         if (checkTileCollision(worldX + solidArea.width / 2, worldY + solidArea.height / 2)) {
             // alive đã được đặt là false trong checkTileCollision nếu va chạm
@@ -222,7 +123,7 @@ public class Fireball extends Projectile {
 
     @Override
     public void draw(Graphics2D g2) {
-        BufferedImage currentFrame = getCurrentImageFrame();
+        BufferedImage currentFrame = sip.getCurFrame();
         if (!alive || currentFrame == null) {
             return;
         }
