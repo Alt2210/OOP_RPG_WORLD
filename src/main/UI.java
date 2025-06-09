@@ -564,7 +564,7 @@ public class UI {
 
         //Draw player's item
         for(int i=0;i < gp.getPlayer().getInventory().getItemStack();i++) {
-            g2.drawImage(gp.getPlayer().getInventory().getItemStack(i).getItem().getItp().getCurFrame(),slotX,slotY,null);
+            g2.drawImage(gp.getPlayer().getInventory().getItemStack(i).getItem().getItp().getCurFrame(),slotX,slotY,slotsSize, slotsSize,null);
 
             slotX += slotsSize;
 

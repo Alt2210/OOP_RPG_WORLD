@@ -1,6 +1,7 @@
 package main;
 import character.*;
 import character.monster.*;
+import worldObject.pickableObject.OBJ_HealthPotion;
 import worldObject.pickableObject.OBJ_Key;
 import worldObject.unpickableObject.OBJ_Chest;
 import worldObject.unpickableObject.OBJ_Door;
@@ -65,6 +66,10 @@ public class AssetSetter {
     private void setMap0_Objects() {
         gp.getwObjects()[0] = new OBJ_Key(gp);
         gp.getwObjects()[0].worldX = 20 * gp.getTileSize();
+        gp.getwObjects()[0].worldY = 20 * gp.getTileSize();
+
+        gp.getwObjects()[0] = new OBJ_HealthPotion(gp);
+        gp.getwObjects()[0].worldX = 19 * gp.getTileSize();
         gp.getwObjects()[0].worldY = 20 * gp.getTileSize();
 
         gp.getwObjects()[1] = new OBJ_Door();
