@@ -4,7 +4,8 @@ import character.Character;
 import character.role.Player;
 import character.monster.*;
 import data.SaveLoad;
-import projectile.Projectile;
+import skillEffect.SkillEffect;
+import skillEffect.SkillEffect;
 import tile.TileManager;
 import worldObject.WorldObject;
 import dialogue.DialogueManager;
@@ -55,7 +56,7 @@ public class GamePanel extends JPanel implements Runnable {
     public MON_GolemBoss[] golemBoss = new MON_GolemBoss[5];
     public MON_Orc[] orc = new MON_Orc[10];
     public MON_SkeletonLord[] skeletonLord = new MON_SkeletonLord[10];
-    public List<Projectile> projectiles = new ArrayList<>();
+    public List<SkillEffect> skillEffects = new ArrayList<>();
 
 
     // GAME STATE
@@ -159,7 +160,7 @@ public class GamePanel extends JPanel implements Runnable {
                 player.worldY = getTileSize() * 10; //
             }
         }
-        projectiles.clear();
+        skillEffects.clear();
     }
     public void resetGameForNewSession() { //
         System.out.println("Resetting game for new session...");
@@ -172,7 +173,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         clearEntitiesForMapChange(); // Xóa tất cả entities cũ
         aSetter.setupMapAssets(currentMap); // Nạp entities cho map 0
-        projectiles.clear();
+        skillEffects.clear();
         dialogueManager.reset(); // Reset DialogueManager
         ui = new UI(this); // Tạo lại UI để reset playtime và các trạng thái khác của UI
 
@@ -272,16 +273,16 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
 
-            for (int i = projectiles.size() - 1; i >= 0; i--) {
-                Projectile p = projectiles.get(i);
+            for (int i = skillEffects.size() - 1; i >= 0; i--) {
+                SkillEffect p = skillEffects.get(i);
                 if (p.isAlive()) {
                     p.update();
                     if (p.isAlive()) {
-                        combatSystem.processProjectileImpacts(p);
+                        combatSystem.processSkillEffectImpacts(p);
                     }
                 }
                 if (!p.isAlive()) {
-                    projectiles.remove(i);
+                    skillEffects.remove(i);
                 }
             }
 
@@ -299,7 +300,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 
      // Xóa các thực thể (NPC, Monster, WorldObject) khỏi map hiện tại.
-     // Player và projectiles sẽ được xử lý riêng nếu cần.
+     // Player và skillEffects sẽ được xử lý riêng nếu cần.
     public void clearEntitiesForMapChange() {
         for (int i = 0; i < wObjects.length; i++) {
             wObjects[i] = null;
@@ -319,8 +320,8 @@ public class GamePanel extends JPanel implements Runnable {
         for (int i = 0; i < golemBoss.length; i++) {
             golemBoss[i] = null;
         }
-        projectiles.clear(); // Xóa tất cả projectiles khi chuyển map
-        System.out.println("GamePanel: Entities and projectiles cleared for map change.");
+        skillEffects.clear(); // Xóa tất cả skillEffects khi chuyển map
+        System.out.println("GamePanel: Entities and skillEffects cleared for map change.");
     }
 
 
@@ -371,8 +372,8 @@ public class GamePanel extends JPanel implements Runnable {
             for (MON_GolemBoss boss : golemBoss) {
                 if (boss != null) boss.draw(g2);
             }
-            // Vẽ projectiles...
-            for (Projectile p : projectiles) {
+            // Vẽ skillEffects...
+            for (SkillEffect p : skillEffects) {
                 if (p.isAlive()) {
                     p.draw(g2);
                 }

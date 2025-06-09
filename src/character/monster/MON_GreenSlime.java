@@ -3,7 +3,7 @@ package character.monster;
 import character.Character;
 import character.role.Player;
 import main.GamePanel;
-import projectile.Slimeball;
+import skillEffect.projectile.Slimeball;
 import pathfinder.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -83,7 +83,7 @@ public class MON_GreenSlime extends Monster {
             Slimeball slimeball = new Slimeball(gp);
             int projectileDamage = this.attack; // Sát thương của slimeball, có thể điều chỉnh (vd: this.attack / 2)
 
-            // Điểm bắt đầu của projectile (ví dụ: từ giữa Slime)
+            // Điểm bắt đầu của skillEffect.projectile (ví dụ: từ giữa Slime)
             int spawnX = this.worldX + this.solidArea.x + this.solidArea.width / 2;
             int spawnY = this.worldY + this.solidArea.y + this.solidArea.height / 2;
 
@@ -97,7 +97,7 @@ public class MON_GreenSlime extends Monster {
             }
 
             slimeball.set(spawnX, spawnY, shootingDirection, this, projectileDamage);
-            gp.projectiles.add(slimeball);
+            gp.skillEffects.add(slimeball);
 
             projectileCooldown = PROJECTILE_COOLDOWN_DURATION; // Reset cooldown
             // gp.playSoundEffect(Sound.SFX_SLIME_SHOOT); // Thêm âm thanh nếu có
@@ -213,7 +213,7 @@ public class MON_GreenSlime extends Monster {
     }
     @Override
     public void update(){
-        attemptToShoot(); // Thử bắn projectile
+        attemptToShoot(); // Thử bắn skillEffect.projectile
         this.playerChasing();
         super.update();
     }

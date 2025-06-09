@@ -1,4 +1,4 @@
-package projectile;
+package skillEffect.projectile;
 
 import character.Character;
 import main.GamePanel;
@@ -29,7 +29,7 @@ public class Slimeball extends Projectile {
 
     private void loadImages() {
         try {
-            // Thay thế "/projectile/slimeball_default.png" bằng đường dẫn thực tế đến ảnh của bạn
+            // Thay thế "/skillEffect.projectile/slimeball_default.png" bằng đường dẫn thực tế đến ảnh của bạn
             // Nếu bạn có ảnh theo hướng, hãy tải chúng tương tự như Fireball
             InputStream is = getClass().getResourceAsStream("/projectile/slimeball.png");
             if (is == null) {
@@ -57,7 +57,7 @@ public class Slimeball extends Projectile {
 
     @Override
     public void set(int startWorldX, int startWorldY, String direction, Character caster, int damage) {
-        // Căn giữa projectile tại điểm bắn
+        // Căn giữa skillEffect.projectile tại điểm bắn
         this.worldX = startWorldX - solidArea.width / 2;
         this.worldY = startWorldY - solidArea.height / 2;
         this.direction = direction;
@@ -85,11 +85,11 @@ public class Slimeball extends Projectile {
         }
         distanceTraveled += speed;
 
-        // Cập nhật vị trí solidArea của projectile (nếu solidArea.x/y là offset)
+        // Cập nhật vị trí solidArea của skillEffect.projectile (nếu solidArea.x/y là offset)
         // this.solidArea.x = worldX;
         // this.solidArea.y = worldY;
 
-        // Kiểm tra va chạm với tile (tâm projectile)
+        // Kiểm tra va chạm với tile (tâm skillEffect.projectile)
         if (checkTileCollision(worldX + solidArea.width / 2, worldY + solidArea.height / 2)) {
             // alive đã được đặt false trong checkTileCollision
             // gp.playSoundEffect(Sound.SFX_SLIMEBALL_HIT_WALL); // Âm thanh riêng nếu có

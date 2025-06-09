@@ -1,4 +1,4 @@
-package projectile;
+package skillEffect.projectile;
 
 import character.Character;
 import imageProcessor.SkillImageProcessor;
@@ -44,7 +44,7 @@ public class Fireball extends Projectile {
             return;
         }
 
-        // Di chuyển projectile
+        // Di chuyển skillEffect.projectile
         int prevWorldX = worldX;
         int prevWorldY = worldY;
         double moveAmountX = 0;
@@ -62,7 +62,7 @@ public class Fireball extends Projectile {
         distanceTraveled += Math.sqrt(Math.pow(worldX - prevWorldX, 2) + Math.pow(worldY - prevWorldY, 2));
         // Cập nhật hoạt ảnh
         sip.update();
-        // Kiểm tra va chạm với tile (tại tâm của projectile)
+        // Kiểm tra va chạm với tile (tại tâm của skillEffect.projectile)
         if (checkTileCollision(worldX + solidArea.width / 2, worldY + solidArea.height / 2)) {
             // alive đã được đặt là false trong checkTileCollision nếu va chạm
             // System.out.println("Fireball hit wall"); // Debug
@@ -123,7 +123,7 @@ public class Fireball extends Projectile {
 
     @Override
     public void draw(Graphics2D g2) {
-        BufferedImage currentFrame = sip.getCurFrame();
+        BufferedImage currentFrame = sip.getCurFrame(this.direction);
         if (!alive || currentFrame == null) {
             return;
         }
@@ -131,7 +131,7 @@ public class Fireball extends Projectile {
         int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
         int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
 
-        // Chỉ vẽ nếu projectile nằm trong màn hình
+        // Chỉ vẽ nếu skillEffect.projectile nằm trong màn hình
         if (worldX + solidArea.width > gp.getPlayer().worldX - gp.getPlayer().screenX &&
                 worldX - solidArea.width < gp.getPlayer().worldX + gp.getPlayer().screenX && // Sửa: trừ solidArea.width
                 worldY + solidArea.height > gp.getPlayer().worldY - gp.getPlayer().screenY &&

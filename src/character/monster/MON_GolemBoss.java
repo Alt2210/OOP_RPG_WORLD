@@ -5,7 +5,7 @@ import character.role.Player;
 import main.GamePanel;
 import pathfinder.Node;
 import pathfinder.PathFinder;
-import projectile.GolemArmProjectile;
+import skillEffect.projectile.GolemArmProjectile;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -237,12 +237,12 @@ public class MON_GolemBoss extends Monster {
                 isFiringArmShot = true;
                 armShotCounter = 0;
 
-                // Tạo projectile cánh tay với hướng tương ứng
+                // Tạo skillEffect.projectile cánh tay với hướng tương ứng
                 armProjectile = new GolemArmProjectile(gp);
                 int startX = worldX + solidArea.x + solidArea.width / 2;
                 int startY = worldY + solidArea.y + solidArea.height / 2;
                 armProjectile.set(startX, startY, direction, this, attack);
-                System.out.println("GolemBoss fired arm projectile in direction: " + direction);
+                System.out.println("GolemBoss fired arm skillEffect.projectile in direction: " + direction);
             }
         }
 
@@ -254,7 +254,7 @@ public class MON_GolemBoss extends Monster {
             }
         }
 
-        // Cập nhật projectile nếu đang tồn tại
+        // Cập nhật skillEffect.projectile nếu đang tồn tại
         if (armProjectile != null && armProjectile.isAlive()) {
             armProjectile.update();
         }
@@ -365,7 +365,7 @@ public class MON_GolemBoss extends Monster {
                     );
                 }
 
-                // Vẽ cánh tay projectile
+                // Vẽ cánh tay skillEffect.projectile
                 if (armProjectile != null && armProjectile.isAlive()) {
                     armProjectile.draw(g2);
                 }

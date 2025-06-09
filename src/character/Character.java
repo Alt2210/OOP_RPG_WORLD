@@ -3,7 +3,12 @@ package character;
 import character.role.Player;
 import imageProcessor.CharacterImageProcessor;
 import main.GamePanel;
+import skill.Skill;
+
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Character {
 
@@ -19,6 +24,9 @@ public abstract class Character {
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collisionOn = false;
     public int actionLockCounter = 0;
+
+    protected ArrayList<Skill> skills;
+    protected Map<Skill, Integer> skillCooldowns;
 
     public void setName(String name) {
         this.name = name;
@@ -54,9 +62,59 @@ public abstract class Character {
         // THÊM MỚI: Khởi tạo attackCooldown
         attackCooldown = 0;
 
+        this.skills = new ArrayList<>();
+        this.skillCooldowns = new HashMap<>();
+    }
+
+    protected void addSkill(Skill skill) {
+        if (skill != null) {
+            this.skills.add(skill);
+            this.skillCooldowns.put(skill, 0); // Ban đầu không có cooldown
+        }
+    }
+
+    public void activateSkill(int skillIndex) {
+        if (skillIndex < 0 || skillIndex >= skills.size()) {
+            return; // Index không hợp lệ
+        }
+
+        Skill skillToUse = skills.get(skillIndex);
+
+        // Kiểm tra cooldown
+        if (skillCooldowns.get(skillToUse) > 0) {
+            // Đối với quái vật, chúng ta không cần hiển thị message
+            if (this instanceof Player) {
+                gp.getUi().showMessage(skillToUse.getName() + " is on cooldown!");
+            }
+            return;
+        }
+
+        // Kiểm tra mana (chỉ áp dụng cho Player hoặc loại Character có mana)
+        if (this.currentMana < skillToUse.getManaCost()) {
+            if (this instanceof Player) {
+                gp.getUi().showMessage("not enough mana!");
+            }
+            return;
+        }
+
+        // Trừ mana và kích hoạt kỹ năng
+        spendMana(skillToUse.getManaCost());
+        skillToUse.activate(this, gp);
+
+        // Đặt lại cooldown
+        skillCooldowns.put(skillToUse, skillToUse.getCooldownDuration());
     }
 
     public abstract void draw(Graphics2D g2);
+
+    public Rectangle getHitbox() {
+        return new Rectangle(
+                worldX + solidArea.x,
+                worldY + solidArea.y,
+                solidArea.width,
+                solidArea.height
+        );
+    }
 
     public void setDefaultValues() {
     }
@@ -147,6 +205,15 @@ public abstract class Character {
         this.currentMana = Math.max(0, this.currentMana - amount);
     }
 
+    public void coolDown(){
+        for (Skill skill : skillCooldowns.keySet()) {
+            int currentCd = skillCooldowns.get(skill);
+            if (currentCd > 0) {
+                skillCooldowns.put(skill, currentCd - 1);
+            }
+        }
+    }
+
     public boolean isAttacking() {
         return false;
     }
@@ -170,6 +237,8 @@ public abstract class Character {
         if (attackCooldown > 0) {
             attackCooldown--;
         }
+
+        coolDown();
 
         cip.update();
     }

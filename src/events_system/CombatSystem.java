@@ -4,7 +4,7 @@ import character.Character;
 import character.role.Player;
 import character.monster.Monster;
 import main.GamePanel;
-import projectile.Projectile;
+import skillEffect.SkillEffect;
 import sound.Sound;
 
 import java.awt.*;
@@ -42,20 +42,20 @@ public class CombatSystem {
         }
     }
 
-    public void processProjectileImpacts(Projectile projectile) {
-        if (projectile == null || !projectile.isAlive() || projectile.getCaster() == null) {
+    public void processSkillEffectImpacts(SkillEffect skillEffect) {
+        if (skillEffect == null || !skillEffect.isAlive() || skillEffect.getCaster() == null) {
             return;
         }
-        // Vùng va chạm của projectile (đã được cập nhật trong projectile.update() dựa trên worldX, worldY)
-        Rectangle projectileBounds = new Rectangle(
-                projectile.worldX + projectile.solidArea.x, // Giả sử solidArea.x/y là offset so với worldX/Y
-                projectile.worldY + projectile.solidArea.y,
-                projectile.solidArea.width,
-                projectile.solidArea.height
+        // Vùng va chạm của skillEffect.skillEffect (đã được cập nhật trong skillEffect.skillEffect.update() dựa trên worldX, worldY)
+        Rectangle skillEffectBounds = new Rectangle(
+                skillEffect.worldX + skillEffect.solidArea.x, // Giả sử solidArea.x/y là offset so với worldX/Y
+                skillEffect.worldY + skillEffect.solidArea.y,
+                skillEffect.solidArea.width,
+                skillEffect.solidArea.height
         );
         // Chỉ xử lý nếu người bắn là Player (để gây sát thương cho Monster)
-        // Nếu bạn muốn Monster cũng bắn projectile trúng Player, bạn cần mở rộng logic này
-        if (projectile.getCaster() instanceof Player) {
+        // Nếu bạn muốn Monster cũng bắn skillEffect.skillEffect trúng Player, bạn cần mở rộng logic này
+        if (skillEffect.getCaster() instanceof Player) {
             // Tạo một danh sách tạm thời chứa tất cả quái vật còn sống để duyệt
             // Hoặc bạn có thể duyệt qua từng mảng quái vật riêng biệt như trong checkPlayerMonsterCombat
             Monster[] allMonstersToCheck[] = {
@@ -78,35 +78,35 @@ public class CombatSystem {
                                 monster.solidArea.height
                         );
 
-                        if (projectileBounds.intersects(monsterBounds)) {
+                        if (skillEffectBounds.intersects(monsterBounds)) {
                             // Va chạm đã xảy ra.
                             // StellarField không gây sát thương ở đây, nó có bộ đếm riêng.
-                            // Chúng ta chỉ cần xử lý cho các projectile thông thường.
-                            if (projectile.isSingleHit()) {
-                                System.out.println("[" + System.currentTimeMillis() + "] CombatSystem.processProjectileImpacts: " +
-                                        projectile.getCaster().getName() + "'s projectile trúng " + monster.getName());
+                            // Chúng ta chỉ cần xử lý cho các skillEffect.skillEffect thông thường.
+                            if (skillEffect.isSingleHit()) {
+                                System.out.println("[" + System.currentTimeMillis() + "] CombatSystem.processSkillEffectImpacts: " +
+                                        skillEffect.getCaster().getName() + "'s skillEffect.skillEffect trúng " + monster.getName());
 
-                                int projectileDamageValue = projectile.getDamageValue();
-                                int actualDamageDealt = monster.receiveDamage(projectileDamageValue, projectile.getCaster());
+                                int skillEffectDamageValue = skillEffect.getDamageValue();
+                                int actualDamageDealt = monster.receiveDamage(skillEffectDamageValue, skillEffect.getCaster());
 
-                                gp.getUi().showMessage(projectile.getCaster().getName() + " bắn trúng " +
+                                gp.getUi().showMessage(skillEffect.getCaster().getName() + " bắn trúng " +
                                         monster.getName() + " gây " + actualDamageDealt + " sát thương!");
 
                                 gp.playSoundEffect(Sound.SFX_FIREBALL_HIT);
-                                projectile.setAlive(false); // Chỉ biến mất nếu là single-hit
+                                skillEffect.setAlive(false); // Chỉ biến mất nếu là single-hit
 
                                 if (monster.getCurrentHealth() <= 0) {
-                                    System.out.println("    " + monster.getName() + " đã bị projectile đánh bại.");
+                                    System.out.println("    " + monster.getName() + " đã bị skillEffect.skillEffect đánh bại.");
                                     monsterArray[i] = null;
                                 }
-                                return; // Dừng lại vì projectile single-hit đã hoàn thành nhiệm vụ.
+                                return; // Dừng lại vì skillEffect.skillEffect single-hit đã hoàn thành nhiệm vụ.
                             }
                         }
                     }
                 }
             }
-        } else if (projectile.getCaster() instanceof Monster) {
-            // Projectile do Monster bắn, tìm mục tiêu là Player
+        } else if (skillEffect.getCaster() instanceof Monster) {
+            // SkillEffect do Monster bắn, tìm mục tiêu là Player
             Player player = gp.getPlayer();
             if (player != null && player.getCurrentHealth() > 0) {
                 Rectangle playerBounds = new Rectangle(
@@ -116,24 +116,24 @@ public class CombatSystem {
                         player.solidArea.height
                 );
 
-                if (projectileBounds.intersects(playerBounds)) {
-                    System.out.println("[" + System.currentTimeMillis() + "] CombatSystem.processProjectileImpacts: " +
-                            projectile.getCaster().getName() + "'s projectile trúng Player!");
+                if (skillEffectBounds.intersects(playerBounds)) {
+                    System.out.println("[" + System.currentTimeMillis() + "] CombatSystem.processSkillEffectImpacts: " +
+                            skillEffect.getCaster().getName() + "'s skillEffect.skillEffect trúng Player!");
 
-                    int projectileDamageValue = projectile.getDamageValue();
-                    int actualDamageDealt = player.receiveDamage(projectileDamageValue, projectile.getCaster());
+                    int skillEffectDamageValue = skillEffect.getDamageValue();
+                    int actualDamageDealt = player.receiveDamage(skillEffectDamageValue, skillEffect.getCaster());
 
-                    gp.getUi().showMessage(projectile.getCaster().getName() + " bắn trúng bạn gây " +
+                    gp.getUi().showMessage(skillEffect.getCaster().getName() + " bắn trúng bạn gây " +
                             actualDamageDealt + " sát thương!");
 
                     gp.playSoundEffect(Sound.SFX_FIREBALL_HIT); // Hoặc một âm thanh trúng player riêng
-                    projectile.setAlive(false);
+                    skillEffect.setAlive(false);
 
                     if (player.getCurrentHealth() <= 0) {
-                        System.out.println("    Player đã bị " + projectile.getCaster().getName() + " đánh bại bằng projectile.");
+                        System.out.println("    Player đã bị " + skillEffect.getCaster().getName() + " đánh bại bằng skillEffect.skillEffect.");
                         // Logic Game Over sẽ được xử lý bởi Player.onDeath() -> gp.gameState
                     }
-                    return; // Projectile đã trúng Player
+                    return; // SkillEffect đã trúng Player
                 }
             }
         }
@@ -290,41 +290,76 @@ public class CombatSystem {
             }
         }
     }
-    public void checkAoEAttack(Character caster, int centerX, int centerY, int radius) {
-        // Lấy danh sách tất cả quái vật cần kiểm tra
-        // (Lưu ý: Nếu bạn đã gộp các mảng quái vật lại thì chỉ cần một vòng lặp)
+
+    public void checkAoEAttack(Character caster, Rectangle aoeBounds, int aoeDamage) {
+        // Logic cho caster là Player tấn công Monster
+        if (caster instanceof character.role.Player) {
+            Monster[][] allMonsterArrays = {
+                    gp.getMON_GreenSlime(), gp.getMON_Bat(), gp.getMON_Orc(),
+                    gp.getMON_GolemBoss(), gp.getSkeletonLord()
+            };
+            for (Monster[] monsterArray : allMonsterArrays) {
+                if (monsterArray == null) continue;
+                for (Monster monster : monsterArray) {
+                    if (monster != null && monster.getCurrentHealth() > 0) {
+                        if (aoeBounds.intersects(monster.getHitbox())) {
+                            // Gọi phương thức AoE chuyên dụng
+                            attackAOE(caster, monster, aoeDamage);
+                        }
+                    }
+                }
+            }
+        }
+        // Logic cho caster là Monster tấn công Player
+        else if (caster instanceof character.monster.Monster) {
+            Player player = gp.getPlayer();
+            if (player != null && player.getCurrentHealth() > 0) {
+                if (aoeBounds.intersects(player.getHitbox())) {
+                    // Gọi phương thức AoE chuyên dụng
+                    attackAOE(caster, player, aoeDamage);
+                }
+            }
+        }
+    }
+
+
+    public void checkAoEAttack(Character caster, int centerX, int centerY, int radius, int aoeDamage) {
         Monster[][] allMonsters = {
-                gp.getMON_GreenSlime(),
-                gp.getMON_Bat(),
-                gp.getMON_Orc(),
-                gp.getMON_GolemBoss()
+                gp.getMON_GreenSlime(), gp.getMON_Bat(), gp.getMON_Orc(), gp.getMON_GolemBoss()
         };
 
         for (Monster[] monsterArray : allMonsters) {
             if (monsterArray == null) continue;
-
             for (int i = 0; i < monsterArray.length; i++) {
                 Monster target = monsterArray[i];
                 if (target != null && target.getCurrentHealth() > 0) {
-                    // Tính khoảng cách từ tâm AoE đến tâm của quái vật
-                    // Lấy ranh giới hitbox của quái vật
                     int monsterLeft = target.worldX + target.solidArea.x;
                     int monsterRight = monsterLeft + target.solidArea.width;
                     int monsterTop = target.worldY + target.solidArea.y;
                     int monsterBottom = monsterTop + target.solidArea.height;
 
-                    // Tìm điểm gần nhất trên hitbox của quái vật tới tâm của AoE
-                    // Bằng cách "kẹp" (clamp) tọa độ tâm AoE vào trong ranh giới của hitbox
                     int closestX = Math.max(monsterLeft, Math.min(centerX, monsterRight));
                     int closestY = Math.max(monsterTop, Math.min(centerY, monsterBottom));
 
-                    // Tính khoảng cách từ tâm AoE đến điểm gần nhất này
                     double distance = Math.sqrt(Math.pow(centerX - closestX, 2) + Math.pow(centerY - closestY, 2));
-                    // Nếu quái vật nằm trong bán kính của vụ nổ, gây sát thương
+
                     if (distance <= radius) {
-                        performAttack(caster, target);
+                        // THAY ĐỔI: Gọi attackAOE thay vì performAttack
+                        attackAOE(caster, target, aoeDamage);
                     }
                 }
+            }
+        }
+    }
+
+    public void attackAOE(Character caster, Character target, int aoeDamage) {
+        if (target != null && target.getCurrentHealth() > 0 && caster != null) {
+            // Gọi receiveDamage và LƯU LẠI sát thương thực tế đã gây ra
+            int actualDamageDealt = target.receiveDamage(aoeDamage, caster);
+
+            // Hiển thị thông báo với lượng sát thương thực tế
+            if (actualDamageDealt > 0) { // Chỉ hiện thông báo nếu có sát thương
+                gp.getUi().showMessage(caster.getName() + " hits " + target.getName() + " for " + actualDamageDealt + " damage!");
             }
         }
     }

@@ -23,7 +23,7 @@
 [36m|[m [1;32m|[m * [33md0176b9[m[33m ([m[1;31morigin/DDung[m[33m)[m update smth
 [36m|[m * [1;33m|[m   [33m3e86d32[m Merge pull request #11 from Alt2210/TDuong
 [36m|[m [1;34m|[m[1;35m\[m [1;33m\[m  
-[36m|[m [1;34m|[m * [1;33m|[m [33mfc47d5b[m Cap nhat projectile Slimeball cho Monster_Slime
+[36m|[m [1;34m|[m * [1;33m|[m [33mfc47d5b[m Cap nhat skillEffect.projectile Slimeball cho Monster_Slime
 * [1;34m|[m [1;35m|[m [1;33m|[m [33mba275ca[m fix  bug monster tuong tac voi player
 * [1;34m|[m [1;35m|[m [1;33m|[m [33ma58dae7[m Merge branch 'main' of https://github.com/Alt2210/OOP_RPG_WORLD
 [1;36m|[m[1;34m\[m[1;34m|[m [1;35m|[m [1;33m|[m 
@@ -34,7 +34,7 @@
 [34m|[m[32m\[m[32m|[m [33m|[m [1;33m|[m 
 [34m|[m * [33m|[m [1;33m|[m [33m993921a[m Merge pull request #9 from Alt2210/TDuong
 [34m|[m [36m|[m[33m\[m[33m|[m [1;33m|[m 
-[34m|[m [36m|[m * [1;33m|[m [33m2bc05c0[m them projectile
+[34m|[m [36m|[m * [1;33m|[m [33m2bc05c0[m them skillEffect.projectile
 [34m|[m [36m|[m[36m/[m [1;33m/[m  
 [34m|[m * [1;33m|[m [33m4649c9c[m update them Monster Bat, Bat co kha nang luot
 [34m|[m * [1;33m|[m [33me669d83[m update tam danh cho character

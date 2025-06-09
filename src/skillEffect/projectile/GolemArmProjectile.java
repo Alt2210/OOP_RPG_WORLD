@@ -1,4 +1,4 @@
-package projectile;
+package skillEffect.projectile;
 
 import character.Character;
 import main.GamePanel;
@@ -91,7 +91,7 @@ public class GolemArmProjectile extends Projectile {
     public void update() {
         if (!alive) return;
 
-        // Di chuyển projectile
+        // Di chuyển skillEffect.projectile
         int prevWorldX = worldX;
         int prevWorldY = worldY;
         switch (direction) {

@@ -29,8 +29,7 @@ public abstract class Player extends character.Character {
     protected int attackStateCounter = 0;
     protected int currentAttackStateDuration = 30;
 
-    protected ArrayList<Skill> skills;
-    protected Map<Skill, Integer> skillCooldowns;
+
 
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
@@ -43,8 +42,7 @@ public abstract class Player extends character.Character {
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
-        this.skills = new ArrayList<>();
-        this.skillCooldowns = new HashMap<>();
+
     }
 
     public Inventory getInventory() {
@@ -60,49 +58,11 @@ public abstract class Player extends character.Character {
         return this.attackStateCounter > 0;
     }
 
-    protected void addSkill(Skill skill) {
-        this.skills.add(skill);
-        this.skillCooldowns.put(skill, 0); // Ban đầu không có cooldown
-    }
-
-    public void activateSkill(int skillIndex) {
-        // Kiểm tra xem index có hợp lệ không
-        if (skillIndex < 0 || skillIndex >= skills.size()) {
-            return;
-        }
-
-        Skill skillToUse = skills.get(skillIndex);
-
-        // Kiểm tra cooldown
-        if (skillCooldowns.get(skillToUse) > 0) {
-            gp.getUi().showMessage(skillToUse.getName() + " is on cooldown!");
-            return;
-        }
-
-        // Kiểm tra mana
-        if (this.currentMana < skillToUse.getManaCost()) {
-            gp.getUi().showMessage("Not enough mana!");
-            return;
-        }
-
-        // Tất cả điều kiện đều thỏa mãn -> sử dụng kỹ năng
-        //spendMana(skillToUse.getManaCost());
-        skillToUse.activate(this, gp);
-
-        // Đặt lại cooldown cho kỹ năng vừa sử dụng
-        skillCooldowns.put(skillToUse, skillToUse.getCooldownDuration());
-    }
-
 
     @Override
     public void update() {
 
-        for (Skill skill : skillCooldowns.keySet()) {
-            int currentCd = skillCooldowns.get(skill);
-            if (currentCd > 0) {
-                skillCooldowns.put(skill, currentCd - 1);
-            }
-        }
+        coolDown();
 
         if (!isAttacking()) { // Chỉ xử lý input mới khi không đang trong hành động tấn công
             // ... (xử lý input di chuyển và tấn công thường)
@@ -140,53 +100,66 @@ public abstract class Player extends character.Character {
             //  PHẦN 2: XỬ LÝ LOGIC KHI PLAYER KHÔNG TẤN CÔNG (SẴN SÀNG HÀNH ĐỘNG)
             // ====================================================================
         } else {
-            // --- 2a. Xử lý Input cho Hành động (Tấn công, Dùng skill) ---
-            if (keyH.attackPressed && canAttack()) {
-                performNormalAttackAction();
+            if (actionLockCounter > 0) {
+                actionLockCounter--;
             }
-
-
-            // --- 2b. Xử lý Input cho Di chuyển ---
-            boolean isTryingToMove = (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed);
-            if (isTryingToMove) {
-                if (keyH.upPressed) direction = "up";
-                else if (keyH.downPressed) direction = "down";
-                else if (keyH.leftPressed) direction = "left";
-                else if (keyH.rightPressed) direction = "right";
-
-                // Kiểm tra va chạm với Tile, Item, NPC
-                collisionOn = false;
-                gp.getcChecker().checkTile(this);
-                int itemIndex = gp.getcChecker().checkItem(this, true);
-                pickUpItem(itemIndex);
-                int npcIndex = gp.getcChecker().checkEntity(this, gp.getNpc());
-
-                if (npcIndex != 999) { // Player đang va chạm với một NPC
-                    Character newlyCollidedNPC = gp.getNpc()[npcIndex];
-                    this.collisionOn = true; // Player bị chặn bởi NPC này
-
-                    if (this.currentlyCollidingNPC != newlyCollidedNPC) {
-                        this.currentlyCollidingNPC = newlyCollidedNPC;
-                        this.canInteractWithCurrentNPC = true;
-                    }
-
-                    if (gp.gameState == gp.playState && this.canInteractWithCurrentNPC && this.currentlyCollidingNPC != null) {
-                        interactWithNPC(npcIndex); // Phương thức này sẽ đặt canInteractWithCurrentNPC = false
-                    }
-                } else { // Player KHÔNG va chạm với bất kỳ NPC nào
-                    if (this.currentlyCollidingNPC != null) {
-                        this.canInteractWithCurrentNPC = true;
-                        this.currentlyCollidingNPC = null;
-                    }
+            else {
+                // --- 2a. Xử lý Input cho Hành động (Tấn công, Dùng skill) ---
+                if (keyH.attackPressed && canAttack()) {
+                    performNormalAttackAction();
                 }
 
-                // Cập nhật vị trí nếu không có va chạm
-                if (!collisionOn) {
-                    switch (direction) {
-                        case "up": worldY -= speed; break;
-                        case "down": worldY += speed; break;
-                        case "left": worldX -= speed; break;
-                        case "right": worldX += speed; break;
+
+                // --- 2b. Xử lý Input cho Di chuyển ---
+                boolean isTryingToMove = (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed);
+                if (isTryingToMove) {
+                    if (keyH.upPressed) direction = "up";
+                    else if (keyH.downPressed) direction = "down";
+                    else if (keyH.leftPressed) direction = "left";
+                    else if (keyH.rightPressed) direction = "right";
+
+                    // Kiểm tra va chạm với Tile, Item, NPC
+                    collisionOn = false;
+                    gp.getcChecker().checkTile(this);
+                    int itemIndex = gp.getcChecker().checkItem(this, true);
+                    pickUpItem(itemIndex);
+                    int npcIndex = gp.getcChecker().checkEntity(this, gp.getNpc());
+
+                    if (npcIndex != 999) { // Player đang va chạm với một NPC
+                        Character newlyCollidedNPC = gp.getNpc()[npcIndex];
+                        this.collisionOn = true; // Player bị chặn bởi NPC này
+
+                        if (this.currentlyCollidingNPC != newlyCollidedNPC) {
+                            this.currentlyCollidingNPC = newlyCollidedNPC;
+                            this.canInteractWithCurrentNPC = true;
+                        }
+
+                        if (gp.gameState == gp.playState && this.canInteractWithCurrentNPC && this.currentlyCollidingNPC != null) {
+                            interactWithNPC(npcIndex); // Phương thức này sẽ đặt canInteractWithCurrentNPC = false
+                        }
+                    } else { // Player KHÔNG va chạm với bất kỳ NPC nào
+                        if (this.currentlyCollidingNPC != null) {
+                            this.canInteractWithCurrentNPC = true;
+                            this.currentlyCollidingNPC = null;
+                        }
+                    }
+
+                    // Cập nhật vị trí nếu không có va chạm
+                    if (!collisionOn) {
+                        switch (direction) {
+                            case "up":
+                                worldY -= speed;
+                                break;
+                            case "down":
+                                worldY += speed;
+                                break;
+                            case "left":
+                                worldX -= speed;
+                                break;
+                            case "right":
+                                worldX += speed;
+                                break;
+                        }
                     }
                 }
             }

@@ -2,6 +2,7 @@ package character.role;
 
 import main.GamePanel;
 import main.KeyHandler;
+import skill.S_Laser;
 import skill.S_StellaField;
 
 import java.awt.Graphics2D;
@@ -23,7 +24,7 @@ public class Astrologer extends Player {
         this.characterClassIdentifier = "astrologist";
         this.normalAttackEffectFrames = new ArrayList<>();
         setDefaultValues();
-        addSkill(new S_StellaField(this, this.gp));
+        addSkill(new S_Laser(this, this.gp));
     }
 
     @Override
@@ -204,6 +205,6 @@ public class Astrologer extends Player {
         System.out.println("Astrologer AoE check at: (" + aoeCenterX + ", " + aoeCenterY + ") with radius " + radius); // Dòng gỡ lỗi
 
         // Gọi phương thức kiểm tra sát thương vùng từ CombatSystem
-        gp.getCombatSystem().checkAoEAttack(this, aoeCenterX, aoeCenterY, radius);
+        gp.getCombatSystem().checkAoEAttack(this, aoeCenterX, aoeCenterY, radius, this.getAttack());
     }
 }

@@ -12,7 +12,7 @@ public class Soldier extends Player {
 
     public Soldier(GamePanel gp, KeyHandler keyH) {
         super(gp, keyH);
-        this.characterClassIdentifier = "soldier";
+        this.characterClassIdentifier = "sodier";
         setDefaultValues();
     }
 
