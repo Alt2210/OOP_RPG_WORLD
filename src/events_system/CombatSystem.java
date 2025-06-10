@@ -5,6 +5,7 @@ import character.role.Player;
 import character.monster.Monster;
 import main.GamePanel;
 import skillEffect.SkillEffect;
+import skillEffect.projectile.Projectile;
 import sound.Sound;
 
 import java.awt.*;
@@ -360,6 +361,59 @@ public class CombatSystem {
             // Hiển thị thông báo với lượng sát thương thực tế
             if (actualDamageDealt > 0) { // Chỉ hiện thông báo nếu có sát thương
                 gp.getUi().showMessage(caster.getName() + " hits " + target.getName() + " for " + actualDamageDealt + " damage!");
+            }
+        }
+    }
+
+    public void checkSingleAttack(Projectile projectile) {
+        // Chỉ xử lý nếu projectile còn tồn tại và được bắn bởi Player
+        if (projectile == null || !projectile.isAlive() || !(projectile.getCaster() instanceof Player)) {
+            return;
+        }
+
+        Rectangle projectileBounds = new Rectangle(
+                projectile.worldX + projectile.solidArea.x,
+                projectile.worldY + projectile.solidArea.y,
+                projectile.solidArea.width,
+                projectile.solidArea.height
+        );
+
+        Monster[][] allMonstersToCheck = {
+                gp.getMON_GreenSlime(),
+                gp.getMON_Bat(),
+                gp.getMON_Orc(),
+                gp.getMON_GolemBoss(),
+                gp.getSkeletonLord()
+        };
+
+        for (Monster[] monsterArray : allMonstersToCheck) {
+            if (monsterArray == null) continue;
+
+            for (Monster monster : monsterArray) {
+                if (monster != null && monster.getCurrentHealth() > 0) {
+                    Rectangle monsterBounds = new Rectangle(
+                            monster.worldX + monster.solidArea.x,
+                            monster.worldY + monster.solidArea.y,
+                            monster.solidArea.width,
+                            monster.solidArea.height
+                    );
+
+                    // Nếu có va chạm
+                    if (projectileBounds.intersects(monsterBounds)) {
+                        // Gây sát thương
+                        int actualDamageDealt = monster.receiveDamage(projectile.getDamageValue(), projectile.getCaster());
+                        gp.getUi().showMessage(projectile.getCaster().getName() + " hits " + monster.getName() + " for " + actualDamageDealt + " damage!");
+
+                        // Phát âm thanh
+                        gp.playSoundEffect(Sound.SFX_FIREBALL_HIT);
+
+                        if(projectile.isSingleHit()) {
+                            projectile.setAlive(false);
+                        }
+                        // Thoát khỏi phương thức ngay lập tức để đảm bảo chỉ trúng một mục tiêu
+                        return;
+                    }
+                }
             }
         }
     }

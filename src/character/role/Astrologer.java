@@ -4,6 +4,7 @@ import main.GamePanel;
 import main.KeyHandler;
 import skill.S_Laser;
 import skill.S_StellaField;
+import skill.S_Tornado;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -24,7 +25,7 @@ public class Astrologer extends Player {
         this.characterClassIdentifier = "astrologist";
         this.normalAttackEffectFrames = new ArrayList<>();
         setDefaultValues();
-        addSkill(new S_Laser(this, this.gp));
+        addSkill(new S_Tornado(this, this.gp));
     }
 
     @Override

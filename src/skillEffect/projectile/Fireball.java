@@ -23,6 +23,10 @@ public class Fireball extends Projectile {
         this.sip = sip;
     }
 
+    private void applyDamage() {
+        gp.getCombatSystem().checkAoEAttack(caster, solidArea, this.damage);
+    }
+
     @Override
     public void set(int startWorldX, int startWorldY, String direction, Character caster, int damage) {
         this.worldX = startWorldX - solidArea.width / 2;   // Căn giữa fireball tại điểm xuất phát
@@ -43,6 +47,8 @@ public class Fireball extends Projectile {
         if (!alive) {
             return;
         }
+
+        gp.getCombatSystem().checkSingleAttack(this);
 
         // Di chuyển skillEffect.projectile
         int prevWorldX = worldX;
