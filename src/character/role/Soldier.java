@@ -3,7 +3,9 @@ package character.role;
 import character.monster.Monster;
 import main.GamePanel;
 import main.KeyHandler;
+import skill.S_Explosion;
 import skill.S_Fireball;
+import skill.S_StellaField;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -36,7 +38,7 @@ public class Soldier extends Player {
         setName("sodier");
         loadCharacterSprites();
 
-        addSkill(new S_Fireball(this, gp));
+        addSkill(new S_Explosion(this, gp));
     }
 
     @Override

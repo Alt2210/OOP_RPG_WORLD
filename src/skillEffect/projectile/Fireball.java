@@ -33,7 +33,7 @@ public class Fireball extends Projectile {
 
         // Các thuộc tính riêng của Fireball
         this.speed = 5; // Tốc độ của Fireball
-        this.maxRange = 10 * gp.getTileSize(); // Tầm bay tối đa (ví dụ: 10 ô)
+        this.maxRange = 3 * gp.getTileSize(); // Tầm bay tối đa (ví dụ: 10 ô)
         this.alive = true;
         this.distanceTraveled = 0;
     }

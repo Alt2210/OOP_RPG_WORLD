@@ -22,6 +22,14 @@ public abstract class Projectile extends SkillEffect {
     protected int maxRange; // Tầm xa tối đa
     protected int distanceTraveled = 0; // Quãng đường đã di chuyển
 
+    public int getMaxRange() {
+        return maxRange;
+    }
+
+    public int getDistanceTraveled() {
+        return distanceTraveled;
+    }
+
     public Projectile(GamePanel gp) {
         super(gp);
     }
