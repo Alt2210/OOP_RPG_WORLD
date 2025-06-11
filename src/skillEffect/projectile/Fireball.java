@@ -134,14 +134,14 @@ public class Fireball extends Projectile {
             return;
         }
 
-        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
-        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
+        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
+        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
 
         // Chỉ vẽ nếu skillEffect.projectile nằm trong màn hình
-        if (worldX + solidArea.width > gp.getPlayer().worldX - gp.getPlayer().screenX &&
-                worldX - solidArea.width < gp.getPlayer().worldX + gp.getPlayer().screenX && // Sửa: trừ solidArea.width
-                worldY + solidArea.height > gp.getPlayer().worldY - gp.getPlayer().screenY &&
-                worldY - solidArea.height < gp.getPlayer().worldY + gp.getPlayer().screenY) { // Sửa: trừ solidArea.height
+        if (worldX + solidArea.width > gp.getPlayer().worldX - gp.getPlayer().getScreenX() &&
+                worldX - solidArea.width < gp.getPlayer().worldX + gp.getPlayer().getScreenX() && // Sửa: trừ solidArea.width
+                worldY + solidArea.height > gp.getPlayer().worldY - gp.getPlayer().getScreenY() &&
+                worldY - solidArea.height < gp.getPlayer().worldY + gp.getPlayer().getScreenY()) { // Sửa: trừ solidArea.height
 
             // Vẽ fireball với kích thước của solidArea (đã được đặt dựa trên ảnh)
             g2.drawImage(currentFrame, screenX, screenY, solidArea.width, solidArea.height, null);

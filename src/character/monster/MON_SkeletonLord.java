@@ -283,8 +283,8 @@ public class MON_SkeletonLord extends Monster {
         BufferedImage image = cip.getCurFrame();
 
         if (image != null) {
-            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
-            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
+            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
+            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
 
             int originalImageWidth = image.getWidth();
             int originalImageHeight = image.getHeight();

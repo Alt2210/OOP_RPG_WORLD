@@ -75,14 +75,14 @@ public class Explosion_area extends AreaOfEffect{
     @Override
     public void draw(Graphics2D g2) {
 
-        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
-        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
+        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
+        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
 
         // Chỉ vẽ nếu vùng kỹ năng nằm trong màn hình
-        if (worldX + (radius*2) > gp.getPlayer().worldX - gp.getPlayer().screenX &&
-                worldX - (radius*2) < gp.getPlayer().worldX + gp.getPlayer().screenX &&
-                worldY + (radius*2) > gp.getPlayer().worldY - gp.getPlayer().screenY &&
-                worldY - (radius*2) < gp.getPlayer().worldY + gp.getPlayer().screenY) {
+        if (worldX + (radius*2) > gp.getPlayer().worldX - gp.getPlayer().getScreenX() &&
+                worldX - (radius*2) < gp.getPlayer().worldX + gp.getPlayer().getScreenX() &&
+                worldY + (radius*2) > gp.getPlayer().worldY - gp.getPlayer().getScreenY() &&
+                worldY - (radius*2) < gp.getPlayer().worldY + gp.getPlayer().getScreenY()) {
 
             Rectangle boundingRect = new Rectangle(screenX, screenY, radius * 2, radius * 2);
             g2.draw(boundingRect);

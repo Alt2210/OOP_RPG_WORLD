@@ -230,12 +230,12 @@ public class MON_Bat extends Monster {
                 System.err.println("No sprite for MON_Bat at (" + worldX + ", " + worldY + ")");
                 return;
             }
-            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
-            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
-            if (worldX + gp.getTileSize() > gp.getPlayer().worldX - gp.getPlayer().screenX &&
-                    worldX - gp.getTileSize() < gp.getPlayer().worldX + gp.getPlayer().screenX &&
-                    worldY + gp.getTileSize() > gp.getPlayer().worldY - gp.getPlayer().screenY &&
-                    worldY - gp.getTileSize() < gp.getPlayer().worldY + gp.getPlayer().screenY) {
+            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
+            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
+            if (worldX + gp.getTileSize() > gp.getPlayer().worldX - gp.getPlayer().getScreenX() &&
+                    worldX - gp.getTileSize() < gp.getPlayer().worldX + gp.getPlayer().getScreenX() &&
+                    worldY + gp.getTileSize() > gp.getPlayer().worldY - gp.getPlayer().getScreenY() &&
+                    worldY - gp.getTileSize() < gp.getPlayer().worldY + gp.getPlayer().getScreenY()) {
                 if (isDashing) {
                     float[] opacities = {0.5f, 0.3f};
                     int[] offsets = {10, 20};

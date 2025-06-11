@@ -112,14 +112,14 @@ public class MON_GreenSlime extends Monster {
         BufferedImage image = cip.getCurFrame(); // Lấy frame hiện tại từ lớp Character
         if (image != null) {
             // Tính toán vị trí vẽ trên màn hình tương tự như cách vẽ Tile hoặc SuperItem
-            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
-            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
+            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
+            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
 
             // Chỉ vẽ NPC nếu nó nằm trong tầm nhìn của camera
-            if (worldX + gp.getTileSize() > gp.getPlayer().worldX - gp.getPlayer().screenX &&
-                    worldX - gp.getTileSize() < gp.getPlayer().worldX + gp.getPlayer().screenX &&
-                    worldY + gp.getTileSize() > gp.getPlayer().worldY - gp.getPlayer().screenY &&
-                    worldY - gp.getTileSize() < gp.getPlayer().worldY + gp.getPlayer().screenY) {
+            if (worldX + gp.getTileSize() > gp.getPlayer().worldX - gp.getPlayer().getScreenX() &&
+                    worldX - gp.getTileSize() < gp.getPlayer().worldX + gp.getPlayer().getScreenX() &&
+                    worldY + gp.getTileSize() > gp.getPlayer().worldY - gp.getPlayer().getScreenY() &&
+                    worldY - gp.getTileSize() < gp.getPlayer().worldY + gp.getPlayer().getScreenY()) {
                 g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
             }
 

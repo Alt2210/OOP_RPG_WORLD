@@ -91,13 +91,13 @@ public class Laser extends AreaOfEffect {
         if (!alive) return;
 
         BufferedImage curFrame = sip.getCurFrame(this.direction);
-        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
-        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
+        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
+        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
 
-        if (worldX + solidArea.width > gp.getPlayer().worldX - gp.getPlayer().screenX &&
-                worldX < gp.getPlayer().worldX + gp.getPlayer().screenX &&
-                worldY + solidArea.height > gp.getPlayer().worldY - gp.getPlayer().screenY &&
-                worldY < gp.getPlayer().worldY + gp.getPlayer().screenY) {
+        if (worldX + solidArea.width > gp.getPlayer().worldX - gp.getPlayer().getScreenX() &&
+                worldX < gp.getPlayer().worldX + gp.getPlayer().getScreenX() &&
+                worldY + solidArea.height > gp.getPlayer().worldY - gp.getPlayer().getScreenY() &&
+                worldY < gp.getPlayer().worldY + gp.getPlayer().getScreenY()) {
 
             if (curFrame != null) {
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));

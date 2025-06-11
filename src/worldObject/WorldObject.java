@@ -18,13 +18,13 @@ public class WorldObject {
     public int solidAreaDefaultY = 0;
 
     public void draw(Graphics2D g2, GamePanel gp) {
-        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
-        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
+        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
+        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
 
-        if(worldX + gp.getTileSize() > gp.getPlayer().worldX - gp.getPlayer().screenX &&
-                worldX - gp.getTileSize() < gp.getPlayer().worldX + gp.getPlayer().screenX &&
-                worldY + gp.getTileSize() > gp.getPlayer().worldY - gp.getPlayer().screenY &&
-                worldY - gp.getTileSize() < gp.getPlayer().worldY + gp.getPlayer().screenY) {
+        if(worldX + gp.getTileSize() > gp.getPlayer().worldX - gp.getPlayer().getScreenX() &&
+                worldX - gp.getTileSize() < gp.getPlayer().worldX + gp.getPlayer().getScreenX() &&
+                worldY + gp.getTileSize() > gp.getPlayer().worldY - gp.getPlayer().getScreenY() &&
+                worldY - gp.getTileSize() < gp.getPlayer().worldY + gp.getPlayer().getScreenY()) {
 
             g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
         }

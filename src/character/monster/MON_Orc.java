@@ -253,8 +253,8 @@ public class MON_Orc extends Monster {
 
         if (image != null) {
             // Vị trí trên màn hình của góc trên-trái của ô tile chuẩn mà Orc đang đứng
-            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().screenX;
-            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().screenY;
+            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
+            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
 
             // Kích thước vẽ mặc định (cho đi bộ hoặc nếu không có logic tấn công đặc biệt)
             int drawWidth = gp.getTileSize();

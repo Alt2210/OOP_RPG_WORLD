@@ -18,9 +18,9 @@ import java.util.Map;
 
 public abstract class Player extends character.Character {
     protected boolean attackDamageAppliedThisSwing = false;
-    public KeyHandler keyH;
-    public final int screenX;
-    public final int screenY;
+    protected KeyHandler keyH;
+    protected final int screenX;
+    protected final int screenY;
     protected int hasKey = 0;
     protected String characterClassIdentifier;
     protected Inventory inventory;
@@ -57,6 +57,14 @@ public abstract class Player extends character.Character {
         solidArea = new Rectangle(8, 16, 32, 32);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+    }
+
+    public int getScreenX() {
+        return screenX;
+    }
+
+    public int getScreenY() {
+        return screenY;
     }
 
     public int getExpToNextLevel() {
