@@ -68,9 +68,13 @@ public class AssetSetter {
         gp.getwObjects()[0].worldX = 20 * gp.getTileSize();
         gp.getwObjects()[0].worldY = 20 * gp.getTileSize();
 
-        gp.getwObjects()[0] = new OBJ_HealthPotion(gp);
-        gp.getwObjects()[0].worldX = 19 * gp.getTileSize();
-        gp.getwObjects()[0].worldY = 20 * gp.getTileSize();
+        gp.getwObjects()[3] = new OBJ_HealthPotion(gp);
+        gp.getwObjects()[3].worldX = 19 * gp.getTileSize();
+        gp.getwObjects()[3].worldY = 20 * gp.getTileSize();
+
+        gp.getwObjects()[4] = new OBJ_HealthPotion(gp);
+        gp.getwObjects()[4].worldX = 17 * gp.getTileSize();
+        gp.getwObjects()[4].worldY = 20 * gp.getTileSize();
 
         gp.getwObjects()[1] = new OBJ_Door();
         gp.getwObjects()[1].worldX = 22 * gp.getTileSize();

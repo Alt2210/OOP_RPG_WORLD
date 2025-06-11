@@ -140,24 +140,6 @@ public class CombatSystem {
         }
     }
 
-    private boolean isAttackedFromBehind(Character attacker, Character target) {
-        String attackerDir = attacker.direction;
-        String targetDir = target.direction;
-
-        switch (attackerDir) {
-            case "right":
-                return targetDir.equals("left");
-            case "left":
-                return targetDir.equals("right");
-            case "up":
-                return targetDir.equals("down");
-            case "down":
-                return targetDir.equals("up");
-            default:
-                return false;
-        }
-    }
-
     private boolean isWithinAttackRange(Character attacker, Character target) {
         // Tính trung tâm của attacker và target
         int attackerCenterX = attacker.worldX + attacker.solidArea.x + attacker.solidArea.width / 2;

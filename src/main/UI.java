@@ -1,6 +1,8 @@
 package main;
 
 import character.role.Player;
+import item.Item;
+import item.ItemStack;
 // import worldObject.pickableObject.OBJ_Key;
 
 import javax.imageio.ImageIO;
@@ -33,8 +35,8 @@ public class UI {
     private double playtime = 0.0;
     private DecimalFormat dFormat = new DecimalFormat("#0.00");
     protected int commandNum = 0;
-    public int slotCol = 0;
-    public int slotRow = 0;
+    private int slotCol = 0;
+    private int slotRow = 0;
 
     Color menuTextColor_Normal = Color.WHITE;
     Color menuTextColor_Selected = new Color(255, 220, 100);
@@ -43,10 +45,28 @@ public class UI {
     Color menuBoxBorderColor_New = new Color(100, 70, 130, 255);
 
 
+
+
     public UI(GamePanel gp) {
         this.gp = gp;
         loadFonts();
         loadUIImages();
+    }
+
+    public int getSlotCol() {
+        return slotCol;
+    }
+
+    public void setSlotCol(int slotCol) {
+        this.slotCol = slotCol;
+    }
+
+    public int getSlotRow() {
+        return slotRow;
+    }
+
+    public void setSlotRow(int slotRow) {
+        this.slotRow = slotRow;
     }
 
     private void loadFonts() {
@@ -563,51 +583,68 @@ public class UI {
         int slotsSize = gp.getTileSize()+3;
 
         //Draw player's item
-        for(int i=0;i < gp.getPlayer().getInventory().getItemStack();i++) {
-            g2.drawImage(gp.getPlayer().getInventory().getItemStack(i).getItem().getItp().getCurFrame(),slotX,slotY,slotsSize, slotsSize,null);
+        for(int i=0; i < gp.getPlayer().getInventory().getItemStack(); i++) {
+            // Lấy ItemStack ra trước để tránh gọi nhiều lần
+            ItemStack currentStack = gp.getPlayer().getInventory().getItemStack(i);
+            if (currentStack != null && currentStack.getItem() != null && currentStack.getItem().getItp() != null) {
+                g2.drawImage(currentStack.getItem().getItp().getCurFrame(), slotX, slotY, slotsSize, slotsSize, null);
+            }
 
             slotX += slotsSize;
 
             if(i == 4 || i == 9 || i == 14) {
                 slotX = slotXstart;
                 slotY += slotsSize;
-
             }
         }
 
         //CURSOR
-        int cursorX = slotXstart + (gp.getTileSize() * slotCol);
-        int cursorY = slotYstart + (gp.getTileSize() * slotRow);
+        // Sử dụng slotRow và slotCol đã được giới hạn trong KeyHandler
+        int cursorX = slotXstart + (slotsSize * slotCol);
+        int cursorY = slotYstart + (slotsSize * slotRow);
         int cursorWidth = gp.getTileSize();
         int cursorHeight = gp.getTileSize();
         //Draw Cursor
         g2.setColor(Color.white);
+        g2.setStroke(new BasicStroke(3)); // Làm cho con trỏ dày hơn một chút
         g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight,10,10);
-        g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
+
         //Description Frame
         int dFrameX = frameX;
-        int dFrameY = frameY + frameHeight;
+        int dFrameY = frameY + frameHeight + 10; // Thêm khoảng cách nhỏ
         int dFrameWidth = frameWidth;
         int dFrameHeight = gp.getTileSize() * 3;
-        drawSubWindow(dFrameX,dFrameY,dFrameWidth,dFrameHeight,g2);
-        //Draw Description
+        drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight, g2);
+
+        //Draw Description text
         int textX = dFrameX + 20;
-        int textY = dFrameY + gp.getTileSize();
-        g2.setFont(g2.getFont().deriveFont(28F));
+        int textY = dFrameY + 30;
+        g2.setFont(pixelFont_Small); // Sử dụng font nhỏ hơn cho mô tả
+        g2.setColor(Color.WHITE);
 
+        // SỬA LỖI 2: Lấy item index và kiểm tra null trước khi sử dụng
         int itemIndex = getItemIndexOnSlot();
+        ItemStack selectedStack = null;
 
-        if(itemIndex < gp.getPlayer().getInventory().getItemStack()){
-            for(String line: gp.getPlayer().getInventory().getItemStack(itemIndex).getItem().getDescription().split("\n")){
-                g2.drawString(line, textX, textY);
-                textY += 32;
-            }
+        if (itemIndex < gp.getPlayer().getInventory().getItemStack()) {
+            selectedStack = gp.getPlayer().getInventory().getItemStack(itemIndex);
         }
 
+        if(selectedStack != null){
+            Item selectedItem = selectedStack.getItem();
+            if (selectedItem != null && selectedItem.getDescription() != null) {
+                for(String line: selectedItem.getDescription().split("\n")){
+                    g2.drawString(line, textX, textY);
+                    textY += 30; // Điều chỉnh khoảng cách dòng cho phù hợp với font
+                }
+                String msg_quantity = "Quantity: " + selectedStack.getQuantity();
+                g2.drawString(msg_quantity, textX, textY);
+            }
+        }
     }
 
     public int getItemIndexOnSlot() {
-        int itemIndex = slotCol + (slotCol*5);
+        int itemIndex = slotRow * 5 + slotCol;
         return itemIndex;
     }
 }

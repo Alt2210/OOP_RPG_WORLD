@@ -68,9 +68,9 @@ public class KeyHandler implements KeyListener {
             } else if (code == KeyEvent.VK_ENTER) {
                 // Tạo Player dựa trên lựa chọn
                 if (gp.getUi().commandNum == 0) {
-                    gp.setPlayer(new Soldier(gp, this));
+                    gp.setPlayer(new character.role.Soldier(gp, this));
                 } else if (gp.getUi().commandNum == 1) {
-                    gp.setPlayer(new Astrologer(gp, this));
+                    gp.setPlayer(new character.role.Astrologer(gp, this));
                 }
                 // Sau khi Player được tạo, tiến hành setup và bắt đầu game
                 gp.setupGame();
@@ -134,28 +134,50 @@ public class KeyHandler implements KeyListener {
                 System.exit(0);
             }
         } else if (gp.gameState == gp.InventoryState) {
+            int slotRow = gp.getUi().getSlotRow();
+            int slotCol = gp.getUi().getSlotCol();
+            int slotIndex = slotRow * 5 + slotCol;
             if (code == KeyEvent.VK_C) {
                 gp.gameState = gp.playState;
             }
             if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-                if(gp.getUi().slotRow > 0){
-                    gp.getUi().slotRow--;
+                if(slotRow == 0){
+                    slotRow = 3;
+                    gp.getUi().setSlotRow(slotRow);
+                } else {
+                    slotRow--;
+                    gp.getUi().setSlotRow(slotRow);
                 }
             }
             if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-                if(gp.getUi().slotRow < 3){
-                    gp.getUi().slotRow++;
+                if(slotRow == 3){
+                    slotRow = 0;
+                    gp.getUi().setSlotRow(slotRow);
+                } else {
+                    slotRow++;
+                    gp.getUi().setSlotRow(slotRow);
                 }
             }
             if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
-                if(gp.getUi().slotCol > 0){
-                    gp.getUi().slotCol--;
+                if(slotCol == 0){
+                    slotCol = 4;
+                    gp.getUi().setSlotCol(slotCol);
+                } else {
+                    slotCol--;
+                    gp.getUi().setSlotCol(slotCol);
                 }
             }
             if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-                if(gp.getUi().slotCol < 4){
-                    gp.getUi().slotCol++;
+                if(slotCol == 4){
+                    slotCol = 0;
+                    gp.getUi().setSlotCol(slotCol);
+                } else {
+                    slotCol++;
+                    gp.getUi().setSlotCol(slotCol);
                 }
+            }
+            if (code == KeyEvent.VK_ENTER) {
+                gp.getPlayer().getInventory().useItemInSlot(slotIndex, gp.getPlayer());
             }
         }
     }

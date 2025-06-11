@@ -1,5 +1,8 @@
 package item;
 
+import character.role.Player;
+import item.itemConsumable.Consumable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
@@ -41,6 +44,37 @@ public class Inventory {
             return items.get(index);
         }
         return null;
+    }
+
+    public void useItemInSlot(int slotIndex, Player player) {
+        // Lấy ra ItemStack tại vị trí được chỉ định
+        ItemStack selectedStack = getItemStack(slotIndex);
+
+        // Chỉ xử lý nếu thực sự có vật phẩm ở ô này
+        if (selectedStack != null) {
+
+            // Lấy ra đối tượng Item từ ItemStack
+            Item selectedItem = selectedStack.getItem();
+
+            // Kiểm tra xem vật phẩm có phải là loại dùng được (Consumable) không
+            if (selectedItem instanceof Consumable) {
+
+                // Kích hoạt hiệu ứng của vật phẩm
+                ((Consumable) selectedItem).consumeItem(player);
+
+                // Giảm số lượng vật phẩm đi 1
+                selectedStack.removeQuantity(1);
+
+                // Nếu số lượng vật phẩm trong stack về 0, xóa nó khỏi túi đồ
+                if (selectedStack.getQuantity() <= 0) {
+                    removeStack(slotIndex);
+                }
+            } else {
+                // Nếu là vật phẩm không dùng được (ví dụ: Key), thông báo cho người chơi
+                // Chúng ta cần truy cập UI của GamePanel thông qua Player
+                player.getGp().getUi().showMessage("Cannot use this item.");
+            }
+        }
     }
 
     // Thêm các phương thức: removeItem, getItem, hasItem, v.v.

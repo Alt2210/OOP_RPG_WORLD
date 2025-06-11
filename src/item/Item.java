@@ -1,5 +1,6 @@
 package item;
 
+import character.role.Player;
 import imageProcessor.ItemImageProcessor;
 import main.GamePanel;
 
@@ -63,7 +64,7 @@ public class Item {
         this.description = description;
     }
 
-    public void useItem(){}
+    public void useItem(Player user){}
 
     public Item(){
         name = "Null";
