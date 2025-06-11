@@ -91,6 +91,17 @@ public class MON_GolemBoss extends Monster {
         else return "left";
     }
 
+    @Override
+    protected void onDeath(Character attacker) {
+        if (attacker instanceof Player) {
+            Player player = (Player) attacker;
+            player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
+        }
+
+        //checkDrop();
+        gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
+    }
+
     public void playerChasing() {
         if (onPath && !isChargingLaser) {
             checkStopChasingOrNot(gp.getPlayer(), 15, 10);

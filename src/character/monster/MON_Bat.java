@@ -70,6 +70,17 @@ public class MON_Bat extends Monster {
         return "up";
     }
 
+    @Override
+    protected void onDeath(Character attacker) {
+        if (attacker instanceof Player) {
+            Player player = (Player) attacker;
+            player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
+        }
+
+        //checkDrop();
+        gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
+    }
+
     public void attemptToDash() {
         updateContactDamageCooldown();
         Player player = gp.getPlayer();

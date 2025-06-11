@@ -34,6 +34,17 @@ public class MON_Orc extends Monster {
     }
 
     @Override
+    protected void onDeath(Character attacker) {
+        if (attacker instanceof Player) {
+            Player player = (Player) attacker;
+            player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
+        }
+
+        //checkDrop();
+        gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
+    }
+
+    @Override
     public void setDefaultValues() {
         worldX = gp.getTileSize() * 30;
         worldY = gp.getTileSize() * 40;

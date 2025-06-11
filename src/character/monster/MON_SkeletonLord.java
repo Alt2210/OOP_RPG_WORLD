@@ -257,9 +257,13 @@ public class MON_SkeletonLord extends Monster {
 
     @Override
     protected void onDeath(Character attacker) {
-        checkDrop();
+        if (attacker instanceof Player) {
+            Player player = (Player) attacker;
+            player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
+        }
+
+        //checkDrop();
         gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
-        gp.gameState = gp.victoryEndState; // Kết thúc game khi boss chết
     }
 
     public void checkDrop() {

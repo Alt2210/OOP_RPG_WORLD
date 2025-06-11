@@ -46,6 +46,9 @@ public class Soldier extends Player {
         addSkill(new S_Fireball(this, gp));
 
         currentWeapon = null;
+
+        setInitLevel();
+
         baseAttack = attack;
     }
 

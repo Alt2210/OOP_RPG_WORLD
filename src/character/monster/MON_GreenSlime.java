@@ -104,6 +104,9 @@ public class MON_GreenSlime extends Monster {
             System.out.println(getName() + " bắn Slimeball về phía Player!");
         }
     }
+
+
+
     @Override
     public void draw(Graphics2D g2) {
         BufferedImage image = cip.getCurFrame(); // Lấy frame hiện tại từ lớp Character
@@ -217,9 +220,15 @@ public class MON_GreenSlime extends Monster {
         this.playerChasing();
         super.update();
     }
+
     @Override
     protected void onDeath(Character attacker) {
-        checkDrop();
+        if (attacker instanceof Player) {
+            Player player = (Player) attacker;
+            player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
+        }
+
+        //checkDrop();
         gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
     }
 

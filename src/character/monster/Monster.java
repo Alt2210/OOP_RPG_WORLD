@@ -1,5 +1,6 @@
 package character.monster;
 
+import character.role.Player;
 import pathfinder.PathFinder;
 import character.Character;
 import main.GamePanel;
@@ -108,8 +109,10 @@ public abstract class Monster extends Character {
         }
     }
 
-
-
-
-
+    protected void giveExp(Character attacker){
+        if (attacker instanceof Player) {
+            Player player = (Player) attacker;
+            player.gainExp(this.exp);
+        }
+    }
 }

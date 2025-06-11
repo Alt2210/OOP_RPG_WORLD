@@ -54,6 +54,7 @@ public class Astrologer extends Player {
         currentWeapon = null;
         baseAttack = 15;
 
+        setInitLevel();
         // Tính toán thời gian giữ mỗi frame của animation hiệu ứng
         if (NORMAL_ATTACK_EFFECT_FRAMES_COUNT > 0 && !this.normalAttackEffectFrames.isEmpty()) {
             this.normalAttackEffectFrameHoldTime = NORMAL_ATTACK_EFFECT_TOTAL_DURATION / NORMAL_ATTACK_EFFECT_FRAMES_COUNT;

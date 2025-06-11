@@ -35,7 +35,9 @@ public abstract class Player extends character.Character {
     protected int baseAttack;
     protected Item_Weapon currentWeapon;
 
-
+    public int level;
+    public int currentExp;
+    public int expToNextLevel;
 
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
@@ -47,8 +49,6 @@ public abstract class Player extends character.Character {
         solidArea = new Rectangle(8, 16, 32, 32);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
-
-
     }
 
     public Inventory getInventory() {
@@ -269,5 +269,38 @@ public abstract class Player extends character.Character {
             // Thông báo nếu không có gì để gỡ
             gp.getUi().showMessage("No weapon equipped.");
         }
+    }
+
+    public void levelUp() {
+        level++;
+        currentExp = currentExp - expToNextLevel;
+        expToNextLevel = (int)(expToNextLevel * 1.5);
+
+        maxHealth += 10;
+        maxMana += 5;
+        baseAttack += 2;
+        defense += 1;
+
+        currentHealth = maxHealth;
+        currentMana = maxMana;
+
+        gp.playSoundEffect(4); // Ví dụ: âm thanh SFX_FANFARE
+        gp.getUi().showMessage("LEVEL UP! You are now level " + level + "!");
+    }
+
+    public void gainExp(int expGained) {
+        this.currentExp += expGained;
+        gp.getUi().showMessage("Gained " + expGained + " EXP!");
+
+
+        while (currentExp >= expToNextLevel) {
+            levelUp();
+        }
+    }
+
+    protected void setInitLevel(){
+        this.level = 1;
+        this.currentExp = 0;
+        this.expToNextLevel = 10;
     }
 }

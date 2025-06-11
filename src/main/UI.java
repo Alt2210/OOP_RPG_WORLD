@@ -238,9 +238,45 @@ public class UI {
 
         int currentTileSize = gp.getTileSize();
         Player currentPlayer = gp.getPlayer();
-        if (keyImage != null && currentPlayer != null) {
-            g2.drawImage(keyImage, currentTileSize / 2, currentTileSize / 2, currentTileSize, currentTileSize, null);
-            drawTextWithShadow(g2, "x " + currentPlayer.getHasKey(), currentTileSize / 2 + currentTileSize + 10, currentTileSize / 2 + currentTileSize - 5, Color.WHITE, menuTextShadowColor, 1);
+        if (currentPlayer != null) {
+            // Tọa độ và kích thước của thanh EXP
+            int expBarX = currentTileSize / 2;
+            int expBarY = currentTileSize / 2;
+            int expBarWidth = currentTileSize * 5; // Độ rộng của thanh EXP
+            int expBarHeight = 22; // Độ cao của thanh EXP
+
+            // Tính toán tỷ lệ EXP hiện tại
+            double expRatio = 0;
+            if (currentPlayer.expToNextLevel > 0) {
+                expRatio = (double) currentPlayer.currentExp / currentPlayer.expToNextLevel;
+            }
+            int currentExpBarWidth = (int) (expBarWidth * expRatio);
+
+            // Vẽ nền thanh EXP (phần rỗng)
+            g2.setColor(new Color(60, 60, 60, 200));
+            g2.fillRoundRect(expBarX, expBarY, expBarWidth, expBarHeight, 10, 10);
+
+            // Vẽ phần EXP đã có
+            g2.setColor(new Color(255, 215, 0)); // Màu vàng gold cho EXP
+            g2.fillRoundRect(expBarX, expBarY, currentExpBarWidth, expBarHeight, 10, 10);
+
+            // Vẽ viền cho thanh EXP
+            g2.setColor(Color.WHITE);
+            g2.setStroke(new BasicStroke(2));
+            g2.drawRoundRect(expBarX, expBarY, expBarWidth, expBarHeight, 10, 10);
+
+            // Vẽ chữ (Level và số EXP)
+            g2.setFont(pixelFont_XSmall.deriveFont(12F));
+            String levelText = "LV " + currentPlayer.level;
+            String expText = currentPlayer.currentExp + " / " + currentPlayer.expToNextLevel;
+
+            // Vẽ chữ Level với bóng
+            drawTextWithShadow(g2, levelText, expBarX + 5, expBarY + expBarHeight - 6, Color.WHITE, menuTextShadowColor, 1);
+
+            // Vẽ chữ EXP ở giữa thanh
+            FontMetrics fm = g2.getFontMetrics();
+            int expTextX = expBarX + (expBarWidth - fm.stringWidth(expText)) / 2;
+            drawTextWithShadow(g2, expText, expTextX, expBarY + expBarHeight - 6, Color.WHITE, menuTextShadowColor, 1);
         }
 
         if (gp.gameState == gp.playState) {
