@@ -51,7 +51,7 @@ public class UI {
 
     private void loadFonts() {
         try {
-            InputStream is_pixel = getClass().getResourceAsStream("/font/LockClock.ttf");
+            InputStream is_pixel = getClass().getResourceAsStream("/font/FVF_Fernando_08.ttf");
             if (is_pixel == null) {
                 throw new IOException("Custom font not found: PressStart2P-Regular.ttf");
             }
