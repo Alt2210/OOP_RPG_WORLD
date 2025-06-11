@@ -165,10 +165,9 @@ public class AssetSetter {
         gp.getwObjects()[0].worldX = 35 * gp.getTileSize();
         gp.getwObjects()[0].worldY = 35 * gp.getTileSize();
 
-        // SỬA Ở ĐÂY: Gọi constructor không tham số cho OBJ_Chest
-        gp.getwObjects()[1] = new OBJ_Chest(); // Không truyền gp vào đây nữa
-        gp.getwObjects()[1].worldX = 40 * gp.getTileSize();
-        gp.getwObjects()[1].worldY = 40 * gp.getTileSize();
+        gp.getwObjects()[1] = new OBJ_Chest();
+        gp.getwObjects()[1].worldX = 12 * gp.getTileSize();
+        gp.getwObjects()[1].worldY = 12 * gp.getTileSize();
 
         // portal từ map 1 về map 0
         int portalIndex = 2;
