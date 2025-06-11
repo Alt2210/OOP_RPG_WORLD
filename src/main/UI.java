@@ -590,6 +590,14 @@ public class UI {
                 g2.drawImage(currentStack.getItem().getItp().getCurFrame(), slotX, slotY, slotsSize, slotsSize, null);
             }
 
+            if (gp.getPlayer().getCurrentWeapon() != null && currentStack != null &&
+                    gp.getPlayer().getCurrentWeapon() == currentStack.getItem()) {
+
+                // Vẽ một lớp nền màu vàng để làm nổi bật
+                g2.setColor(new Color(240, 190, 90, 150)); // Màu vàng với độ trong suốt
+                g2.fillRoundRect(slotX, slotY, gp.getTileSize(), gp.getTileSize(), 10, 10);
+            }
+
             slotX += slotsSize;
 
             if(i == 4 || i == 9 || i == 14) {
@@ -632,6 +640,7 @@ public class UI {
 
         if(selectedStack != null){
             Item selectedItem = selectedStack.getItem();
+            g2.setFont(pixelFont_XSmall);
             if (selectedItem != null && selectedItem.getDescription() != null) {
                 for(String line: selectedItem.getDescription().split("\n")){
                     g2.drawString(line, textX, textY);

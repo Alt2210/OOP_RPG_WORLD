@@ -2,27 +2,28 @@ package worldObject.pickableObject;
 
 import character.role.Player;
 import item.Item;
-import item.Item_Key;
+import item.itemConsumable.Item_ManaPotion;
 import main.GamePanel;
-import sound.Sound;
 import worldObject.WorldObject;
+import worldObject.pickableObject.Pickable;
+// import sound.Sound; // Bỏ comment nếu bạn muốn thêm âm thanh
 
-public class OBJ_Key extends WorldObject implements Pickable {
+public class OBJ_ManaPotion extends WorldObject implements Pickable {
 
-    public OBJ_Key(GamePanel gp) {
-        name = "Key";
-        Item_Key key = new Item_Key(gp);
-        image = key.getItp().getCurFrame();
-    }
-    @Override // Triển khai phương thức từ interface Pickable
-    public Item convertToItem(GamePanel gp) {
-        // Tạo một đối tượng Item_Key mới để đưa vào inventory
-        // Truyền gp vào constructor của Item_Key
-        return new Item_Key(gp);
+    public OBJ_ManaPotion(GamePanel gp) {
+        name = "Mana Potion";
+        // Lấy hình ảnh từ chính đối tượng Item của nó
+        Item_ManaPotion item = new Item_ManaPotion(gp);
+        image = item.getItp().getCurFrame();
     }
 
     @Override
-    public void interactPlayer(Player player, int i, GamePanel gp){
+    public Item convertToItem(GamePanel gp) {
+        return new Item_ManaPotion(gp);
+    }
+
+    @Override
+    public void interactPlayer(Player player, int i, GamePanel gp) {
         Item itemToAdd = convertToItem(gp);
         if (player.getInventory().addItem(itemToAdd, 1)) {
             gp.getwObjects()[i] = null; // Xóa đối tượng khỏi bản đồ

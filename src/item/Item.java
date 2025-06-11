@@ -4,7 +4,7 @@ import character.role.Player;
 import imageProcessor.ItemImageProcessor;
 import main.GamePanel;
 
-public class Item {
+public abstract class Item {
     protected String name;
     protected String type;
     protected int id;

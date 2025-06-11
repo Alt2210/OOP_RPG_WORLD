@@ -2,6 +2,7 @@ package item;
 
 import character.role.Player;
 import item.itemConsumable.Consumable;
+import item.itemEquippable.Equippable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +70,12 @@ public class Inventory {
                 if (selectedStack.getQuantity() <= 0) {
                     removeStack(slotIndex);
                 }
-            } else {
+            } else if (selectedItem instanceof Equippable) {
+                ((Equippable) selectedItem).equipItem(player);
+                // Vật phẩm trang bị không bị xóa khỏi túi đồ sau khi dùng
+            }
+
+            else {
                 // Nếu là vật phẩm không dùng được (ví dụ: Key), thông báo cho người chơi
                 // Chúng ta cần truy cập UI của GamePanel thông qua Player
                 player.getGp().getUi().showMessage("Cannot use this item.");

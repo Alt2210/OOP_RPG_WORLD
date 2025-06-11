@@ -1,11 +1,16 @@
 package main;
 import character.*;
+import character.Character;
 import character.monster.*;
 import worldObject.pickableObject.OBJ_HealthPotion;
 import worldObject.pickableObject.OBJ_Key;
+import worldObject.pickableObject.OBJ_ManaPotion;
 import worldObject.unpickableObject.OBJ_Chest;
 import worldObject.unpickableObject.OBJ_Door;
 import worldObject.unpickableObject.OBJ_Portal; // THÊM IMPORT CHO PORTAL
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AssetSetter {
@@ -68,7 +73,7 @@ public class AssetSetter {
         gp.getwObjects()[0].worldX = 20 * gp.getTileSize();
         gp.getwObjects()[0].worldY = 20 * gp.getTileSize();
 
-        gp.getwObjects()[3] = new OBJ_HealthPotion(gp);
+        gp.getwObjects()[3] = new OBJ_ManaPotion(gp);
         gp.getwObjects()[3].worldX = 19 * gp.getTileSize();
         gp.getwObjects()[3].worldY = 20 * gp.getTileSize();
 
@@ -84,6 +89,14 @@ public class AssetSetter {
         gp.getwObjects()[2] = new OBJ_Portal(gp, 1, 10, 12); // targetMap=1, playerTileX_onNewMap=10, playerTileY_onNewMap=12
         gp.getwObjects()[2].worldX = 67 * gp.getTileSize(); // Vị trí portal trên map 0
         gp.getwObjects()[2].worldY = 40 * gp.getTileSize(); // Vị trí portal trên map 0
+
+        gp.getwObjects()[5] = new worldObject.pickableObject.OBJ_Sword(gp);
+        gp.getwObjects()[5].worldX = 21 * gp.getTileSize();
+        gp.getwObjects()[5].worldY = 21 * gp.getTileSize();
+
+        gp.getwObjects()[6] = new worldObject.pickableObject.OBJ_Book(gp);
+        gp.getwObjects()[6].worldX = 22 * gp.getTileSize();
+        gp.getwObjects()[6].worldY = 22 * gp.getTileSize();
 
         System.out.println("Map 0 Objects Set. Portal to map 1 at (67,40) leading to (10,12) on map 1.");
     }

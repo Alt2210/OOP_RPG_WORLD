@@ -117,6 +117,7 @@ public class CombatSystem {
                         player.solidArea.height
                 );
 
+
                 if (skillEffectBounds.intersects(playerBounds)) {
                     System.out.println("[" + System.currentTimeMillis() + "] CombatSystem.processSkillEffectImpacts: " +
                             skillEffect.getCaster().getName() + "'s skillEffect.skillEffect trúng Player!");

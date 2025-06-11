@@ -4,6 +4,9 @@ import item.Inventory;
 import character.Character;
 import character.NPC_Princess;
 import dialogue.DialogueSpeaker;
+import item.Item;
+import item.itemEquippable.Equippable;
+import item.itemEquippable.Item_Weapon;
 import main.GamePanel;
 import main.KeyHandler;
 import skill.Skill;
@@ -28,6 +31,9 @@ public abstract class Player extends character.Character {
 
     protected int attackStateCounter = 0;
     protected int currentAttackStateDuration = 30;
+
+    protected int baseAttack;
+    protected Item_Weapon currentWeapon;
 
 
 
@@ -71,6 +77,10 @@ public abstract class Player extends character.Character {
             if (keyH.skill1Pressed) {
                 activateSkill(0); // Kích hoạt kỹ năng ở vị trí số 0 (ví dụ Fireball)
             }
+            if (keyH.skill2Pressed){
+                activateSkill(1);
+            }
+
             // Bạn có thể thêm else if (keyH.skill2Pressed) { activateSkill(1); } sau này
         }
 
@@ -221,6 +231,43 @@ public abstract class Player extends character.Character {
                     gp.gameState = gp.victoryEndState;
                 }
             }
+        }
+    }
+
+    @Override
+    public int getAttack() {
+        int totalAttack = baseAttack;
+        if (currentWeapon != null) {
+            totalAttack += currentWeapon.getAttackBonus();
+        }
+        return totalAttack;
+    }
+
+    public void equipWeapon(Item_Weapon weapon) {
+        if(weapon instanceof Equippable){
+            this.currentWeapon = weapon;
+            gp.getUi().showMessage("Equipped: " + weapon.getName());
+            // Không cần cập nhật sát thương ở đây vì getAttack() đã tự động tính toán
+        }
+        else {
+            gp.getUi().showMessage("Can not equip " + weapon.getName());
+            return;
+        }
+    }
+
+    public item.itemEquippable.Item_Weapon getCurrentWeapon() {
+        return this.currentWeapon;
+    }
+
+    public void unequipWeapon() {
+        if (this.currentWeapon != null) {
+            Item equippedItem = (Item) this.currentWeapon;
+            gp.getUi().showMessage("Unequipped: " + equippedItem.getName());
+
+            this.currentWeapon = null;
+        } else {
+            // Thông báo nếu không có gì để gỡ
+            gp.getUi().showMessage("No weapon equipped.");
         }
     }
 }

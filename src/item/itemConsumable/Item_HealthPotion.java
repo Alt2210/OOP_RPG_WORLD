@@ -25,6 +25,7 @@ public class Item_HealthPotion extends Item implements Consumable{
         user.getGp().getUi().showMessage("Healed for " + healingValue + " HP!");
     }
 
+    @Override
     public void useItem(Player user){
         consumeItem(user);
     }

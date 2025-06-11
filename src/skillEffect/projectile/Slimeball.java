@@ -102,6 +102,7 @@ public class Slimeball extends Projectile {
             return;
         }
 
+        gp.getCombatSystem().checkSingleAttack(this);
         // Việc kiểm tra va chạm với Player sẽ được CombatSystem xử lý
         // sau khi GamePanel gọi combatSystem.processProjectileImpacts(this);
     }
@@ -124,6 +125,7 @@ public class Slimeball extends Projectile {
             // Optional: Vẽ solidArea để debug
             // g2.setColor(Color.GREEN);
             // g2.drawRect(screenX, screenY, solidArea.width, solidArea.height);
+            g2.drawRect(screenX, screenY, solidArea.width , solidArea.height);
         }
     }
 }

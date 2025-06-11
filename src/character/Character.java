@@ -66,6 +66,10 @@ public abstract class Character {
         this.skillCooldowns = new HashMap<>();
     }
 
+    public void setMaxMana(int maxMana) {
+        this.maxMana = maxMana;
+    }
+
     protected void addSkill(Skill skill) {
         if (skill != null) {
             this.skills.add(skill);

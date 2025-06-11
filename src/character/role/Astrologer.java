@@ -2,6 +2,7 @@ package character.role;
 
 import main.GamePanel;
 import main.KeyHandler;
+import skill.S_Explosion;
 import skill.S_Laser;
 import skill.S_StellaField;
 import skill.S_Tornado;
@@ -26,6 +27,7 @@ public class Astrologer extends Player {
         this.normalAttackEffectFrames = new ArrayList<>();
         setDefaultValues();
         addSkill(new S_Tornado(this, this.gp));
+        addSkill(new S_StellaField(this, gp));
     }
 
     @Override
@@ -48,6 +50,9 @@ public class Astrologer extends Player {
         cip.setNumSprite(16);
         setName("Astrologer");
         loadCharacterSprites(); // Tải sprite và hiệu ứng
+
+        currentWeapon = null;
+        baseAttack = 15;
 
         // Tính toán thời gian giữ mỗi frame của animation hiệu ứng
         if (NORMAL_ATTACK_EFFECT_FRAMES_COUNT > 0 && !this.normalAttackEffectFrames.isEmpty()) {

@@ -9,14 +9,11 @@ import java.awt.image.BufferedImage;
 
 public abstract class Projectile extends SkillEffect {
 //    protected GamePanel gp;
-    public int worldX, worldY;
     public int speed;
     public String direction;
     protected BufferedImage image; // Có thể là một danh sách BufferedImage nếu có animation
-    protected Character caster; // Nhân vật đã bắn ra skillEffect.projectile này
     protected int damage;
     public boolean alive = true; // Trạng thái của skillEffect.projectile (còn tồn tại hay không)
-    public Rectangle solidArea = new Rectangle(0, 0, 0, 0); // Kích thước vùng va chạm, sẽ được lớp con đặt
     // int solidAreaDefaultX, solidAreaDefaultY; // Không cần thiết nếu solidArea luôn là (0,0) tương đối với worldX, worldY của skillEffect.projectile
 
     protected int maxRange; // Tầm xa tối đa

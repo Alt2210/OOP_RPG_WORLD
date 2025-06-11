@@ -1,6 +1,9 @@
 package character.role;
 
 import character.monster.Monster;
+import item.Item;
+import item.itemEquippable.Equippable;
+import item.itemEquippable.Item_Weapon;
 import main.GamePanel;
 import main.KeyHandler;
 import skill.S_Explosion;
@@ -18,13 +21,14 @@ public class Soldier extends Player {
         setDefaultValues();
     }
 
+
     @Override
     public void setDefaultValues() {
         worldX = gp.getTileSize() * 10;
         worldY = gp.getTileSize() * 20;
-        speed = 4;
+        speed = 13;
         direction = "down";
-        hasKey=0;
+        hasKey = 0;
         maxHealth = 120;
         currentHealth = maxHealth;
         attack = 10;
@@ -39,6 +43,10 @@ public class Soldier extends Player {
         loadCharacterSprites();
 
         addSkill(new S_Explosion(this, gp));
+        addSkill(new S_Fireball(this, gp));
+
+        currentWeapon = null;
+        baseAttack = 10;
     }
 
     @Override
