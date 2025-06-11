@@ -51,7 +51,7 @@ public class UI {
 
     private void loadFonts() {
         try {
-            InputStream is_pixel = getClass().getResourceAsStream("/font/pressstaart2P.ttf");
+            InputStream is_pixel = getClass().getResourceAsStream("/font/LockClock.ttf");
             if (is_pixel == null) {
                 throw new IOException("Custom font not found: PressStart2P-Regular.ttf");
             }
@@ -84,8 +84,8 @@ public class UI {
             sodierAvatar = ImageIO.read(getClass().getResourceAsStream("/player/sodier_walkleft1.png"));
             astrologerAvatar = ImageIO.read(getClass().getResourceAsStream("/player/astrologist_walkleft1.png"));
 
-            menuBoxImage = ImageIO.read(getClass().getResourceAsStream("/ui/menu_box_pixel.png"));
-            menuCursorImage = ImageIO.read(getClass().getResourceAsStream("/ui/menu_cursor_pixel.png"));
+            //menuBoxImage = ImageIO.read(getClass().getResourceAsStream("/ui/menu_box_pixel.png"));
+            //menuCursorImage = ImageIO.read(getClass().getResourceAsStream("/ui/menu_cursor_pixel.png"));
 
         } catch (Exception e) {
             System.err.println("UI: Lỗi khi tải một hoặc nhiều ảnh UI! Một số thành phần có thể không hiển thị.");
