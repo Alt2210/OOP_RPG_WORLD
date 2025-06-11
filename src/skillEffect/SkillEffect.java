@@ -1,0 +1,32 @@
+package skillEffect;
+
+import character.Character;
+import main.GamePanel;
+import java.awt.*;
+
+public abstract class SkillEffect {
+    protected GamePanel gp;
+    public int worldX, worldY;
+    protected Character caster;
+    protected int damage;
+    public boolean alive = true;
+    public Rectangle solidArea = new Rectangle(0, 0, 0, 0);
+    protected int damageTickCounter; // Đếm ngược thời gian giữa các lần gây sát thương
+
+    public SkillEffect(GamePanel gp) {
+        this.gp = gp;
+    }
+
+
+    public abstract void update();
+    public abstract void draw(Graphics2D g2);
+
+    // Getters
+    public Character getCaster() { return caster; }
+    public boolean isAlive() { return alive; }
+    public void setAlive(boolean alive) { this.alive = alive; }
+    public int getDamageValue() { return damage; }
+    public boolean isSingleHit(){
+        return true;
+    }
+}
