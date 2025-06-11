@@ -13,6 +13,7 @@ public class KeyHandler implements KeyListener {
     public boolean skill1Pressed; // Biến theo dõi phím kỹ năng 1
     public boolean skill2Pressed;
     public boolean fPressed;
+    public boolean dashPressed;
 
     public KeyHandler(GamePanel gp) {
         this.gp = gp;
@@ -100,6 +101,9 @@ public class KeyHandler implements KeyListener {
             }
             if (code == KeyEvent.VK_F) {
                 fPressed = true;
+            }
+            if (code == KeyEvent.VK_SHIFT) { // THÊM KHỐI LỆNH NÀY
+                dashPressed = true;
             }
             if (code == KeyEvent.VK_P) {
                 gp.gameState = gp.pauseState;
@@ -353,6 +357,9 @@ public class KeyHandler implements KeyListener {
         }
         if (code == KeyEvent.VK_I) {
             skill2Pressed = false;
+        }
+        if (code == KeyEvent.VK_SHIFT) { // THÊM KHỐI LỆNH NÀY
+            dashPressed = false;
         }
     }
 }

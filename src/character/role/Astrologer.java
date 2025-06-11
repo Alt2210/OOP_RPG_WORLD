@@ -34,7 +34,9 @@ public class Astrologer extends Player {
     public void setDefaultValues() {
         // Đặt các chỉ số riêng của Astrologer
         setInitLocation();
-        speed = 10;
+        setInitStamina();
+        defaultSpeed = 13;
+        speed = defaultSpeed;
         direction = "down";
         hasKey = 0;
         maxHealth = 80;

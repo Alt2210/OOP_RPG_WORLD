@@ -25,7 +25,9 @@ public class Soldier extends Player {
     @Override
     public void setDefaultValues() {
         setInitLocation();
-        speed = 8;
+        setInitStamina();
+        defaultSpeed = 13;
+        speed = defaultSpeed;
         direction = "down";
         hasKey = 0;
         maxHealth = 120;

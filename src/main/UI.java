@@ -251,6 +251,7 @@ public class UI {
 
         int currentTileSize = gp.getTileSize();
         Player currentPlayer = gp.getPlayer();
+
         if (currentPlayer != null) {
             // Tọa độ và kích thước của thanh EXP
             int expBarX = currentTileSize / 2;
@@ -260,8 +261,8 @@ public class UI {
 
             // Tính toán tỷ lệ EXP hiện tại
             double expRatio = 0;
-            if (currentPlayer.expToNextLevel > 0) {
-                expRatio = (double) currentPlayer.currentExp / currentPlayer.expToNextLevel;
+            if (currentPlayer.getExpToNextLevel() > 0) {
+                expRatio = (double) currentPlayer.getCurrentExp() / currentPlayer.getExpToNextLevel();
             }
             int currentExpBarWidth = (int) (expBarWidth * expRatio);
 
@@ -280,8 +281,8 @@ public class UI {
 
             // Vẽ chữ (Level và số EXP)
             g2.setFont(pixelFont_XSmall.deriveFont(12F));
-            String levelText = "LV " + currentPlayer.level;
-            String expText = currentPlayer.currentExp + " / " + currentPlayer.expToNextLevel;
+            String levelText = "LV " + currentPlayer.getLevel();
+            String expText = currentPlayer.getCurrentExp() + " / " + currentPlayer.getExpToNextLevel();
 
             // Vẽ chữ Level với bóng
             drawTextWithShadow(g2, levelText, expBarX + 5, expBarY + expBarHeight - 6, Color.WHITE, menuTextShadowColor, 1);
@@ -326,6 +327,44 @@ public class UI {
             int textY = mpBarY + fm.getAscent() - (fm.getHeight() - barHeight) / 2 + 1;
             drawTextWithShadow(g2, mpText, textX, textY, Color.WHITE, menuTextShadowColor, 1);
         }
+
+
+        if (currentPlayer != null) {
+            // Tọa độ và kích thước cho thanh Stamina
+            int staminaBarX = currentTileSize / 2;
+            // Đặt thanh Stamina ngay dưới thanh Mana (giả sử mpBarY và barHeight đã có từ code vẽ Mana)
+            int staminaBarY = (currentTileSize / 2 + 22 + 10) ; // Y của thanh EXP + chiều cao + khoảng cách + chiều cao thanh MP + khoảng cách
+            int barWidth = currentTileSize * 2;
+            int barHeight = 12;
+            int barOutlineWidth = barWidth + 2;
+            int barOutlineHeight = barHeight + 2;
+
+            // Tính toán tỷ lệ stamina
+            double staminaPercent = (currentPlayer.getMaxStamina() > 0) ? (double) currentPlayer.getCurrentStamina() / currentPlayer.getMaxStamina() : 0;
+            int currentStaminaBarWidth = (int) (barWidth * staminaPercent);
+
+            // Vẽ nền thanh stamina
+            g2.setColor(Color.BLACK);
+            g2.fillRoundRect(staminaBarX - 1, staminaBarY - 1, barOutlineWidth, barOutlineHeight, 5, 5);
+
+            g2.setColor(new Color(100, 100, 50));
+            g2.fillRoundRect(staminaBarX, staminaBarY, barWidth, barHeight, 5, 5);
+
+            // Vẽ phần stamina còn lại (màu vàng)
+            if (currentStaminaBarWidth > 0) {
+                g2.setColor(new Color(230, 230, 0));
+                g2.fillRoundRect(staminaBarX, staminaBarY, currentStaminaBarWidth, barHeight, 5, 5);
+            }
+
+            // Vẽ chữ STA
+            g2.setFont(pixelFont_XSmall);
+            String staText = gp.getPlayer().getCurrentStamina() + "/" + gp.getPlayer().getMaxStamina();
+            FontMetrics fm = g2.getFontMetrics(pixelFont_XSmall);
+            int textX = staminaBarX + barWidth + 5;
+            int textY = staminaBarY + fm.getAscent() - (fm.getHeight() - barHeight) / 2 + 1;
+            drawTextWithShadow(g2, staText, textX, textY, Color.WHITE, menuTextShadowColor, 1);
+        }
+
     }
 
     public void drawMessage(Graphics2D g2) {

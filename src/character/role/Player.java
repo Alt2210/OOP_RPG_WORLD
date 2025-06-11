@@ -35,9 +35,17 @@ public abstract class Player extends character.Character {
     protected int baseAttack;
     protected Item_Weapon currentWeapon;
 
-    public int level;
-    public int currentExp;
-    public int expToNextLevel;
+    private int level;
+    private int currentExp;
+    private int expToNextLevel;
+
+    private int maxStamina;
+    private int currentStamina;
+    private final int staminaRegenCounterMax = 10; // Tốc độ hồi stamina (1 stamina mỗi 10 frame)
+    private int staminaRegenCounter = 0;
+    private final int dashCost = 1; // Lượng stamina tiêu hao mỗi frame khi dash
+    private final int dashSpeedBonus = 4; // Tốc độ được cộng thêm khi dash
+    private boolean isDashing = false;
 
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
@@ -51,8 +59,40 @@ public abstract class Player extends character.Character {
         solidAreaDefaultY = solidArea.y;
     }
 
+    public int getExpToNextLevel() {
+        return expToNextLevel;
+    }
+
+    public int getCurrentExp() {
+        return currentExp;
+    }
+
     public Inventory getInventory() {
         return inventory;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getMaxStamina() {
+        return maxStamina;
+    }
+
+    public void setMaxStamina(int maxStamina) {
+        this.maxStamina = maxStamina;
+    }
+
+    public int getCurrentStamina() {
+        return currentStamina;
+    }
+
+    public void setCurrentStamina(int currentStamina) {
+        this.currentStamina = currentStamina;
     }
 
     protected abstract void loadCharacterSprites();
@@ -114,6 +154,7 @@ public abstract class Player extends character.Character {
                 actionLockCounter--;
             }
             else {
+                handleStaminaAndDash();
                 // --- 2a. Xử lý Input cho Hành động (Tấn công, Dùng skill) ---
                 if (keyH.attackPressed && canAttack()) {
                     performNormalAttackAction();
@@ -277,12 +318,13 @@ public abstract class Player extends character.Character {
     public void levelUp() {
         level++;
         currentExp = currentExp - expToNextLevel;
-        expToNextLevel = (int)(expToNextLevel * 1.5);
+        expToNextLevel = (int)(expToNextLevel * 2);
 
         maxHealth += 10;
         maxMana += 5;
         baseAttack += 2;
         defense += 1;
+        maxStamina += 20;
 
         currentHealth = maxHealth;
         currentMana = maxMana;
@@ -305,6 +347,11 @@ public abstract class Player extends character.Character {
         this.level = 1;
         this.currentExp = 0;
         this.expToNextLevel = 10;
+    }
+
+    protected void setInitStamina(){
+        this.maxStamina = 100;
+        this.currentStamina = maxStamina;
     }
 
     protected void setInitLocation(){
@@ -340,6 +387,34 @@ public abstract class Player extends character.Character {
                     break; // Dừng lại sau khi tìm thấy rương
                 }
             }
+        }
+    }
+
+    private void handleStaminaAndDash() {
+        boolean isTryingToMove = (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed);
+
+        // Kiểm tra nếu người chơi muốn dash, đang di chuyển và còn thể lực
+        if (keyH.dashPressed && isTryingToMove && currentStamina > 0) {
+            isDashing = true;
+            // Tiêu hao thể lực, đảm bảo không xuống dưới 0
+            currentStamina = Math.max(0, currentStamina - dashCost);
+        } else {
+            isDashing = false;
+            // Nếu không dash, hồi phục thể lực
+            if (currentStamina < maxStamina) {
+                staminaRegenCounter++;
+                if (staminaRegenCounter > staminaRegenCounterMax) {
+                    currentStamina++; // Hồi 1 stamina
+                    staminaRegenCounter = 0;
+                }
+            }
+        }
+
+        // Cập nhật tốc độ dựa trên trạng thái dash
+        if (isDashing) {
+            speed = defaultSpeed + dashSpeedBonus;
+        } else {
+            speed = defaultSpeed;
         }
     }
 }
