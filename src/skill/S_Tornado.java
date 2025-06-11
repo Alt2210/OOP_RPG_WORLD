@@ -21,7 +21,6 @@ public class S_Tornado extends  Skill{
 
         Tornado tornado = new Tornado(gp, sip);
 
-        // Tính toán vị trí xuất hiện của quả cầu lửa
         int playerSolidCenterX = caster.worldX + caster.solidArea.x + caster.solidArea.width / 2;
         int playerSolidCenterY = caster.worldY + caster.solidArea.y + caster.solidArea.height / 2;
 
