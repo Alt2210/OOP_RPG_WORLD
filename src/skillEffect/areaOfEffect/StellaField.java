@@ -77,14 +77,14 @@ public class StellaField extends AreaOfEffect {
     @Override
     public void draw(Graphics2D g2) {
 
-        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
-        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
+        int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
+        int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
 
         // Chỉ vẽ nếu vùng kỹ năng nằm trong màn hình
-        if (worldX + (radius*2) > gp.getPlayer().worldX - gp.getPlayer().getScreenX() &&
-                worldX - (radius*2) < gp.getPlayer().worldX + gp.getPlayer().getScreenX() &&
-                worldY + (radius*2) > gp.getPlayer().worldY - gp.getPlayer().getScreenY() &&
-                worldY - (radius*2) < gp.getPlayer().worldY + gp.getPlayer().getScreenY()) {
+        if (worldX + (radius*2) > gp.getPlayer().getWorldX() - gp.getPlayer().getScreenX() &&
+                worldX - (radius*2) < gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX() &&
+                worldY + (radius*2) > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() &&
+                worldY - (radius*2) < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()) {
 
             Rectangle boundingRect = new Rectangle(screenX, screenY, radius * 2, radius * 2);
             g2.draw(boundingRect);

@@ -66,7 +66,7 @@ public class SkillImageProcessor extends ImageProcessor {
 
     @Override
     public BufferedImage getCurFrame() {
-        return getCurFrame(caster.direction);
+        return getCurFrame(caster.getDirection());
     }
 
     public BufferedImage getCurFrame(String direction) {

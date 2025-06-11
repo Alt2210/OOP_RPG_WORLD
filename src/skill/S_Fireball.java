@@ -26,18 +26,18 @@ public class S_Fireball extends Skill {
         Fireball fireball = new Fireball(gp, sip);
 
         // Tính toán vị trí xuất hiện của quả cầu lửa
-        int playerSolidCenterX = caster.worldX + caster.solidArea.x + caster.solidArea.width / 2;
-        int playerSolidCenterY = caster.worldY + caster.solidArea.y + caster.solidArea.height / 2;
+        int playerSolidCenterX = caster.getWorldX() + caster.getSolidArea().x + caster.getSolidArea().width / 2;
+        int playerSolidCenterY = caster.getWorldY() + caster.getSolidArea().y + caster.getSolidArea().height / 2;
 
-        int fireballHitboxWidth = fireball.solidArea.width;
-        int fireballHitboxHeight = fireball.solidArea.height;
+        int fireballHitboxWidth = fireball.getSolidArea().width;
+        int fireballHitboxHeight = fireball.getSolidArea().height;
         int fireballSpawnCenterX = playerSolidCenterX;
         int fireballSpawnCenterY = playerSolidCenterY;
         int gap = 2;
-        int offsetX = caster.solidArea.width / 2 + fireballHitboxWidth / 2 + gap;
-        int offsetY = caster.solidArea.height / 2 + fireballHitboxHeight / 2 + gap;
+        int offsetX = caster.getSolidArea().width / 2 + fireballHitboxWidth / 2 + gap;
+        int offsetY = caster.getSolidArea().height / 2 + fireballHitboxHeight / 2 + gap;
 
-        switch (caster.direction) {
+        switch (caster.getDirection()) {
             case "up": fireballSpawnCenterY -= offsetY; break;
             case "down": fireballSpawnCenterY += offsetY; break;
             case "left": fireballSpawnCenterX -= offsetX; break;
@@ -47,7 +47,7 @@ public class S_Fireball extends Skill {
         // Sát thương của Fireball có thể dựa trên chỉ số của người chơi
         int fireballDamage = caster.getAttack() * 2;
 
-        fireball.set(fireballSpawnCenterX, fireballSpawnCenterY, caster.direction, caster, fireballDamage);
+        fireball.set(fireballSpawnCenterX, fireballSpawnCenterY, caster.getDirection(), caster, fireballDamage);
         gp.skillEffects.add(fireball);
     }
 }

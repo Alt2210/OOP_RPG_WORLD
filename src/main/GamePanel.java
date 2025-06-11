@@ -155,11 +155,11 @@ public class GamePanel extends JPanel implements Runnable {
             player.setDefaultValues();
             // Ví dụ đặt vị trí khởi đầu cho Player
             if(currentMap == 0) {
-                player.worldX = getTileSize() * 7; //
-                player.worldY = getTileSize() * 92; //
+                player.setWorldX(getTileSize() * 7);
+                player.setWorldY(getTileSize() * 92);
             } else if (currentMap == 1) {
-                player.worldX = getTileSize() * 5; //
-                player.worldY = getTileSize() * 10; //
+                player.setWorldX(getTileSize() * 5);
+                player.setWorldY( getTileSize() * 10);
             }
         }
         skillEffects.clear();
@@ -169,9 +169,9 @@ public class GamePanel extends JPanel implements Runnable {
         currentMap = 0; // Luôn bắt đầu từ map 0 khi game mới
         player.setDefaultValues(); // Reset trạng thái Player về mặc định
         // Đặt lại vị trí Player cho map 0
-        player.worldX = getTileSize() * 7;
-        player.worldY = getTileSize() * 92;
-        player.direction = "down";
+        player.setWorldX(getTileSize() * 7);
+        player.setWorldY(getTileSize() * 92);
+        player.setDirection("down");
 
         clearEntitiesForMapChange(); // Xóa tất cả entities cũ
         aSetter.setupMapAssets(currentMap); // Nạp entities cho map 0

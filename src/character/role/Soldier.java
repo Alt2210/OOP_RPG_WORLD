@@ -157,10 +157,10 @@ public class Soldier extends Player {
                 if (monster != null && monster.getCurrentHealth() > 0) {
                     // Lấy hitbox của quái vật
                     Rectangle monsterHitbox = new Rectangle(
-                            monster.worldX + monster.solidArea.x,
-                            monster.worldY + monster.solidArea.y,
-                            monster.solidArea.width,
-                            monster.solidArea.height
+                            monster.getWorldX() + monster.getSolidArea().x,
+                            monster.getWorldY() + monster.getSolidArea().y,
+                            monster.getSolidArea().width,
+                            monster.getSolidArea().height
                     );
 
                     // Kiểm tra va chạm giữa hitbox tấn công và hitbox của quái vật

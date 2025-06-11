@@ -12,7 +12,7 @@ import java.util.Random;
 public abstract class Monster extends Character {
 
     protected int exp;
-    PathFinder pathFinder;
+    protected PathFinder pathFinder;
     protected int contactDamageAmount;
     protected int contactDamageCooldown;
     protected final int CONTACT_DAMAGE_COOLDOWN_DURATION = 30; // Ví dụ: 0.5 giây Player miễn nhiễm sát thương chạm từ Monster này
@@ -102,8 +102,8 @@ public abstract class Monster extends Character {
         for (int i = 0; i < gp.getwObjects().length; i++) {
             if (gp.getwObjects()[i] == null) {
                 gp.getwObjects()[i] = item;
-                item.worldX = this.worldX;
-                item.worldY = this.worldY;
+                item.setWorldX(this.worldX);
+                item.setWorldY(this.worldY);
                 break;
             }
         }

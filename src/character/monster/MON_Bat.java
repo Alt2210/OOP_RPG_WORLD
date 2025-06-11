@@ -123,8 +123,8 @@ public class MON_Bat extends Monster {
                 onPath = false;
                 return;
             }
-            int playerCenterX = player.worldX + player.solidArea.x + player.solidArea.width / 2;
-            int playerCenterY = player.worldY + player.solidArea.y + player.solidArea.height / 2;
+            int playerCenterX = player.getWorldX() + player.getSolidArea().x + player.getSolidArea().width / 2;
+            int playerCenterY = player.getWorldY() + player.getSolidArea().y + player.getSolidArea().height / 2;
             int goalCol = playerCenterX / gp.getTileSize();
             int goalRow = playerCenterY / gp.getTileSize();
 
@@ -176,10 +176,10 @@ public class MON_Bat extends Monster {
                             solidArea.height
                     );
                     Rectangle playerBounds = new Rectangle(
-                            player.worldX + player.solidArea.x,
-                            player.worldY + player.solidArea.y,
-                            player.solidArea.width,
-                            player.solidArea.height
+                            player.getWorldX() + player.getSolidArea().x,
+                            player.getWorldY() + player.getSolidArea().y,
+                            player.getSolidArea().width,
+                            player.getSolidArea().height
                     );
                     if (batBounds.intersects(playerBounds)) {
                         // Gây sát thương không cần cooldown khi lướt
@@ -230,12 +230,12 @@ public class MON_Bat extends Monster {
                 System.err.println("No sprite for MON_Bat at (" + worldX + ", " + worldY + ")");
                 return;
             }
-            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
-            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
-            if (worldX + gp.getTileSize() > gp.getPlayer().worldX - gp.getPlayer().getScreenX() &&
-                    worldX - gp.getTileSize() < gp.getPlayer().worldX + gp.getPlayer().getScreenX() &&
-                    worldY + gp.getTileSize() > gp.getPlayer().worldY - gp.getPlayer().getScreenY() &&
-                    worldY - gp.getTileSize() < gp.getPlayer().worldY + gp.getPlayer().getScreenY()) {
+            int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
+            int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
+            if (worldX + gp.getTileSize() > gp.getPlayer().getWorldX() - gp.getPlayer().getScreenX() &&
+                    worldX - gp.getTileSize() < gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX() &&
+                    worldY + gp.getTileSize() > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() &&
+                    worldY - gp.getTileSize() < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()) {
                 if (isDashing) {
                     float[] opacities = {0.5f, 0.3f};
                     int[] offsets = {10, 20};

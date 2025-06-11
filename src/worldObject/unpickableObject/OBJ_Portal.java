@@ -67,20 +67,20 @@ public class OBJ_Portal extends WorldObject {
         // portal.collision = true, cần một cách khác để kích hoạt ( sau này sẽ thêm key đặc biệt để mở portal)
 
         if (gpRef.gameState == gpRef.playState) {
-            Rectangle playerBounds = new Rectangle(player.worldX + player.solidArea.x, player.worldY + player.solidArea.y, player.solidArea.width, player.solidArea.height);
+            Rectangle playerBounds = new Rectangle(player.getWorldX() + player.getSolidArea().x, player.getWorldY() + player.getSolidArea().y, player.getSolidArea().width, player.getSolidArea().height);
             Rectangle portalBounds = new Rectangle(this.worldX + this.solidArea.x, this.worldY + this.solidArea.y, this.solidArea.width, this.solidArea.height);
 
             if (playerBounds.intersects(portalBounds)) {
                 gpRef.getUi().showMessage("Bước qua cổng dịch chuyển đến map " + targetMap + "...");
 
                 gpRef.currentMap = this.targetMap;
-                player.worldX = this.playerTargetWorldX_onNewMap;
-                player.worldY = this.playerTargetWorldY_onNewMap;
+                player.setWorldX(this.playerTargetWorldX_onNewMap);
+                player.setWorldY(this.playerTargetWorldY_onNewMap);
 
                 gpRef.clearEntitiesForMapChange();
                 gpRef.getaSetter().setupMapAssets(gpRef.currentMap);
 
-                System.out.println("Player teleported to map: " + gpRef.currentMap + " at (" + player.worldX + "," + player.worldY + ")");
+                System.out.println("Player teleported to map: " + gpRef.currentMap + " at (" + player.getWorldX() + "," + player.getWorldY() + ")");
 
             }
         }
@@ -91,13 +91,13 @@ public class OBJ_Portal extends WorldObject {
     public void draw(Graphics2D g2, GamePanel gp) { //
         if (image == null) return;
 
-        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX(); //
-        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY(); //
+        int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX(); //
+        int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY(); //
 
-        if(worldX + gp.getTileSize() > gp.getPlayer().worldX - gp.getPlayer().getScreenX() && //
-                worldX - gp.getTileSize() < gp.getPlayer().worldX + gp.getPlayer().getScreenX() && //
-                worldY + gp.getTileSize() > gp.getPlayer().worldY - gp.getPlayer().getScreenY() && //
-                worldY - gp.getTileSize() < gp.getPlayer().worldY + gp.getPlayer().getScreenY()) { //
+        if(worldX + gp.getTileSize() > gp.getPlayer().getWorldX() - gp.getPlayer().getScreenX() && //
+                worldX - gp.getTileSize() < gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX() && //
+                worldY + gp.getTileSize() > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() && //
+                worldY - gp.getTileSize() < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()) { //
             g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null); //
         }
     }

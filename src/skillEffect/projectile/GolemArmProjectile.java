@@ -141,13 +141,13 @@ public class GolemArmProjectile extends Projectile {
             return;
         }
 
-        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
-        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
+        int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
+        int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
 
-        if (worldX + solidArea.width > gp.getPlayer().worldX - gp.getPlayer().getScreenX() &&
-                worldX - solidArea.width < gp.getPlayer().worldX + gp.getPlayer().getScreenX() &&
-                worldY + solidArea.height > gp.getPlayer().worldY - gp.getPlayer().getScreenY() &&
-                worldY - solidArea.height < gp.getPlayer().worldY + gp.getPlayer().getScreenY()) {
+        if (worldX + solidArea.width > gp.getPlayer().getWorldX() - gp.getPlayer().getScreenX() &&
+                worldX - solidArea.width < gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX() &&
+                worldY + solidArea.height > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() &&
+                worldY - solidArea.height < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()) {
             // Vẽ hình ảnh với kích thước gốc 35x14 pixel
             int drawWidth = 20 * 3;
             int drawHeight = 20 * 3;

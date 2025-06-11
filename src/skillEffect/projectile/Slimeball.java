@@ -113,13 +113,13 @@ public class Slimeball extends Projectile {
             return;
         }
 
-        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
-        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
+        int screenX = worldX - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenX();
+        int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
 
-        if (worldX + solidArea.width > gp.getPlayer().worldX - gp.getPlayer().getScreenX() &&
-                worldX - solidArea.width < gp.getPlayer().worldX + gp.getPlayer().getScreenX() &&
-                worldY + solidArea.height > gp.getPlayer().worldY - gp.getPlayer().getScreenY() &&
-                worldY - solidArea.height < gp.getPlayer().worldY + gp.getPlayer().getScreenY()) {
+        if (worldX + solidArea.width > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenX() &&
+                worldX - solidArea.width < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenX() &&
+                worldY + solidArea.height > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() &&
+                worldY - solidArea.height < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()) {
 
             g2.drawImage(imageDefault, screenX, screenY, solidArea.width, solidArea.height, null);
             // Optional: Vẽ solidArea để debug

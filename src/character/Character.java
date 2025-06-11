@@ -13,20 +13,21 @@ import java.util.Map;
 public abstract class Character {
 
     protected GamePanel gp;
-
-    public int worldX, worldY;
-    public int speed;
-    public String direction;
-
     protected CharacterImageProcessor cip;
-
-    public Rectangle solidArea;
-    public int solidAreaDefaultX, solidAreaDefaultY;
-    public boolean collisionOn = false;
-    public int actionLockCounter = 0;
-
     protected ArrayList<Skill> skills;
     protected Map<Skill, Integer> skillCooldowns;
+
+    protected int worldX, worldY;
+    protected int speed;
+    protected String direction;
+    protected Rectangle solidArea;
+    protected int solidAreaDefaultX, solidAreaDefaultY;
+    protected boolean collisionOn = false;
+    protected int actionLockCounter = 0;
+
+
+    // STATE
+    protected boolean onPath = false;
 
     public void setName(String name) {
         this.name = name;
@@ -36,9 +37,65 @@ public abstract class Character {
         return name;
     }
 
-    // STATE
-    public boolean onPath = false;
+    public String getDirection() {
+        return direction;
+    }
 
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+
+    public boolean isCollisionOn() {
+        return collisionOn;
+    }
+
+    public boolean isOnPath() {
+        return onPath;
+    }
+
+    public void setOnPath(boolean onPath) {
+        this.onPath = onPath;
+    }
+
+    public void setCollisionOn(boolean collisionOn) {
+        this.collisionOn = collisionOn;
+    }
+
+    public int getActionLockCounter() {
+        return actionLockCounter;
+    }
+
+    public void setActionLockCounter(int actionLockCounter) {
+        this.actionLockCounter = actionLockCounter;
+    }
+
+    public Rectangle getSolidArea() {
+        return solidArea;
+    }
+
+    public int getSolidAreaDefaultX() {
+        return solidAreaDefaultX;
+    }
+
+    public int getSolidAreaDefaultY() {
+        return solidAreaDefaultY;
+    }
+
+    public int getWorldX() {
+        return worldX;
+    }
+
+    public void setWorldX(int worldX) {
+        this.worldX = worldX;
+    }
+
+    public int getWorldY() {
+        return worldY;
+    }
+
+    public void setWorldY(int worldY) {
+        this.worldY = worldY;
+    }
 
     // CHARACTER ATTRIBUTES
     // Tính phần máu còn lại (giả sử maxHealth và currentHealth có sẵn)
@@ -64,6 +121,10 @@ public abstract class Character {
 
         this.skills = new ArrayList<>();
         this.skillCooldowns = new HashMap<>();
+    }
+
+    public int getSpeed() {
+        return speed;
     }
 
     public void setMaxMana(int maxMana) {

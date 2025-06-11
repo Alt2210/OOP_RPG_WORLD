@@ -18,7 +18,7 @@ public class CombatSystem {
     }
 
     public void performAttack(Character attacker, Character target) {
-        System.out.println("[" + System.currentTimeMillis() + "] performAttack: " + attacker.getName() + " (hướng: " + attacker.direction + ") định tấn công " + target.getName() + " (hướng: " + target.direction + ")");
+        System.out.println("[" + System.currentTimeMillis() + "] performAttack: " + attacker.getName() + " (hướng: " + attacker.getDirection() + ") định tấn công " + target.getName() + " (hướng: " + target.getDirection() + ")");
         System.out.println("    Attacker (" + attacker.getName() + ") canAttack: " + attacker.canAttack() + " (Cooldown: " + attacker.getAttackCooldown() + ")");
         System.out.println("    Target (" + target.getName() + ") currentHealth: " + target.getCurrentHealth());
 
@@ -49,10 +49,10 @@ public class CombatSystem {
         }
         // Vùng va chạm của skillEffect.skillEffect (đã được cập nhật trong skillEffect.skillEffect.update() dựa trên worldX, worldY)
         Rectangle skillEffectBounds = new Rectangle(
-                skillEffect.worldX + skillEffect.solidArea.x, // Giả sử solidArea.x/y là offset so với worldX/Y
-                skillEffect.worldY + skillEffect.solidArea.y,
-                skillEffect.solidArea.width,
-                skillEffect.solidArea.height
+                skillEffect.getWorldX() + skillEffect.getSolidArea().x, // Giả sử solidArea.x/y là offset so với worldX/Y
+                skillEffect.getWorldY() + skillEffect.getSolidArea().y,
+                skillEffect.getSolidArea().width,
+                skillEffect.getSolidArea().height
         );
         // Chỉ xử lý nếu người bắn là Player (để gây sát thương cho Monster)
         // Nếu bạn muốn Monster cũng bắn skillEffect.skillEffect trúng Player, bạn cần mở rộng logic này
@@ -73,10 +73,10 @@ public class CombatSystem {
                     Monster monster = monsterArray[i];
                     if (monster != null && monster.getCurrentHealth() > 0) {
                         Rectangle monsterBounds = new Rectangle(
-                                monster.worldX + monster.solidAreaDefaultX,
-                                monster.worldY + monster.solidAreaDefaultY,
-                                monster.solidArea.width,
-                                monster.solidArea.height
+                                monster.getWorldX() + monster.getSolidAreaDefaultX(),
+                                monster.getWorldY() + monster.getSolidAreaDefaultY(),
+                                monster.getSolidArea().width,
+                                monster.getSolidArea().height
                         );
 
                         if (skillEffectBounds.intersects(monsterBounds)) {
@@ -111,10 +111,10 @@ public class CombatSystem {
             Player player = gp.getPlayer();
             if (player != null && player.getCurrentHealth() > 0) {
                 Rectangle playerBounds = new Rectangle(
-                        player.worldX + player.solidArea.x,
-                        player.worldY + player.solidArea.y,
-                        player.solidArea.width,
-                        player.solidArea.height
+                        player.getWorldX() + player.getSolidArea().x,
+                        player.getWorldY() + player.getSolidArea().y,
+                        player.getSolidArea().width,
+                        player.getSolidArea().height
                 );
 
 
@@ -143,10 +143,10 @@ public class CombatSystem {
 
     private boolean isWithinAttackRange(Character attacker, Character target) {
         // Tính trung tâm của attacker và target
-        int attackerCenterX = attacker.worldX + attacker.solidArea.x + attacker.solidArea.width / 2;
-        int attackerCenterY = attacker.worldY + attacker.solidArea.y + attacker.solidArea.height / 2;
-        int targetCenterX = target.worldX + target.solidArea.x + target.solidArea.width / 2;
-        int targetCenterY = target.worldY + target.solidArea.y + target.solidArea.height / 2;
+        int attackerCenterX = attacker.getWorldX() + attacker.getSolidArea().x + attacker.getSolidArea().width / 2;
+        int attackerCenterY = attacker.getWorldY() + attacker.getSolidArea().y + attacker.getSolidArea().height / 2;
+        int targetCenterX = target.getWorldX() + target.getSolidArea().x + target.getSolidArea().width / 2;
+        int targetCenterY = target.getWorldY() + target.getSolidArea().y + target.getSolidArea().height / 2;
 
         // Tính khoảng cách giữa hai trung tâm
         double distance = Math.sqrt(Math.pow(attackerCenterX - targetCenterX, 2) + Math.pow(attackerCenterY - targetCenterY, 2));
@@ -165,7 +165,7 @@ public class CombatSystem {
         double fanAngle = 90; // Góc mở của hình quạt (90 độ)
         double startAngle, endAngle;
 
-        switch (attacker.direction) {
+        switch (attacker.getDirection()) {
             case "right":
                 startAngle = 315; // 0 - 45 độ
                 endAngle = 45;
@@ -196,10 +196,10 @@ public class CombatSystem {
         boolean isInFanShape = false;
         if (isInDirection) {
             // Tính các điểm của solidArea của target
-            int targetLeft = target.worldX + target.solidArea.x;
-            int targetRight = targetLeft + target.solidArea.width;
-            int targetTop = target.worldY + target.solidArea.y;
-            int targetBottom = targetTop + target.solidArea.height;
+            int targetLeft = target.getWorldX() + target.getSolidArea().x;
+            int targetRight = targetLeft + target.getSolidArea().width;
+            int targetTop = target.getWorldY() + target.getSolidArea().y;
+            int targetBottom = targetTop + target.getSolidArea().height;
 
             // Kiểm tra từng góc của solidArea của target
             int[][] targetCorners = new int[][] {
@@ -215,7 +215,7 @@ public class CombatSystem {
                 double cornerDistance = Math.sqrt(Math.pow(corner[0] - attackerCenterX, 2) + Math.pow(corner[1] - attackerCenterY, 2));
 
                 boolean cornerInDirection = false;
-                if (attacker.direction.equals("right")) {
+                if (attacker.getDirection().equals("right")) {
                     cornerInDirection = cornerAngle >= startAngle || cornerAngle <= endAngle;
                 } else {
                     cornerInDirection = cornerAngle >= startAngle && cornerAngle <= endAngle;
@@ -241,7 +241,7 @@ public class CombatSystem {
             int monsterIndex = gp.getcChecker().checkEntity(player, monsters);
             if (monsterIndex != 999) {
                 Monster monster = monsters[monsterIndex];
-                System.out.println("[" + System.currentTimeMillis() + "] checkPlayerMonsterCombat: Player (hướng: " + player.direction + ") định di chuyển vào " + monster.getName() + " (hướng: " + monster.direction + ", HP: " + monster.getCurrentHealth() + ")");
+                System.out.println("[" + System.currentTimeMillis() + "] checkPlayerMonsterCombat: Player (hướng: " + player.getDirection() + ") định di chuyển vào " + monster.getName() + " (hướng: " + monster.getDirection() + ", HP: " + monster.getCurrentHealth() + ")");
 
                 if (monster.canAttack()) {
                     System.out.println("    Player di chuyển vào " + monster.getName() + ". Monster (cooldown: " + monster.getAttackCooldown() + ") thực hiện phản công.");
@@ -317,10 +317,10 @@ public class CombatSystem {
             for (int i = 0; i < monsterArray.length; i++) {
                 Monster target = monsterArray[i];
                 if (target != null && target.getCurrentHealth() > 0) {
-                    int monsterLeft = target.worldX + target.solidArea.x;
-                    int monsterRight = monsterLeft + target.solidArea.width;
-                    int monsterTop = target.worldY + target.solidArea.y;
-                    int monsterBottom = monsterTop + target.solidArea.height;
+                    int monsterLeft = target.getWorldX() + target.getSolidArea().x;
+                    int monsterRight = monsterLeft + target.getSolidArea().width;
+                    int monsterTop = target.getWorldY() + target.getSolidArea().y;
+                    int monsterBottom = monsterTop + target.getSolidArea().height;
 
                     int closestX = Math.max(monsterLeft, Math.min(centerX, monsterRight));
                     int closestY = Math.max(monsterTop, Math.min(centerY, monsterBottom));
@@ -355,10 +355,10 @@ public class CombatSystem {
         }
 
         Rectangle projectileBounds = new Rectangle(
-                projectile.worldX + projectile.solidArea.x,
-                projectile.worldY + projectile.solidArea.y,
-                projectile.solidArea.width,
-                projectile.solidArea.height
+                projectile.getWorldX() + projectile.getSolidArea().x,
+                projectile.getWorldY() + projectile.getSolidArea().y,
+                projectile.getSolidArea().width,
+                projectile.getSolidArea().height
         );
 
         Monster[][] allMonstersToCheck = {
@@ -375,10 +375,10 @@ public class CombatSystem {
             for (Monster monster : monsterArray) {
                 if (monster != null && monster.getCurrentHealth() > 0) {
                     Rectangle monsterBounds = new Rectangle(
-                            monster.worldX + monster.solidArea.x,
-                            monster.worldY + monster.solidArea.y,
-                            monster.solidArea.width,
-                            monster.solidArea.height
+                            monster.getWorldX() + monster.getSolidArea().x,
+                            monster.getWorldY() + monster.getSolidArea().y,
+                            monster.getSolidArea().width,
+                            monster.getSolidArea().height
                     );
 
                     // Nếu có va chạm

@@ -94,10 +94,10 @@ public class MON_Orc extends Monster {
             speed = 0; // Orc đứng yên khi thực hiện hành động tấn công
 
             // Quay mặt về phía Player khi tấn công
-            int playerCenterX = player.worldX + player.solidArea.x + player.solidArea.width / 2;
-            int playerCenterY = player.worldY + player.solidArea.y + player.solidArea.height / 2;
-            int orcCenterX = this.worldX + this.solidArea.x + this.solidArea.width / 2;
-            int orcCenterY = this.worldY + this.solidArea.y + this.solidArea.height / 2;
+            int playerCenterX = player.getWorldX() + player.getSolidArea().x + player.getSolidArea().width / 2;
+            int playerCenterY = player.getWorldY() + player.getSolidArea().y + player.getSolidArea().height / 2;
+            int orcCenterX = this.getWorldX() + this.getSolidArea().x + this.getSolidArea().width / 2;
+            int orcCenterY = this.getWorldY() + this.getSolidArea().y + this.getSolidArea().height / 2;
 
             int dx = playerCenterX - orcCenterX;
             int dy = playerCenterY - orcCenterY;
@@ -140,10 +140,10 @@ public class MON_Orc extends Monster {
                     break;
             }
 
-            Rectangle playerBounds = new Rectangle(player.worldX + player.solidArea.x,
-                    player.worldY + player.solidArea.y,
-                    player.solidArea.width,
-                    player.solidArea.height);
+            Rectangle playerBounds = new Rectangle(player.getWorldX() + player.getSolidArea().x,
+                    player.getWorldY() + player.getSolidArea().y,
+                    player.getSolidArea().width,
+                    player.getSolidArea().height);
 
             if (orcAttackHitbox.intersects(playerBounds)) {
                 // gp.playSoundEffect(SOUND_ORC_ATTACK_HIT); // Thêm âm thanh nếu có
@@ -253,8 +253,8 @@ public class MON_Orc extends Monster {
 
         if (image != null) {
             // Vị trí trên màn hình của góc trên-trái của ô tile chuẩn mà Orc đang đứng
-            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
-            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
+            int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
+            int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
 
             // Kích thước vẽ mặc định (cho đi bộ hoặc nếu không có logic tấn công đặc biệt)
             int drawWidth = gp.getTileSize();

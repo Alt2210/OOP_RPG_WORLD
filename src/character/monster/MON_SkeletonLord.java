@@ -22,8 +22,8 @@ public class MON_SkeletonLord extends Monster {
 
     // Biến cho phase (chỉ dùng để đổi ảnh)
     private int currentPhase;
-    public static final int PHASE_ONE = 1;
-    public static final int PHASE_TWO = 2;
+    private static final int PHASE_ONE = 1;
+    private static final int PHASE_TWO = 2;
     private final int PHASE_TWO_HEALTH_THRESHOLD; // Ngưỡng máu để chuyển phase (ví dụ: 50% max health)
     private boolean phaseChanged = false; // Cờ để đảm bảo logic chuyển phase chỉ chạy một lần
 
@@ -95,10 +95,10 @@ public class MON_SkeletonLord extends Monster {
             speed = 0; // Orc đứng yên khi thực hiện hành động tấn công
 
             // Quay mặt về phía Player khi tấn công
-            int playerCenterX = player.worldX + player.solidArea.x + player.solidArea.width / 2;
-            int playerCenterY = player.worldY + player.solidArea.y + player.solidArea.height / 2;
-            int monsterCenterX = this.worldX + this.solidArea.x + this.solidArea.width / 2;
-            int monsterCenterY = this.worldY + this.solidArea.y + this.solidArea.height / 2;
+            int playerCenterX = player.getWorldX() + player.getSolidArea().x + player.getSolidArea().width / 2;
+            int playerCenterY = player.getWorldY() + player.getSolidArea().y + player.getSolidArea().height / 2;
+            int monsterCenterX = this.getWorldX() + this.getSolidArea().x + this.getSolidArea().width / 2;
+            int monsterCenterY = this.getWorldY() + this.getSolidArea().y + this.getSolidArea().height / 2;
 
             int dx = playerCenterX - monsterCenterX;
             int dy = playerCenterY - monsterCenterY;
@@ -141,10 +141,10 @@ public class MON_SkeletonLord extends Monster {
                     break;
             }
 
-            Rectangle playerBounds = new Rectangle(player.worldX + player.solidArea.x,
-                    player.worldY + player.solidArea.y,
-                    player.solidArea.width,
-                    player.solidArea.height);
+            Rectangle playerBounds = new Rectangle(player.getWorldX() + player.getSolidArea().x,
+                    player.getWorldY() + player.getSolidArea().y,
+                    player.getSolidArea().width,
+                    player.getSolidArea().height);
 
             if (monsterAttackHitbox.intersects(playerBounds)) {
                 // gp.playSoundEffect(SOUND_ORC_ATTACK_HIT); // Thêm âm thanh nếu có
@@ -283,8 +283,8 @@ public class MON_SkeletonLord extends Monster {
         BufferedImage image = cip.getCurFrame();
 
         if (image != null) {
-            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
-            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
+            int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
+            int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
 
             int originalImageWidth = image.getWidth();
             int originalImageHeight = image.getHeight();

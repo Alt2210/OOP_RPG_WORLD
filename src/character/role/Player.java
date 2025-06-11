@@ -382,7 +382,7 @@ public abstract class Player extends character.Character {
         // Kiểm tra xem vùng tương tác có chạm vào rương không
         for (worldObject.WorldObject obj : gp.getwObjects()) {
             if (obj instanceof worldObject.unpickableObject.OBJ_Chest) {
-                Rectangle objBounds = new Rectangle(obj.worldX + obj.solidArea.x, obj.worldY + obj.solidArea.y, obj.solidArea.width, obj.solidArea.height);
+                Rectangle objBounds = new Rectangle(obj.getWorldX() + obj.getSolidArea().x, obj.getWorldY() + obj.getSolidArea().y, obj.getSolidArea().width, obj.getSolidArea().height);
                 if (interactionArea.intersects(objBounds)) {
                     // Mở rương
                     gp.currentChest = (worldObject.unpickableObject.OBJ_Chest) obj;

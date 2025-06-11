@@ -26,18 +26,18 @@ public class S_Explosion extends Skill {
         Explosion_projectile explosion = new Explosion_projectile(gp, this.sip);
 
         // Tính toán vị trí xuất hiện của quả cầu lửa
-        int playerSolidCenterX = caster.worldX + caster.solidArea.x + caster.solidArea.width / 2;
-        int playerSolidCenterY = caster.worldY + caster.solidArea.y + caster.solidArea.height / 2;
+        int playerSolidCenterX = caster.getWorldX() + caster.getSolidArea().x + caster.getSolidArea().width / 2;
+        int playerSolidCenterY = caster.getWorldY() + caster.getSolidArea().y + caster.getSolidArea().height / 2;
 
-        int fireballHitboxWidth = explosion.solidArea.width;
-        int fireballHitboxHeight = explosion.solidArea.height;
+        int fireballHitboxWidth = explosion.getSolidArea().width;
+        int fireballHitboxHeight = explosion.getSolidArea().height;
         int fireballSpawnCenterX = playerSolidCenterX;
         int fireballSpawnCenterY = playerSolidCenterY;
         int gap = 2;
-        int offsetX = caster.solidArea.width / 2 + fireballHitboxWidth / 2 + gap;
-        int offsetY = caster.solidArea.height / 2 + fireballHitboxHeight / 2 + gap;
+        int offsetX = caster.getSolidArea().width / 2 + fireballHitboxWidth / 2 + gap;
+        int offsetY = caster.getSolidArea().height / 2 + fireballHitboxHeight / 2 + gap;
 
-        switch (caster.direction) {
+        switch (caster.getDirection()) {
             case "up": fireballSpawnCenterY -= offsetY; break;
             case "down": fireballSpawnCenterY += offsetY; break;
             case "left": fireballSpawnCenterX -= offsetX; break;
@@ -49,7 +49,7 @@ public class S_Explosion extends Skill {
 
 
 
-        explosion.set(fireballSpawnCenterX, fireballSpawnCenterY, caster.direction, caster, fireballDamage);
+        explosion.set(fireballSpawnCenterX, fireballSpawnCenterY, caster.getDirection(), caster, fireballDamage);
         gp.skillEffects.add(explosion);
     }
 }

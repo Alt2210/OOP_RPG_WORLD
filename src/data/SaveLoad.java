@@ -38,15 +38,15 @@ public class SaveLoad {
             data.maxMana = player.getMaxMana();
             data.currentMana = player.getCurrentMana();
             data.hasKey = player.getHasKey();
-            data.playerWorldX = player.worldX;
-            data.playerWorldY = player.worldY;
-            data.playerDirection = player.direction;
+            data.playerWorldX = player.getWorldX();
+            data.playerWorldY = player.getWorldY();
+            data.playerDirection = player.getDirection();
             data.currentMap = gp.currentMap;
 
             // 2. Lưu trạng thái của tất cả WorldObject trên map hiện tại
             for (WorldObject wObject : gp.getwObjects()) {
                 if (wObject != null) {
-                    data.objectStates[gp.currentMap].add(new WorldObjectState(wObject.name, wObject.worldX, wObject.worldY, true));
+                    data.objectStates[gp.currentMap].add(new WorldObjectState(wObject.name, wObject.getWorldX(), wObject.getWorldY(), true));
                 }
             }
 
@@ -69,31 +69,31 @@ public class SaveLoad {
         // Lưu trạng thái của Green Slimes
         for (Monster monster : gp.getMON_GreenSlime()) {
             if (monster != null) {
-                monsterStateList.add(new MonsterState(monster.getName(), monster.worldX, monster.worldY, monster.getCurrentHealth(), monster.onPath));
+                monsterStateList.add(new MonsterState(monster.getName(), monster.getWorldX(), monster.getWorldY(), monster.getCurrentHealth(), monster.isOnPath()));
             }
         }
         // Lưu trạng thái của Bats
         for (Monster monster : gp.getMON_Bat()) {
             if (monster != null) {
-                monsterStateList.add(new MonsterState(monster.getName(), monster.worldX, monster.worldY, monster.getCurrentHealth(), monster.onPath));
+                monsterStateList.add(new MonsterState(monster.getName(), monster.getWorldX(), monster.getWorldY(), monster.getCurrentHealth(), monster.isOnPath()));
             }
         }
         // Lưu trạng thái của Orcs
         for (Monster monster : gp.getMON_Orc()) {
             if (monster != null) {
-                monsterStateList.add(new MonsterState(monster.getName(), monster.worldX, monster.worldY, monster.getCurrentHealth(), monster.onPath));
+                monsterStateList.add(new MonsterState(monster.getName(), monster.getWorldX(), monster.getWorldY(), monster.getCurrentHealth(), monster.isOnPath()));
             }
         }
         // Lưu trạng thái của Skeleton Lords
         for (Monster monster : gp.getSkeletonLord()) {
             if (monster != null) {
-                monsterStateList.add(new MonsterState(monster.getName(), monster.worldX, monster.worldY, monster.getCurrentHealth(), monster.onPath));
+                monsterStateList.add(new MonsterState(monster.getName(), monster.getWorldX(), monster.getWorldY(), monster.getCurrentHealth(), monster.isOnPath()));
             }
         }
         // Lưu trạng thái của Golem Bosses
         for (Monster monster : gp.getMON_GolemBoss()) {
             if (monster != null) {
-                monsterStateList.add(new MonsterState(monster.getName(), monster.worldX, monster.worldY, monster.getCurrentHealth(), monster.onPath));
+                monsterStateList.add(new MonsterState(monster.getName(), monster.getWorldX(), monster.getWorldY(), monster.getCurrentHealth(), monster.isOnPath()));
             }
         }
     }
@@ -114,9 +114,9 @@ public class SaveLoad {
             player.setCurrentHealth(data.currentHealth);
             player.setCurrentMana(data.currentMana);
             player.setHasKey(data.hasKey);
-            player.worldX = data.playerWorldX;
-            player.worldY = data.playerWorldY;
-            player.direction = data.playerDirection;
+            player.setWorldX(data.playerWorldX);
+            player.setWorldY(data.playerWorldY);
+            player.setDirection(data.playerDirection);
             gp.currentMap = data.currentMap;
 
             // 2. Dọn dẹp thế giới cũ và tái tạo lại từ dữ liệu đã lưu
@@ -126,11 +126,11 @@ public class SaveLoad {
             if (data.objectStates[gp.currentMap] != null) {
                 for (int i = 0; i < data.objectStates[gp.currentMap].size(); i++) {
                     WorldObjectState state = data.objectStates[gp.currentMap].get(i);
-                    if (state.exists) {
-                        gp.getwObjects()[i] = createObjectFromName(state.name);
+                    if (state.isExists()) {
+                        gp.getwObjects()[i] = createObjectFromName(state.getName());
                         if (gp.getwObjects()[i] != null) {
-                            gp.getwObjects()[i].worldX = state.worldX;
-                            gp.getwObjects()[i].worldY = state.worldY;
+                            gp.getwObjects()[i].setWorldX(state.getWorldX());
+                            gp.getwObjects()[i].setWorldY(state.getWorldY());
                         }
                     }
                 }
@@ -179,9 +179,9 @@ public class SaveLoad {
 
         for(MonsterState state : monsterStateList) {
             Monster monster = null;
-            if (state.name == null) continue;
+            if (state.getName() == null) continue;
 
-            switch(state.name) {
+            switch(state.getName()) {
                 case "Green Slime":
                     if(greenSlimeIndex < gp.getMON_GreenSlime().length) {
                         monster = new MON_GreenSlime(gp);
@@ -215,10 +215,10 @@ public class SaveLoad {
             }
 
             if(monster != null) {
-                monster.worldX = state.worldX;
-                monster.worldY = state.worldY;
-                monster.setCurrentHealth(state.currentHealth);
-                monster.onPath = state.onPath;
+                monster.setWorldX(state.getWorldX());
+                monster.setWorldY(state.getWorldY());
+                monster.setCurrentHealth(state.getCurrentHealth());
+                monster.setOnPath(state.isOnPath());
             }
         }
     }

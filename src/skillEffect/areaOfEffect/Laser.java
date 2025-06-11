@@ -26,15 +26,15 @@ public class Laser extends AreaOfEffect {
         this.damage = damage;
         this.alive = true;
         this.durationCounter = 300; // 5 giây * 60 FPS
-        this.direction = caster.direction;
+        this.direction = caster.getDirection();
 
         // Tính toán vị trí và kích thước vùng laser
         int laserLength = gp.getTileSize() * 6;
         int laserWidth = gp.getTileSize() * 1;
-        int casterBodyWidth = caster.solidArea.width;
-        int casterBodyHeight = caster.solidArea.height;
-        int casterCenterX = caster.worldX + caster.solidArea.x + casterBodyWidth / 2;
-        int casterCenterY = caster.worldY + caster.solidArea.y + casterBodyHeight / 2;
+        int casterBodyWidth = caster.getSolidArea().width;
+        int casterBodyHeight = caster.getSolidArea().height;
+        int casterCenterX = caster.getWorldX() + caster.getSolidArea().x + casterBodyWidth / 2;
+        int casterCenterY = caster.getWorldY() + caster.getSolidArea().y + casterBodyHeight / 2;
         int range = gp.getTileSize() / 2; // Khoảng cách từ người cast đến laser
 
         switch (direction) {
@@ -58,7 +58,7 @@ public class Laser extends AreaOfEffect {
     private void applyAoeDamage() {
         if (gp.getCombatSystem() != null) {
             // Gọi phương thức mới trong CombatSystem để xử lý sát thương vùng hình chữ nhật
-            gp.getCombatSystem().checkAoEAttack(this.caster, this.solidArea, this.damage);
+            gp.getCombatSystem().checkAoEAttack(this.caster, this.getSolidArea(), this.damage);
         }
     }
 
@@ -91,13 +91,13 @@ public class Laser extends AreaOfEffect {
         if (!alive) return;
 
         BufferedImage curFrame = sip.getCurFrame(this.direction);
-        int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
-        int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
+        int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
+        int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
 
-        if (worldX + solidArea.width > gp.getPlayer().worldX - gp.getPlayer().getScreenX() &&
-                worldX < gp.getPlayer().worldX + gp.getPlayer().getScreenX() &&
-                worldY + solidArea.height > gp.getPlayer().worldY - gp.getPlayer().getScreenY() &&
-                worldY < gp.getPlayer().worldY + gp.getPlayer().getScreenY()) {
+        if (worldX + solidArea.width > gp.getPlayer().getWorldX() - gp.getPlayer().getScreenX() &&
+                worldX < gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX() &&
+                worldY + solidArea.height > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() &&
+                worldY < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()) {
 
             if (curFrame != null) {
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));

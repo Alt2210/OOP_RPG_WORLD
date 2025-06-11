@@ -6,12 +6,13 @@ import java.awt.*;
 
 public abstract class SkillEffect {
     protected GamePanel gp;
-    public int worldX, worldY;
+    protected int worldX, worldY;
     protected Character caster;
     protected int damage;
     public boolean alive = true;
-    public Rectangle solidArea = new Rectangle(0, 0, 0, 0);
+    protected Rectangle solidArea = new Rectangle(0, 0, 0, 0);
     protected int damageTickCounter; // Đếm ngược thời gian giữa các lần gây sát thương
+
 
     public SkillEffect(GamePanel gp) {
         this.gp = gp;
@@ -28,5 +29,25 @@ public abstract class SkillEffect {
     public int getDamageValue() { return damage; }
     public boolean isSingleHit(){
         return true;
+    }
+
+    public Rectangle getSolidArea() {
+        return solidArea;
+    }
+
+    public int getWorldX() {
+        return worldX;
+    }
+
+    public void setWorldX(int worldX) {
+        this.worldX = worldX;
+    }
+
+    public int getWorldY() {
+        return worldY;
+    }
+
+    public void setWorldY(int worldY) {
+        this.worldY = worldY;
     }
 }

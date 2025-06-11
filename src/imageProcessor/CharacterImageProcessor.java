@@ -84,14 +84,14 @@ public class CharacterImageProcessor extends ImageProcessor {
             characterIdentifier = character.getName().toLowerCase();
         }
 
-        String currentDirection = (character != null) ? character.direction : "down";
+        String currentDirection = (character != null) ? character.getDirection() : "down";
         boolean currentIsAttacking = (character != null) && character.isAttacking();
 
         if (character instanceof MON_GolemBoss) {
             MON_GolemBoss golemBoss = (MON_GolemBoss) character;
             if (golemBoss.isChargingLaser()) {
-                if (golemBoss.direction.equals("right") && chargeRight.size() > 0) listToUse = chargeRight;
-                else if (golemBoss.direction.equals("left") && chargeLeft.size() > 0) listToUse = chargeLeft;
+                if (golemBoss.getDirection().equals("right") && chargeRight.size() > 0) listToUse = chargeRight;
+                else if (golemBoss.getDirection().equals("left") && chargeLeft.size() > 0) listToUse = chargeLeft;
                 else listToUse = (chargeRight.size() > 0) ? chargeRight : chargeLeft;
             } else if (golemBoss.isChargingArmShot()) {
                 return getArmShotFrame();
@@ -365,7 +365,7 @@ public class CharacterImageProcessor extends ImageProcessor {
         armShotSpriteCounter++;
         if (armShotSpriteCounter >= ARM_SHOT_FRAMES_PER_ANIMATION) {
             armShotSpriteNum++;
-            int listSize = (character.direction.equals("right")) ? armShotRight.size() : armShotLeft.size();
+            int listSize = (character.getDirection().equals("right")) ? armShotRight.size() : armShotLeft.size();
             if (listSize > 0 && armShotSpriteNum >= listSize) {
                 armShotSpriteNum = 0;
             } else if (listSize == 0) {
@@ -374,9 +374,9 @@ public class CharacterImageProcessor extends ImageProcessor {
             armShotSpriteCounter = 0;
         }
 
-        if (character.direction.equals("right") && armShotRight.size() > armShotSpriteNum) {
+        if (character.getDirection().equals("right") && armShotRight.size() > armShotSpriteNum) {
             return armShotRight.get(armShotSpriteNum);
-        } else if (character.direction.equals("left") && armShotLeft.size() > armShotSpriteNum) {
+        } else if (character.getDirection().equals("left") && armShotLeft.size() > armShotSpriteNum) {
             return armShotLeft.get(armShotSpriteNum);
         } else if (armShotRight.size() > armShotSpriteNum) {
             return armShotRight.get(armShotSpriteNum);

@@ -52,10 +52,10 @@ public class MON_GreenSlime extends Monster {
     private String getDirectionToTarget(Character target) {
         if (target == null) return this.direction; // Giữ hướng cũ nếu không có mục tiêu
 
-        int targetCenterX = target.worldX + target.solidArea.x + target.solidArea.width / 2;
-        int targetCenterY = target.worldY + target.solidArea.y + target.solidArea.height / 2;
-        int selfCenterX = this.worldX + this.solidArea.x + this.solidArea.width / 2;
-        int selfCenterY = this.worldY + this.solidArea.y + this.solidArea.height / 2;
+        int targetCenterX = target.getWorldX() + target.getSolidArea().x + target.getSolidArea().width / 2;
+        int targetCenterY = target.getWorldY() + target.getSolidArea().y + target.getSolidArea().height / 2;
+        int selfCenterX = this.getWorldX() + this.getSolidArea().x + this.getSolidArea().width / 2;
+        int selfCenterY = this.getWorldY() + this.getSolidArea().y + this.getSolidArea().height / 2;
 
         int dx = targetCenterX - selfCenterX;
         int dy = targetCenterY - selfCenterY;
@@ -84,8 +84,8 @@ public class MON_GreenSlime extends Monster {
             int projectileDamage = this.attack; // Sát thương của slimeball, có thể điều chỉnh (vd: this.attack / 2)
 
             // Điểm bắt đầu của skillEffect.projectile (ví dụ: từ giữa Slime)
-            int spawnX = this.worldX + this.solidArea.x + this.solidArea.width / 2;
-            int spawnY = this.worldY + this.solidArea.y + this.solidArea.height / 2;
+            int spawnX = this.getWorldX() + this.getSolidArea().x + this.getSolidArea().width / 2;
+            int spawnY = this.getWorldY() + this.getSolidArea().y + this.getSolidArea().height / 2;
 
             // Dịch chuyển điểm spawn ra ngoài solidArea của Slime một chút theo hướng bắn
             int offsetDistance = gp.getTileSize() / 2;
@@ -112,14 +112,14 @@ public class MON_GreenSlime extends Monster {
         BufferedImage image = cip.getCurFrame(); // Lấy frame hiện tại từ lớp Character
         if (image != null) {
             // Tính toán vị trí vẽ trên màn hình tương tự như cách vẽ Tile hoặc SuperItem
-            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
-            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
+            int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
+            int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
 
             // Chỉ vẽ NPC nếu nó nằm trong tầm nhìn của camera
-            if (worldX + gp.getTileSize() > gp.getPlayer().worldX - gp.getPlayer().getScreenX() &&
-                    worldX - gp.getTileSize() < gp.getPlayer().worldX + gp.getPlayer().getScreenX() &&
-                    worldY + gp.getTileSize() > gp.getPlayer().worldY - gp.getPlayer().getScreenY() &&
-                    worldY - gp.getTileSize() < gp.getPlayer().worldY + gp.getPlayer().getScreenY()) {
+            if (worldX + gp.getTileSize() > gp.getPlayer().getWorldX() - gp.getPlayer().getScreenX() &&
+                    worldX - gp.getTileSize() < gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX() &&
+                    worldY + gp.getTileSize() > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() &&
+                    worldY - gp.getTileSize() < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()) {
                 g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
             }
 
@@ -142,8 +142,8 @@ public class MON_GreenSlime extends Monster {
 
             // Vị trí của Player (tính theo ô tile, dựa vào tâm solidArea)
             Player player = gp.getPlayer(); // Lấy đối tượng Player một lần
-            int playerCenterX = player.worldX + player.solidArea.x + player.solidArea.width / 2;
-            int playerCenterY = player.worldY + player.solidArea.y + player.solidArea.height / 2;
+            int playerCenterX = player.getWorldX() + player.getSolidArea().x + player.getSolidArea().width / 2;
+            int playerCenterY = player.getWorldY() + player.getSolidArea().y + player.getSolidArea().height / 2;
             int goalCol = playerCenterX / gp.getTileSize();
             int goalRow = playerCenterY / gp.getTileSize();
 

@@ -115,8 +115,8 @@ public class MON_GolemBoss extends Monster {
                 onPath = false;
                 return;
             }
-            int playerCenterX = player.worldX + player.solidArea.x + player.solidArea.width / 2;
-            int playerCenterY = player.worldY + player.solidArea.y + player.solidArea.height / 2;
+            int playerCenterX = player.getWorldX() + player.getSolidArea().x + player.getSolidArea().width / 2;
+            int playerCenterY = player.getWorldY() + player.getSolidArea().y + player.getSolidArea().height / 2;
             int goalCol = playerCenterX / gp.getTileSize();
             int goalRow = playerCenterY / gp.getTileSize();
 
@@ -210,10 +210,10 @@ public class MON_GolemBoss extends Monster {
                 Player player = gp.getPlayer();
                 if (player != null && player.getCurrentHealth() > 0) {
                     Rectangle playerBounds = new Rectangle(
-                            player.worldX + player.solidArea.x,
-                            player.worldY + player.solidArea.y,
-                            player.solidArea.width,
-                            player.solidArea.height
+                            player.getWorldX() + player.getSolidArea().x,
+                            player.getWorldY() + player.getSolidArea().y,
+                            player.getSolidArea().width,
+                            player.getSolidArea().height
                     );
                     if (laserHitbox.intersects(playerBounds)) {
                         player.receiveDamage(attack, this);
@@ -322,8 +322,8 @@ public class MON_GolemBoss extends Monster {
                 System.err.println("No sprite for MON_GolemBoss at (" + worldX + ", " + worldY + ")");
                 return;
             }
-            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
-            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
+            int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
+            int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
 
             // Lấy kích thước thực tế của hoạt ảnh
             int originalWidth = image.getWidth();
@@ -335,10 +335,10 @@ public class MON_GolemBoss extends Monster {
             int offsetX = (gp.getTileSize() * BOSS_SIZE_MULTIPLIER - scaledWidth) / 2;
             int offsetY = (gp.getTileSize() * BOSS_SIZE_MULTIPLIER - scaledHeight) / 2;
 
-            if (worldX + (gp.getTileSize() * BOSS_SIZE_MULTIPLIER) > gp.getPlayer().worldX - gp.getPlayer().getScreenX() &&
-                    worldX - (gp.getTileSize() * BOSS_SIZE_MULTIPLIER) < gp.getPlayer().worldX + gp.getPlayer().getScreenX() &&
-                    worldY + (gp.getTileSize() * BOSS_SIZE_MULTIPLIER) > gp.getPlayer().worldY - gp.getPlayer().getScreenY() &&
-                    worldY - (gp.getTileSize() * BOSS_SIZE_MULTIPLIER) < gp.getPlayer().worldY + gp.getPlayer().getScreenY()) {
+            if (worldX + (gp.getTileSize() * BOSS_SIZE_MULTIPLIER) > gp.getPlayer().getWorldX() - gp.getPlayer().getScreenX() &&
+                    worldX - (gp.getTileSize() * BOSS_SIZE_MULTIPLIER) < gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX() &&
+                    worldY + (gp.getTileSize() * BOSS_SIZE_MULTIPLIER) > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() &&
+                    worldY - (gp.getTileSize() * BOSS_SIZE_MULTIPLIER) < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()) {
                 g2.drawImage(image, screenX + offsetX, screenY + offsetY, scaledWidth, scaledHeight, null);
                 drawHealthBar(g2, screenX, screenY);
 
@@ -347,8 +347,8 @@ public class MON_GolemBoss extends Monster {
                     if (laserFrame != null) {
                         int laserImageWidth = 26 * 4;
                         int laserImageHeight = 261 * 4;
-                        int drawX = (int) (laserHitbox.x - gp.getPlayer().worldX + gp.getPlayer().getScreenX());
-                        int drawY = (int) (laserHitbox.y - gp.getPlayer().worldY + gp.getPlayer().getScreenY());
+                        int drawX = (int) (laserHitbox.x - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX());
+                        int drawY = (int) (laserHitbox.y - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY());
                         switch (direction) {
                             case "up":
                                 drawX += (laserHitbox.width - laserImageWidth) / 2;
@@ -373,8 +373,8 @@ public class MON_GolemBoss extends Monster {
 
                     g2.setColor(Color.RED);
                     g2.drawRect(
-                            (int) (laserHitbox.x - gp.getPlayer().worldX + gp.getPlayer().getScreenX()),
-                            (int) (laserHitbox.y - gp.getPlayer().worldY + gp.getPlayer().getScreenY()),
+                            (int) (laserHitbox.x - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX()),
+                            (int) (laserHitbox.y - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()),
                             laserHitbox.width,
                             laserHitbox.height
                     );

@@ -21,7 +21,7 @@ public class S_Laser extends Skill {
     @Override
     public void activate(Character caster, GamePanel gp) {
         // Khóa hành động của caster trong 30 frame (0.5 giây) để thực hiện animation "thi triển"
-        caster.actionLockCounter = 300;
+        caster.setActionLockCounter(300);
 
         gp.getUi().showMessage(caster.getName() + " triển khai Static Laser!");
         // gp.playSoundEffect(...); // Thêm âm thanh nếu có
@@ -33,7 +33,7 @@ public class S_Laser extends Skill {
         int damage = caster.getAttack()*2;
 
         // Thiết lập các thông số cho laser
-        laserEffect.set(caster.worldX, caster.worldY, caster, damage);
+        laserEffect.set(caster.getWorldX(), caster.getWorldY(), caster, damage);
 
         // Thêm hiệu ứng vào danh sách quản lý của game để nó được update và vẽ
         gp.skillEffects.add(laserEffect);

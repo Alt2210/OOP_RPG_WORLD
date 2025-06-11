@@ -231,8 +231,8 @@ public class TileManager {
 
             int worldX = worldCol * gp.getTileSize();
             int worldY = worldRow * gp.getTileSize();
-            int screenX = worldX - gp.getPlayer().worldX + gp.getPlayer().getScreenX();
-            int screenY = worldY - gp.getPlayer().worldY + gp.getPlayer().getScreenY();
+            int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
+            int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
 
             if (screenX > -gp.getTileSize() && screenX < gp.getScreenWidth() &&
                     screenY > -gp.getTileSize() && screenY < gp.getScreenHeight()) {

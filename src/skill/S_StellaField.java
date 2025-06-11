@@ -29,8 +29,8 @@ public class S_StellaField extends Skill {
 
         // 3. Xác định vị trí và sát thương
         // Kỹ năng xuất hiện ngay tại tâm của người chơi
-        int casterCenterX = caster.worldX + caster.solidArea.x + caster.solidArea.width / 2;
-        int casterCenterY = caster.worldY + caster.solidArea.y + caster.solidArea.height / 2;
+        int casterCenterX = caster.getWorldX() + caster.getSolidArea().x + caster.getSolidArea().width / 2;
+        int casterCenterY = caster.getWorldY() + caster.getSolidArea().y + caster.getSolidArea().height / 2;
 
         // Sát thương có thể dựa trên chỉ số của người chơi, ví dụ: một nửa chỉ số tấn công
         int damagePerTick = caster.getAttack() / 2;
