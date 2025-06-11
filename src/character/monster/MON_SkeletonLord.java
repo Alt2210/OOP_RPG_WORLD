@@ -82,7 +82,7 @@ public class MON_SkeletonLord extends Monster {
     }
 
     // Sao chép logic tấn công từ MON_Orc.attemptToAttackPlayer
-    private void attemptToAttackPlayer(Player player) {
+    private void slashAttack(Player player) {
         attackCheckCounter++;
         if (attackCheckCounter < ATTACK_CHECK_INTERVAL) {
             return; // Chưa đến lúc kiểm tra tấn công
@@ -182,7 +182,7 @@ public class MON_SkeletonLord extends Monster {
             speed = defaultSpeed; // Luôn đảm bảo tốc độ mặc định khi không tấn công
             Player player = gp.getPlayer();
             if (player != null && player.getCurrentHealth() > 0) {
-                attemptToAttackPlayer(player); // Sử dụng phương thức giống Orc
+                slashAttack(player); // Sử dụng phương thức giống Orc
             }
             if(!attacking) {
                 playerChasing(); // Sử dụng phương thức giống Orc

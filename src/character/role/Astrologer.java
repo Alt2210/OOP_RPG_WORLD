@@ -40,7 +40,7 @@ public class Astrologer extends Player {
         hasKey = 0;
         maxHealth = 80;
         currentHealth = maxHealth;
-        attack = 15;
+        attack = 40;
         defense = 1;
         attackRange = gp.getTileSize() * 3;
         maxMana = 150;

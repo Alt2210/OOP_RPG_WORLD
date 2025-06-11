@@ -13,11 +13,16 @@ public class GolemArmProjectile extends Projectile {
 
     public GolemArmProjectile(GamePanel gp) {
         super(gp);
-        tileSize = gp.getTileSize();
-        speed = 8; // Tốc độ di chuyển
-        maxRange = tileSize * 10; // Tầm xa tối đa: 10 ô
-        solidArea = new Rectangle(0, 0, 35, 14); // Kích thước vùng va chạm: 35x14 pixel
         loadImage();
+        speed = 8; // Tốc độ di chuyển
+        if (gp != null) {
+            // Kích thước vùng va chạm của Slimeball
+            solidArea.width = (int) (gp.getTileSize() * 0.8);
+            solidArea.height = (int) (gp.getTileSize() * 0.8);
+        } else {
+            solidArea.width = 30; // Giá trị mặc định
+            solidArea.height = 30;
+        }
     }
 
     private void loadImage() {
@@ -83,6 +88,8 @@ public class GolemArmProjectile extends Projectile {
         this.direction = direction;
         this.caster = caster;
         this.damage = damage;
+        this.speed = 8; // Tốc độ của Slimeball (có thể chậm hơn Fireball)
+        this.maxRange = 10 * gp.getTileSize(); // Tầm bắn (ví dụ: 6 ô)
         this.alive = true;
         this.distanceTraveled = 0;
     }
@@ -113,7 +120,7 @@ public class GolemArmProjectile extends Projectile {
             return;
         }
 
-        // Va chạm với Player sẽ được CombatSystem xử lý
+
     }
 
     @Override
@@ -142,8 +149,8 @@ public class GolemArmProjectile extends Projectile {
                 worldY + solidArea.height > gp.getPlayer().worldY - gp.getPlayer().screenY &&
                 worldY - solidArea.height < gp.getPlayer().worldY + gp.getPlayer().screenY) {
             // Vẽ hình ảnh với kích thước gốc 35x14 pixel
-            int drawWidth = 35 * 3;
-            int drawHeight = 14 * 3;
+            int drawWidth = 20 * 3;
+            int drawHeight = 20 * 3;
             int offsetX = (solidArea.width - drawWidth) / 2; // Căn giữa trong solidArea (35-35=0)
             int offsetY = (solidArea.height - drawHeight) / 2; // Căn giữa trong solidArea (14-14=0)
             g2.drawImage(image, screenX + offsetX, screenY + offsetY, drawWidth, drawHeight, null);

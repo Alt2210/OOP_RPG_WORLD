@@ -54,7 +54,7 @@ public class MON_GolemBoss extends Monster {
         setName("GolemBoss");
         defaultSpeed = 1;
         speed = defaultSpeed;
-        maxHealth = 200;
+        maxHealth = 500;
         currentHealth = maxHealth;
         attack = 8;
         defense = 2;
@@ -229,23 +229,28 @@ public class MON_GolemBoss extends Monster {
             direction = getDirectionToTarget(gp.getPlayer());
             System.out.println("GolemBoss started charging arm shot, direction: " + direction);
         }
-
         if (isChargingArmShot) {
             armShotCounter++;
             if (armShotCounter >= ARM_SHOT_CHARGE_DURATION) {
                 isChargingArmShot = false;
                 isFiringArmShot = true;
                 armShotCounter = 0;
-
-                // Tạo skillEffect.projectile cánh tay với hướng tương ứng
                 armProjectile = new GolemArmProjectile(gp);
                 int startX = worldX + solidArea.x + solidArea.width / 2;
                 int startY = worldY + solidArea.y + solidArea.height / 2;
+                // Thêm offset
+                int offsetDistance = gp.getTileSize() / 2; // ~24 pixel
+                switch (direction) {
+                    case "up": startY -= offsetDistance; break;
+                    case "down": startY += offsetDistance; break;
+                    case "left": startX -= offsetDistance; break;
+                    case "right": startX += offsetDistance; break;
+                }
                 armProjectile.set(startX, startY, direction, this, attack);
-                System.out.println("GolemBoss fired arm skillEffect.projectile in direction: " + direction);
+                gp.skillEffects.add(armProjectile); // Thêm vào skillEffects
+                System.out.println("GolemBoss fired arm projectile at (" + startX + ", " + startY + "), direction: " + direction);
             }
         }
-
         if (isFiringArmShot) {
             armShotCounter++;
             if (armShotCounter >= ARM_SHOT_FIRE_DURATION) {
@@ -253,11 +258,10 @@ public class MON_GolemBoss extends Monster {
                 System.out.println("GolemBoss finished arm shot attack");
             }
         }
-
-        // Cập nhật skillEffect.projectile nếu đang tồn tại
-        if (armProjectile != null && armProjectile.isAlive()) {
-            armProjectile.update();
-        }
+        // Không cần tự cập nhật armProjectile vì GamePanel sẽ xử lý
+        // if (armProjectile != null && armProjectile.isAlive()) {
+        //     armProjectile.update();
+        // }
     }
 
     @Override

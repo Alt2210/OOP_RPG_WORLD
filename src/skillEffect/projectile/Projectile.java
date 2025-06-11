@@ -73,6 +73,7 @@ public abstract class Projectile extends SkillEffect {
         return false;
     }
 
+    @Override
     public boolean isSingleHit() {
         return true;
     }

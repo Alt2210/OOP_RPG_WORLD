@@ -26,12 +26,12 @@ public class Soldier extends Player {
     public void setDefaultValues() {
         worldX = gp.getTileSize() * 10;
         worldY = gp.getTileSize() * 20;
-        speed = 13;
+        speed = 8;
         direction = "down";
         hasKey = 0;
         maxHealth = 120;
         currentHealth = maxHealth;
-        attack = 10;
+        attack = 40;
         defense = 3;
         attackRange = gp.getTileSize();
         maxMana = 50;
@@ -46,7 +46,7 @@ public class Soldier extends Player {
         addSkill(new S_Fireball(this, gp));
 
         currentWeapon = null;
-        baseAttack = 10;
+        baseAttack = attack;
     }
 
     @Override
