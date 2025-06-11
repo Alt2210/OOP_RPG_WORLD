@@ -154,6 +154,8 @@ public class UI {
         } else if (gp.gameState == gp.chestState) { // THÊM KHỐI LỆNH NÀY
             drawChestScreen(g2);
         }
+
+        drawMessage(g2);
     }
 
     public void drawCharacterSelectScreen(Graphics2D g2) {
@@ -324,7 +326,9 @@ public class UI {
             int textY = mpBarY + fm.getAscent() - (fm.getHeight() - barHeight) / 2 + 1;
             drawTextWithShadow(g2, mpText, textX, textY, Color.WHITE, menuTextShadowColor, 1);
         }
+    }
 
+    public void drawMessage(Graphics2D g2) {
         if (messageOn) {
             int messageBoxWidth = gp.getScreenWidth() - gp.getTileSize() * 6;
             int messageBoxHeight = gp.getTileSize() * 2;
@@ -814,6 +818,8 @@ public class UI {
                     g2.drawString(line, textX, textY);
                     textY += 24;
                 }
+                String msg_quantity = "Quantity: " + selectedStack.getQuantity();
+                g2.drawString(msg_quantity, textX, textY);
             }
         }
     }

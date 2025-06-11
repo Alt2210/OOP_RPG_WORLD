@@ -2,6 +2,10 @@ package main;
 import character.*;
 import character.Character;
 import character.monster.*;
+import item.itemConsumable.Item_HealthPotion;
+import item.itemConsumable.Item_ManaPotion;
+import item.itemEquippable.Item_Book;
+import item.itemEquippable.Item_Sword;
 import worldObject.pickableObject.*;
 import worldObject.unpickableObject.*;
 
@@ -69,14 +73,6 @@ public class AssetSetter {
         gp.getwObjects()[0].worldX = 20 * gp.getTileSize();
         gp.getwObjects()[0].worldY = 20 * gp.getTileSize();
 
-        gp.getwObjects()[3] = new OBJ_ManaPotion(gp);
-        gp.getwObjects()[3].worldX = 19 * gp.getTileSize();
-        gp.getwObjects()[3].worldY = 20 * gp.getTileSize();
-
-        gp.getwObjects()[4] = new OBJ_HealthPotion(gp);
-        gp.getwObjects()[4].worldX = 17 * gp.getTileSize();
-        gp.getwObjects()[4].worldY = 20 * gp.getTileSize();
-
         gp.getwObjects()[1] = new OBJ_Door();
         gp.getwObjects()[1].worldX = 22 * gp.getTileSize();
         gp.getwObjects()[1].worldY = 20 * gp.getTileSize();
@@ -86,17 +82,15 @@ public class AssetSetter {
         gp.getwObjects()[2].worldX = 67 * gp.getTileSize(); // Vị trí portal trên map 0
         gp.getwObjects()[2].worldY = 40 * gp.getTileSize(); // Vị trí portal trên map 0
 
-        gp.getwObjects()[5] = new OBJ_Sword(gp);
-        gp.getwObjects()[5].worldX = 21 * gp.getTileSize();
-        gp.getwObjects()[5].worldY = 21 * gp.getTileSize();
+        OBJ_Chest chest = new OBJ_Chest(gp);
+        chest.getInventory().addItem(new Item_Sword(gp), 1);
+        chest.getInventory().addItem(new Item_Book(gp), 1);
+        chest.getInventory().addItem(new Item_HealthPotion(gp), 3);
+        chest.getInventory().addItem(new Item_ManaPotion(gp), 3);
 
-        gp.getwObjects()[6] = new OBJ_Book(gp);
-        gp.getwObjects()[6].worldX = 22 * gp.getTileSize();
-        gp.getwObjects()[6].worldY = 22 * gp.getTileSize();
-
-        gp.getwObjects()[7] = new OBJ_Chest(gp);
-        gp.getwObjects()[7].worldX = 12 * gp.getTileSize();
-        gp.getwObjects()[7].worldY = 91 * gp.getTileSize();
+        gp.getwObjects()[3] = chest;
+        gp.getwObjects()[3].worldX = 12 * gp.getTileSize();
+        gp.getwObjects()[3].worldY = 91 * gp.getTileSize();
 
         System.out.println("Map 0 Objects Set. Portal to map 1 at (67,40) leading to (10,12) on map 1.");
     }

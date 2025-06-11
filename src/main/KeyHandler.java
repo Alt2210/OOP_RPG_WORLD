@@ -258,6 +258,7 @@ public class KeyHandler implements KeyListener {
                     gp.getUi().setSlotCol(gp.getUi().getSlotCol() - 1);
                 } else {
                     // Chuyển sang bảng Player
+                    gp.getUi().setSlotCol(4);
                     gp.getUi().commandNum = playerPanel;
                 }
             }
@@ -272,6 +273,7 @@ public class KeyHandler implements KeyListener {
                     if(gp.getUi().getSlotRow() >= 2){
                         gp.getUi().setSlotRow(1);
                     }
+                    gp.getUi().setSlotCol(0);
                     gp.getUi().commandNum = chestPanel;
                 }
             } else if (gp.getUi().commandNum == chestPanel) { // Đang ở bảng Rương
@@ -297,7 +299,6 @@ public class KeyHandler implements KeyListener {
         if (gp.getUi().commandNum == 0) { // Từ Player -> Rương
             ItemStack stackToMove = playerInv.getItemStack(slotIndex);
             if (stackToMove != null) {
-                // Nếu là vũ khí đang trang bị, không cho chuyển
                 if (stackToMove.getItem() == gp.getPlayer().getCurrentWeapon()) {
                     gp.getUi().showMessage("Unequip the weapon first!");
                     return;
