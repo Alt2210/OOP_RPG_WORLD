@@ -2,6 +2,7 @@ package main;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import character.role.*;
 
 public class KeyHandler implements KeyListener {
     GamePanel gp;
@@ -67,9 +68,9 @@ public class KeyHandler implements KeyListener {
             } else if (code == KeyEvent.VK_ENTER) {
                 // Tạo Player dựa trên lựa chọn
                 if (gp.getUi().commandNum == 0) {
-                    gp.setPlayer(new character.role.Soldier(gp, this));
+                    gp.setPlayer(new Soldier(gp, this));
                 } else if (gp.getUi().commandNum == 1) {
-                    gp.setPlayer(new character.role.Astrologer(gp, this));
+                    gp.setPlayer(new Astrologer(gp, this));
                 }
                 // Sau khi Player được tạo, tiến hành setup và bắt đầu game
                 gp.setupGame();
@@ -137,16 +138,24 @@ public class KeyHandler implements KeyListener {
                 gp.gameState = gp.playState;
             }
             if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-                gp.getUi().slotRow--;
+                if(gp.getUi().slotRow > 0){
+                    gp.getUi().slotRow--;
+                }
             }
             if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-                gp.getUi().slotRow++;
+                if(gp.getUi().slotRow < 3){
+                    gp.getUi().slotRow++;
+                }
             }
             if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
-                gp.getUi().slotCol--;
+                if(gp.getUi().slotCol > 0){
+                    gp.getUi().slotCol--;
+                }
             }
             if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-                gp.getUi().slotCol++;
+                if(gp.getUi().slotCol < 4){
+                    gp.getUi().slotCol++;
+                }
             }
         }
     }
