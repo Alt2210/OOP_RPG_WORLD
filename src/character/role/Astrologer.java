@@ -33,8 +33,7 @@ public class Astrologer extends Player {
     @Override
     public void setDefaultValues() {
         // Đặt các chỉ số riêng của Astrologer
-        worldX = gp.getTileSize() * 10;
-        worldY = gp.getTileSize() * 20;
+        setInitLocation();
         speed = 10;
         direction = "down";
         hasKey = 0;

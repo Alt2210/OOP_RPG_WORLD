@@ -119,7 +119,10 @@ public abstract class Player extends character.Character {
                     performNormalAttackAction();
                 }
 
-
+                if (keyH.fPressed) {
+                    interactWithObject();
+                    keyH.fPressed = false; // Xử lý một lần nhấn để tránh mở/đóng liên tục
+                }
                 // --- 2b. Xử lý Input cho Di chuyển ---
                 boolean isTryingToMove = (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed);
                 if (isTryingToMove) {
@@ -302,5 +305,41 @@ public abstract class Player extends character.Character {
         this.level = 1;
         this.currentExp = 0;
         this.expToNextLevel = 10;
+    }
+
+    protected void setInitLocation(){
+        worldX = gp.getTileSize() * 10;
+        worldY = gp.getTileSize() * 20;
+    }
+
+    public void interactWithObject() {
+        // Xác định vùng tương tác phía trước người chơi
+        Rectangle interactionArea = new Rectangle(worldX, worldY, solidArea.width, solidArea.height);
+        int interactionDistance = gp.getTileSize() / 2; // Tăng khoảng cách tương tác một chút
+
+        switch(direction) {
+            case "up": interactionArea.y -= interactionDistance; break;
+            case "down": interactionArea.y += interactionDistance; break;
+            case "left": interactionArea.x -= interactionDistance; break;
+            case "right": interactionArea.x += interactionDistance; break;
+        }
+
+        // Kiểm tra xem vùng tương tác có chạm vào rương không
+        for (worldObject.WorldObject obj : gp.getwObjects()) {
+            if (obj instanceof worldObject.unpickableObject.OBJ_Chest) {
+                Rectangle objBounds = new Rectangle(obj.worldX + obj.solidArea.x, obj.worldY + obj.solidArea.y, obj.solidArea.width, obj.solidArea.height);
+                if (interactionArea.intersects(objBounds)) {
+                    // Mở rương
+                    gp.currentChest = (worldObject.unpickableObject.OBJ_Chest) obj;
+                    gp.gameState = gp.chestState;
+                    // Reset vị trí con trỏ trong UI
+                    gp.getUi().setSlotCol(0);
+                    gp.getUi().setSlotRow(0);
+                    gp.getUi().setCommandNum(0); // Bắt đầu ở bảng đồ của Player
+                    // gp.playSoundEffect(...); // Âm thanh mở rương
+                    break; // Dừng lại sau khi tìm thấy rương
+                }
+            }
+        }
     }
 }

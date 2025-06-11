@@ -10,6 +10,7 @@ import tile.TileManager;
 import worldObject.WorldObject;
 import dialogue.DialogueManager;
 import sound.Sound;
+import worldObject.unpickableObject.OBJ_Chest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,6 +58,7 @@ public class GamePanel extends JPanel implements Runnable {
     public MON_Orc[] orc = new MON_Orc[10];
     public MON_SkeletonLord[] skeletonLord = new MON_SkeletonLord[10];
     public List<SkillEffect> skillEffects = new ArrayList<>();
+    public OBJ_Chest currentChest = null;
 
 
     // GAME STATE
@@ -68,9 +70,9 @@ public class GamePanel extends JPanel implements Runnable {
     public final int victoryEndState = 4;
     public final int gameOverState = 5;
     public final int characterSelectState = 6;
-
     public final int PlayerState = 6;
     public final int InventoryState = 7;
+    public final int chestState = 8;
 
 
     public int getOriginalTileSize() {

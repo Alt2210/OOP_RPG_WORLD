@@ -24,8 +24,7 @@ public class Soldier extends Player {
 
     @Override
     public void setDefaultValues() {
-        worldX = gp.getTileSize() * 10;
-        worldY = gp.getTileSize() * 20;
+        setInitLocation();
         speed = 8;
         direction = "down";
         hasKey = 0;

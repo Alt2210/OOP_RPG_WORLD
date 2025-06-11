@@ -161,7 +161,7 @@ public class SaveLoad {
             case "Door":
                 return new OBJ_Door();
             case "Chest":
-                return new OBJ_Chest();
+                return new OBJ_Chest(gp);
             case "Health Potion":
                 return new OBJ_HealthPotion(gp);
             // Thêm các case cho portal và các vật phẩm khác nếu cần

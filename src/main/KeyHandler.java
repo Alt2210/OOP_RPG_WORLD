@@ -3,6 +3,7 @@ package main;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import character.role.*;
+import item.Inventory;
 import item.ItemStack;
 
 public class KeyHandler implements KeyListener {
@@ -11,6 +12,7 @@ public class KeyHandler implements KeyListener {
     public boolean attackPressed; // Biến theo dõi phím tấn công
     public boolean skill1Pressed; // Biến theo dõi phím kỹ năng 1
     public boolean skill2Pressed;
+    public boolean fPressed;
 
     public KeyHandler(GamePanel gp) {
         this.gp = gp;
@@ -56,6 +58,8 @@ public class KeyHandler implements KeyListener {
                     System.exit(0);
                 }
             }
+        } else if (gp.gameState == gp.chestState) {
+            handleChestStateKeys(code);
         } else if (gp.gameState == gp.characterSelectState) { // NEW: Thêm logic cho màn hình chọn nhân vật
             if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
                 gp.getUi().commandNum++;
@@ -93,6 +97,9 @@ public class KeyHandler implements KeyListener {
             }
             if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
                 rightPressed = true;
+            }
+            if (code == KeyEvent.VK_F) {
+                fPressed = true;
             }
             if (code == KeyEvent.VK_P) {
                 gp.gameState = gp.pauseState;
@@ -206,10 +213,122 @@ public class KeyHandler implements KeyListener {
         }
     }
 
+    private void handleChestStateKeys(int code) {
+        if (code == KeyEvent.VK_ESCAPE || code == KeyEvent.VK_C) {
+            gp.gameState = gp.playState;
+            gp.currentChest = null; // Đóng rương
+        }
+
+        int playerPanel = 0;
+        int chestPanel = 1;
+
+        // Di chuyển lên/xuống
+        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+            if(gp.getUi().commandNum == playerPanel){
+                if (gp.getUi().getSlotRow() > 0) {
+                    gp.getUi().setSlotRow(gp.getUi().getSlotRow() - 1);
+                }
+            } else {
+                if (gp.getUi().getSlotRow() > 0) {
+                    gp.getUi().setSlotRow(gp.getUi().getSlotRow() - 1);
+                }
+            }
+        }
+        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+
+            if(gp.getUi().commandNum == playerPanel){
+                if (gp.getUi().getSlotRow() < 3) {
+                    gp.getUi().setSlotRow(gp.getUi().getSlotRow() + 1);
+                }
+            } else {
+                if (gp.getUi().getSlotRow() < 1) {
+                    gp.getUi().setSlotRow(gp.getUi().getSlotRow() + 1);
+                }
+            }
+        }
+
+        // Di chuyển trái/phải và chuyển giữa các bảng đồ
+        if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+            if (gp.getUi().commandNum == playerPanel) { // Đang ở bảng Player
+                if (gp.getUi().getSlotCol() > 0) {
+                    gp.getUi().setSlotCol(gp.getUi().getSlotCol() - 1);
+                }
+            } else if (gp.getUi().commandNum == chestPanel) { // Đang ở bảng Rương
+                if (gp.getUi().getSlotCol() > 0) {
+                    gp.getUi().setSlotCol(gp.getUi().getSlotCol() - 1);
+                } else {
+                    // Chuyển sang bảng Player
+                    gp.getUi().commandNum = playerPanel;
+                }
+            }
+        }
+        if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+            if (gp.getUi().commandNum == playerPanel) { // Đang ở bảng Player
+                // Giả sử kho đồ có 5 cột
+                if (gp.getUi().getSlotCol() < 4) {
+                    gp.getUi().setSlotCol(gp.getUi().getSlotCol() + 1);
+                } else {
+                    // Chuyển sang bảng Rương
+                    if(gp.getUi().getSlotRow() >= 2){
+                        gp.getUi().setSlotRow(1);
+                    }
+                    gp.getUi().commandNum = chestPanel;
+                }
+            } else if (gp.getUi().commandNum == chestPanel) { // Đang ở bảng Rương
+                if (gp.getUi().getSlotCol() < 4) {
+                    gp.getUi().setSlotCol(gp.getUi().getSlotCol() + 1);
+                }
+            }
+        }
+
+        // Xử lý chuyển vật phẩm
+        if (code == KeyEvent.VK_ENTER) {
+            transferItem();
+        }
+    }
+
+    private void transferItem() {
+        if (gp.currentChest == null) return;
+
+        int slotIndex = gp.getUi().getItemIndexOnSlot();
+        Inventory playerInv = gp.getPlayer().getInventory();
+        Inventory chestInv = gp.currentChest.getInventory();
+
+        if (gp.getUi().commandNum == 0) { // Từ Player -> Rương
+            ItemStack stackToMove = playerInv.getItemStack(slotIndex);
+            if (stackToMove != null) {
+                // Nếu là vũ khí đang trang bị, không cho chuyển
+                if (stackToMove.getItem() == gp.getPlayer().getCurrentWeapon()) {
+                    gp.getUi().showMessage("Unequip the weapon first!");
+                    return;
+                }
+                if (chestInv.addItem(stackToMove.getItem(), stackToMove.getQuantity())) {
+                    playerInv.removeStack(slotIndex);
+                    gp.getUi().showMessage("Moved " + stackToMove.getItem().getName() + " to chest.");
+                } else {
+                    gp.getUi().showMessage("Chest is full!");
+                }
+            }
+        } else { // Từ Rương -> Player
+            ItemStack stackToMove = chestInv.getItemStack(slotIndex);
+            if (stackToMove != null) {
+                if (playerInv.addItem(stackToMove.getItem(), stackToMove.getQuantity())) {
+                    chestInv.removeStack(slotIndex);
+                    gp.getUi().showMessage("Took " + stackToMove.getItem().getName() + " from chest.");
+                } else {
+                    gp.getUi().showMessage("Your inventory is full!");
+                }
+            }
+        }
+    }
+
     @Override
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
 
+        if (code == KeyEvent.VK_F) {
+            fPressed = true;
+        }
         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
             upPressed = false;
         }

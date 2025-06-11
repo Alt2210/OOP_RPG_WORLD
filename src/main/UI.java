@@ -44,13 +44,18 @@ public class UI {
     Color menuBoxBgColor_New = new Color(45, 30, 65, 230);
     Color menuBoxBorderColor_New = new Color(100, 70, 130, 255);
 
-
-
-
     public UI(GamePanel gp) {
         this.gp = gp;
         loadFonts();
         loadUIImages();
+    }
+
+    public int getCommandNum() {
+        return commandNum;
+    }
+
+    public void setCommandNum(int commandNum) {
+        this.commandNum = commandNum;
     }
 
     public int getSlotCol() {
@@ -142,6 +147,12 @@ public class UI {
             drawGameOverScreen(g2);
         } else if (gp.gameState == gp.InventoryState){
             drawIventory(g2);
+        } else if (gp.gameState == gp.gameOverState){
+            drawGameOverScreen(g2);
+        } else if (gp.gameState == gp.InventoryState){
+            drawIventory(g2);
+        } else if (gp.gameState == gp.chestState) { // THÊM KHỐI LỆNH NÀY
+            drawChestScreen(g2);
         }
     }
 
@@ -691,5 +702,119 @@ public class UI {
     public int getItemIndexOnSlot() {
         int itemIndex = slotRow * 5 + slotCol;
         return itemIndex;
+    }
+
+    public void drawChestScreen(Graphics2D g2) {
+        // Nền mờ
+        g2.setColor(new Color(0, 0, 0, 200));
+        g2.fillRect(0, 0, gp.getScreenWidth(), gp.getScreenHeight());
+
+        // --- Khung Kho đồ Player (Bên trái) ---
+        int playerFrameX = gp.getTileSize();
+        int frameY = gp.getTileSize();
+        int frameWidth = gp.getTileSize() * 6;
+        int frameHeight = gp.getTileSize() * 6;
+        drawSubWindow(playerFrameX, frameY, frameWidth, frameHeight, g2);
+        g2.setColor(Color.WHITE);
+        g2.setFont(pixelFont_Small);
+        g2.drawString("Your Items", playerFrameX + 20, frameY + 30);
+
+
+        // --- Khung Kho đồ Rương (Bên phải) ---
+        int chestFrameX = gp.getTileSize() * 9;
+        frameHeight = gp.getTileSize() * 4;
+        drawSubWindow(chestFrameX, frameY, frameWidth, frameHeight, g2);
+        g2.setColor(Color.WHITE);
+        g2.setFont(pixelFont_Small);
+        g2.drawString("Chest", chestFrameX + 20, frameY + 30);
+
+
+        // --- Vẽ các ô vật phẩm (Slots) ---
+        final int slotSize = gp.getTileSize() + 3;
+        // Player's items
+        final int playerSlotXStart = playerFrameX + 20;
+        final int slotYStart = frameY + 50;
+        int playerSlotX = playerSlotXStart;
+        int playerSlotY = slotYStart;
+        for (int i = 0; i < gp.getPlayer().getInventory().getCapacity(); i++) {
+            if (i < gp.getPlayer().getInventory().getItemStack()) {
+                ItemStack stack = gp.getPlayer().getInventory().getItemStack(i);
+                g2.drawImage(stack.getItem().getItp().getCurFrame(), playerSlotX, playerSlotY,gp.getTileSize(), gp.getTileSize(), null);
+                // Đánh dấu vũ khí đang trang bị
+                if (gp.getPlayer().getCurrentWeapon() == stack.getItem()) {
+                    g2.setColor(new Color(240, 190, 90, 150));
+                    g2.fillRoundRect(playerSlotX, playerSlotY, gp.getTileSize(), gp.getTileSize(), 10, 10);
+                }
+            }
+            playerSlotX += slotSize;
+            if (i == 4) { // 5 cột một hàng
+                playerSlotX = playerSlotXStart;
+                playerSlotY += slotSize;
+            }
+        }
+
+        // Chest's items
+        final int chestSlotXStart = chestFrameX + 20;
+        int chestSlotX = chestSlotXStart;
+        int chestSlotY = slotYStart;
+        if (gp.currentChest != null) {
+            for (int i = 0; i < gp.currentChest.getInventory().getCapacity(); i++) {
+                if (i < gp.currentChest.getInventory().getItemStack()) {
+                    g2.drawImage(gp.currentChest.getInventory().getItemStack(i).getItem().getItp().getCurFrame(), chestSlotX, chestSlotY,gp.getTileSize(), gp.getTileSize(), null);
+                }
+                chestSlotX += slotSize;
+                if (i == 4) {
+                    chestSlotX = chestSlotXStart;
+                    chestSlotY += slotSize;
+                }
+            }
+        }
+
+        // --- Vẽ Con trỏ (Cursor) ---
+        int cursorX = 0;
+        int cursorY = slotYStart + (slotSize * slotRow);
+        int cursorWidth = gp.getTileSize();
+        int cursorHeight = gp.getTileSize();
+
+        if (commandNum == 0) { // Player panel
+            cursorX = playerSlotXStart + (slotSize * slotCol);
+        } else { // Chest panel
+            cursorX = chestSlotXStart + (slotSize * slotCol);
+        }
+        g2.setColor(Color.white);
+        g2.setStroke(new BasicStroke(3));
+        g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
+
+        // --- Khung mô tả ---
+        frameHeight = gp.getTileSize() * 6;
+        int dFrameY = frameY + frameHeight + 10;
+        int dFrameHeight = gp.getTileSize() * 3;
+        drawSubWindow(playerFrameX, dFrameY, frameWidth * 2 + (chestFrameX - (playerFrameX+frameWidth)), dFrameHeight, g2);
+
+        // --- Vẽ chữ mô tả ---
+        int textX = playerFrameX + 20;
+        int textY = dFrameY + 30;
+        int itemIndex = getItemIndexOnSlot();
+        ItemStack selectedStack = null;
+
+        if (commandNum == 0) { // Lấy item từ kho player
+            if(itemIndex < gp.getPlayer().getInventory().getItemStack())
+                selectedStack = gp.getPlayer().getInventory().getItemStack(itemIndex);
+        } else { // Lấy item từ kho rương
+            if(gp.currentChest != null && itemIndex < gp.currentChest.getInventory().getItemStack())
+                selectedStack = gp.currentChest.getInventory().getItemStack(itemIndex);
+        }
+
+        if (selectedStack != null) {
+            Item selectedItem = selectedStack.getItem();
+            g2.setFont(pixelFont_XSmall);
+            g2.setColor(Color.WHITE);
+            if (selectedItem != null && selectedItem.getDescription() != null) {
+                for (String line : selectedItem.getDescription().split("\n")) {
+                    g2.drawString(line, textX, textY);
+                    textY += 24;
+                }
+            }
+        }
     }
 }

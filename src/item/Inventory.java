@@ -168,4 +168,8 @@ public class Inventory {
         // Trả về một bản sao để ngăn chặn sửa đổi từ bên ngoài
         return new ArrayList<>(items);
     }
+
+    public int getCapacity() {
+        return this.capacity;
+    }
 }
