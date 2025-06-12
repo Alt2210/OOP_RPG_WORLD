@@ -131,8 +131,33 @@ public class AssetSetter {
         gp.getwObjects()[2].setWorldY(14 * gp.getTileSize());
 
         gp.getwObjects()[4] = new OBJ_ReviveStatue(gp);
-        gp.getwObjects()[4].setWorldX(34 * gp.getTileSize());
-        gp.getwObjects()[4].setWorldY(75 * gp.getTileSize());
+        gp.getwObjects()[4].setWorldX(20 * gp.getTileSize());
+        gp.getwObjects()[4].setWorldY(14 * gp.getTileSize());
+
+        int[][] trapCoordinates = {
+                // khu spawn
+                {22, 20}, {12, 29}, {28, 31},
+                // mê cung
+                {34, 45}, {29, 55}, {25, 63}, {36, 65},
+                // phòng boss ẩn
+                {29, 89}, {37, 91}, {28, 85},
+                // khu quái cạnh mê cung
+                {60, 49}, {71, 62}, {83, 48}, {70, 53}, {73, 74}
+        };
+        int objectIndex = 5;
+        for (int[] coord : trapCoordinates) {
+            if (objectIndex < gp.getwObjects().length) {
+                gp.getwObjects()[objectIndex] = new OBJ_Spike(gp);
+                gp.getwObjects()[objectIndex].setWorldX(coord[0] * gp.getTileSize());
+                gp.getwObjects()[objectIndex].setWorldY(coord[1] * gp.getTileSize());
+                objectIndex++;
+            } else {
+                System.err.println("AssetSetter: Not enough space in wObjects array to place all traps.");
+                break;
+            }
+        }
+
+        System.out.println("Map 1 Objects and Traps Set.");
 
         int portalIndex = 2;
         if(gp.getwObjects().length > portalIndex) {

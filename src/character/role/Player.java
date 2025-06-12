@@ -264,7 +264,11 @@ public abstract class Player extends character.Character {
 
     @Override
     protected void onDeath(character.Character attacker) {
-        gp.getUi().showMessage("You have been defeated by " + attacker.getName() + "!");
+        String attackerName = "the environment";
+        if (attacker != null) {
+            attackerName = attacker.getName();
+        }
+        gp.getUi().showMessage("You have been defeated by " + attackerName + "!");
         gp.gameState = gp.gameOverState;
     }
 
