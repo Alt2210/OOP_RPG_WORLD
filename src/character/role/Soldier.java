@@ -22,7 +22,6 @@ public class Soldier extends Player {
         setDefaultValues();
     }
 
-
     @Override
     public void setDefaultValues() {
         setInitLocation();
@@ -36,10 +35,12 @@ public class Soldier extends Player {
         attack = 40;
         defense = 3;
         attackRange = gp.getTileSize();
-        maxMana = 50;
+        maxMana = 100;
         currentMana = maxMana;
+        manaRegenSpeed = 1;
         this.ATTACK_COOLDOWN_DURATION = 45;
         this.currentAttackStateDuration = 30;
+
 
         setName("sodier");
         loadCharacterSprites();
