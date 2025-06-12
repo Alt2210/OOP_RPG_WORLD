@@ -4,7 +4,7 @@ import character.Character;
 import character.role.Player;
 import character.monster.*;
 import data.SaveLoad;
-import skillEffect.SkillEffect;
+import main.ui.*;
 import skillEffect.SkillEffect;
 import tile.TileManager;
 import worldObject.WorldObject;
@@ -41,7 +41,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Sound soundEffect = new Sound();
     private CollisionChecker cChecker = new CollisionChecker(this);
     private AssetSetter aSetter = new AssetSetter(this);
-    private UI ui = new UI(this);
+    private UiManager ui = new UiManager(this);
     private DialogueManager dialogueManager = new DialogueManager(this);
     private events_system.CombatSystem combatSystem = new events_system.CombatSystem(this);
     private SaveLoad saveLoadManager = new SaveLoad(this);
@@ -59,16 +59,15 @@ public class GamePanel extends JPanel implements Runnable {
 
     // GAME STATE
     public int gameState;
-    public final int titleState = 0;
-    public final int playState = 1;
-    public final int pauseState = 2;
-    public final int dialogueState = 3;
-    public final int victoryEndState = 4;
-    public final int gameOverState = 5;
-    public final int characterSelectState = 6;
-    public final int PlayerState = 6;
-    public final int InventoryState = 7;
-    public final int chestState = 8;
+    public static final int titleState = 0;
+    public static final int playState = 1;
+    public static final int pauseState = 2;
+    public static final int dialogueState = 3;
+    public static final int victoryEndState = 4;
+    public static final int gameOverState = 5;
+    public static final int characterSelectState = 6;
+    public static final int InventoryState = 7;
+    public static final int chestState = 8;
 
 
     //GETTERS AND SETTERS
@@ -107,9 +106,8 @@ public class GamePanel extends JPanel implements Runnable {
         return this.scale;
     }
 
-    public UI getUi() {
-        return ui;
-    }
+    public UiManager getUi() { return ui; }
+
 
     public TileManager getTileM() { return tileM; }
     public CollisionChecker getcChecker() { return cChecker; }
@@ -187,7 +185,7 @@ public class GamePanel extends JPanel implements Runnable {
         aSetter.setupMapAssets(currentMap); // Nạp entities cho map 0
         skillEffects.clear();
         dialogueManager.reset(); // Reset DialogueManager
-        ui = new UI(this); // Tạo lại UI để reset playtime và các trạng thái khác của UI
+        ui = new UiManager(this); // Tạo lại UI để reset playtime và các trạng thái khác của UI
 
     }
 
