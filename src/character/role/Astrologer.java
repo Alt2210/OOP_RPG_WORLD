@@ -30,6 +30,7 @@ public class Astrologer extends Player {
         addSkill(new S_StellaField(this, gp));
     }
 
+
     @Override
     public void setDefaultValues() {
         // Đặt các chỉ số riêng của Astrologer
@@ -46,6 +47,7 @@ public class Astrologer extends Player {
         attackRange = gp.getTileSize() * 3;
         maxMana = 150;
         currentMana = maxMana;
+        manaRegenSpeed = 1;
         this.ATTACK_COOLDOWN_DURATION = 60;
         this.currentAttackStateDuration = NORMAL_ATTACK_EFFECT_TOTAL_DURATION;
         cip.setNumSprite(16);

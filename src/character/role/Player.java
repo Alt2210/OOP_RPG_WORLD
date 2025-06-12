@@ -41,11 +41,13 @@ public abstract class Player extends character.Character {
 
     private int maxStamina;
     private int currentStamina;
-    private final int staminaRegenCounterMax = 10; // Tốc độ hồi stamina (1 stamina mỗi 10 frame)
     private int staminaRegenCounter = 0;
     private final int dashCost = 1; // Lượng stamina tiêu hao mỗi frame khi dash
     private final int dashSpeedBonus = 4; // Tốc độ được cộng thêm khi dash
     private boolean isDashing = false;
+    protected int staminaRegenCounterMax = 10; // Tốc độ hồi stamina (1 stamina mỗi 10 frame)
+    // Biến cho hồi phục mana
+    protected double manaRegenSpeed; // MP/giây, mặc định 5 MP/giây
 
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
@@ -57,7 +59,9 @@ public abstract class Player extends character.Character {
         solidArea = new Rectangle(8, 16, 32, 32);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+
     }
+
 
     public int getScreenX() {
         return screenX;
@@ -102,6 +106,16 @@ public abstract class Player extends character.Character {
     public void setCurrentStamina(int currentStamina) {
         this.currentStamina = currentStamina;
     }
+
+    // Getter và Setter cho manaRegenSpeed
+    public double getManaRegenSpeed() {
+        return manaRegenSpeed;
+    }
+
+    protected void setManaRegenSpeed(double manaRegenSpeed) {
+        this.manaRegenSpeed = Math.max(0, manaRegenSpeed); // Đảm bảo không âm
+    }
+
 
     protected abstract void loadCharacterSprites();
     protected abstract void performNormalAttackAction();
@@ -163,6 +177,8 @@ public abstract class Player extends character.Character {
             }
             else {
                 handleStaminaAndDash();
+                handleManaRegeneration(); // Thêm gọi phương thức hồi phục mana
+
                 // --- 2a. Xử lý Input cho Hành động (Tấn công, Dùng skill) ---
                 if (keyH.isAttackPressed() && canAttack()) {
                     performNormalAttackAction();
@@ -425,4 +441,24 @@ public abstract class Player extends character.Character {
             speed = defaultSpeed;
         }
     }
+
+    private int manaRegenCounter;
+    private void handleManaRegeneration() {
+
+        if (currentMana < maxMana) {
+            // Tính số frame cần để hồi 1 MP dựa trên manaRegenSpeed
+            double framesPerMP = 60.0 / manaRegenSpeed; // 60 FPS / MP mỗi giây
+            manaRegenCounter++;
+            if (manaRegenCounter >= framesPerMP) {
+                currentMana = Math.min(maxMana, currentMana + 1); // Hồi 1 MP
+                manaRegenCounter = 0;
+                if (currentMana == maxMana) {
+                    gp.getUi().showMessage("Mana fully restored!");
+                }
+            }
+        } else {
+            manaRegenCounter = 0; // Reset counter khi mana đầy
+        }
+    }
+
 }
