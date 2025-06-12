@@ -44,13 +44,7 @@ public class AssetSetter {
 
     // đặt objects, NPCs, Monsters cho map 0
     private void setMap0_Objects() {
-        gp.getwObjects()[0] = new OBJ_Key(gp);
-        gp.getwObjects()[0].setWorldX(20 * gp.getTileSize());
-        gp.getwObjects()[0].setWorldY(20 * gp.getTileSize());
 
-        gp.getwObjects()[1] = new OBJ_Door();
-        gp.getwObjects()[1].setWorldX(22 * gp.getTileSize());
-        gp.getwObjects()[1].setWorldY(20 * gp.getTileSize());
 
         // Portal từ Map 0 (Plain) đến Map 1 (Dungeon)
         gp.getwObjects()[2] = new OBJ_Portal(gp, 1, 10, 12); // targetMap=1, playerTileX_onNewMap=10, playerTileY_onNewMap=12
@@ -151,17 +145,24 @@ public class AssetSetter {
     }
 
     private void setMap1_Objects() {
-        gp.getwObjects()[0] = new OBJ_Key(gp);
-        gp.getwObjects()[0].setWorldX(35 * gp.getTileSize());
-        gp.getwObjects()[0].setWorldY(35 * gp.getTileSize());
+        gp.getwObjects()[3] = new OBJ_Key(gp);
+        gp.getwObjects()[3].setWorldX(35 * gp.getTileSize());
+        gp.getwObjects()[3].setWorldY(92 * gp.getTileSize());
 
-        gp.getwObjects()[1] = new OBJ_Chest(gp);
+        gp.getwObjects()[0] = new OBJ_Door();
+        gp.getwObjects()[0].setWorldX(74 * gp.getTileSize());
+        gp.getwObjects()[0].setWorldY(80 * gp.getTileSize());
+
+        OBJ_Chest chest = new OBJ_Chest(gp);
+        gp.getwObjects()[1] = chest;
         gp.getwObjects()[1].setWorldX(12 * gp.getTileSize());
         gp.getwObjects()[1].setWorldY(12 * gp.getTileSize());
+        chest.getInventory().addItem(new Item_HealthPotion(gp), 3);
+        chest.getInventory().addItem(new Item_ManaPotion(gp), 3);
 
         int portalIndex = 2;
         if(gp.getwObjects().length > portalIndex) {
-            gp.getwObjects()[portalIndex] = new OBJ_Portal(gp, 0, 26, 25);
+            gp.getwObjects()[portalIndex] = new OBJ_Portal(gp, 0, 64, 37);
             gp.getwObjects()[portalIndex].setWorldX(12 * gp.getTileSize());
             gp.getwObjects()[portalIndex].setWorldY(10 * gp.getTileSize());
         }

@@ -30,7 +30,7 @@ public class OBJ_Portal extends WorldObject {
         this.collision = false; // Player đi qua để kích hoạt portal
 
         try {
-            InputStream is = getClass().getResourceAsStream("/objects/door.png");
+            InputStream is = getClass().getResourceAsStream("/objects/OBJ_Portal.png");
             if (is == null) {
                 System.err.println("Lỗi: Không tìm thấy ảnh cho Portal (/objects/portal.png). Sử dụng placeholder.");
                 image = new BufferedImage(gp.getTileSize(), gp.getTileSize(), BufferedImage.TYPE_INT_ARGB);
