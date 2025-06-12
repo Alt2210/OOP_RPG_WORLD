@@ -671,7 +671,7 @@ public class UI {
 
         int textX = statusFrameX + 20;
         int textY = statusFrameY + gp.getTileSize();
-        final int lineHeight = 35;
+        final int lineHeight = 50;
 
         g2.drawString("Level", textX, textY); textY += lineHeight;
         g2.drawString("Health", textX, textY); textY += lineHeight;
@@ -714,7 +714,11 @@ public class UI {
         g2.drawString(value, tailX - g2.getFontMetrics().stringWidth(value), textY); textY += lineHeight;
 
         if (player.getCurrentWeapon() != null) {
-            g2.drawImage(player.getCurrentWeapon().getItp().getCurFrame(), tailX - gp.getTileSize(), textY - 14, null);
+            //g2.drawImage(player.getCurrentWeapon().getItp().getCurFrame(), tailX - gp.getTileSize(), textY - 14, null);
+            int weaponIconSize = gp.getTileSize() + 10; // Kích thước mới cho icon vũ khí
+            int iconX = tailX - weaponIconSize;
+            int iconY = textY - (weaponIconSize / 2) - 8; // Căn giữa icon với dòng chữ
+            g2.drawImage(player.getCurrentWeapon().getItp().getCurFrame(), iconX, iconY, weaponIconSize, weaponIconSize, null);
         } else {
             g2.drawString("None", tailX - g2.getFontMetrics().stringWidth("None"), textY);
         }
