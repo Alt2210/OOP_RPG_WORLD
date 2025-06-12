@@ -39,7 +39,7 @@ public class Astrologer extends Player {
         speed = defaultSpeed;
         direction = "down";
         hasKey = 0;
-        maxHealth = 80;
+        maxHealth = 1000;
         currentHealth = maxHealth;
         attack = 40;
         defense = 1;

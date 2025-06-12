@@ -146,11 +146,11 @@ public class UI {
         } else if (gp.gameState == gp.gameOverState){
             drawGameOverScreen(g2);
         } else if (gp.gameState == gp.InventoryState){
-            drawIventory(g2);
+            drawInventoryScreen(g2);
         } else if (gp.gameState == gp.gameOverState){
             drawGameOverScreen(g2);
         } else if (gp.gameState == gp.InventoryState){
-            drawIventory(g2);
+            drawInventoryScreen(g2);
         } else if (gp.gameState == gp.chestState) { // THÊM KHỐI LỆNH NÀY
             drawChestScreen(g2);
         }
@@ -657,87 +657,136 @@ public class UI {
         }
     }
 
-    public void drawIventory(Graphics2D g2) {
-        //Frame
-        int frameX = gp.getTileSize() * 9;
-        int frameY = gp.getTileSize();
-        int frameWidth = gp.getTileSize() * 6;
-        int frameHeight = gp.getTileSize() * 5;
-        drawSubWindow(frameX,frameY,frameWidth,frameHeight, g2);
+    public void drawInventoryScreen(Graphics2D g2) {
+        // --- Khung Status bên trái ---
+        int statusFrameX = gp.getTileSize();
+        int statusFrameY = gp.getTileSize();
+        int statusFrameWidth = gp.getTileSize() * 6;
+        int statusFrameHeight = gp.getTileSize() * 10;
+        drawSubWindow(statusFrameX, statusFrameY, statusFrameWidth, statusFrameHeight, g2);
 
-        //Slot
-        final int slotXstart = frameX + 20;
-        final int slotYstart = frameY + 20;
+        // Vẽ các chỉ số
+        g2.setColor(Color.WHITE);
+        g2.setFont(pixelFont_Small);
+
+        int textX = statusFrameX + 20;
+        int textY = statusFrameY + gp.getTileSize();
+        final int lineHeight = 35;
+
+        g2.drawString("Level", textX, textY); textY += lineHeight;
+        g2.drawString("Health", textX, textY); textY += lineHeight;
+        g2.drawString("Mana", textX, textY); textY += lineHeight;
+        g2.drawString("Stamina", textX, textY); textY += lineHeight;
+        g2.drawString("Attack", textX, textY); textY += lineHeight;
+        g2.drawString("Defense", textX, textY); textY += lineHeight;
+        g2.drawString("Exp", textX, textY); textY += lineHeight;
+        g2.drawString("Next Level", textX, textY); textY += lineHeight;
+        g2.drawString("Weapon", textX, textY); textY += lineHeight;
+
+
+        // Vẽ giá trị của chỉ số
+        int tailX = (statusFrameX + statusFrameWidth) - 30;
+        textY = statusFrameY + gp.getTileSize(); // Reset Y
+        Player player = gp.getPlayer();
+
+        String value = String.valueOf(player.getLevel());
+        g2.drawString(value, tailX - g2.getFontMetrics().stringWidth(value), textY); textY += lineHeight;
+
+        value = player.getCurrentHealth() + "/" + player.getMaxHealth();
+        g2.drawString(value, tailX - g2.getFontMetrics().stringWidth(value), textY); textY += lineHeight;
+
+        value = player.getCurrentMana() + "/" + player.getMaxMana();
+        g2.drawString(value, tailX - g2.getFontMetrics().stringWidth(value), textY); textY += lineHeight;
+
+        value = player.getCurrentStamina() + "/" + player.getMaxStamina();
+        g2.drawString(value, tailX - g2.getFontMetrics().stringWidth(value), textY); textY += lineHeight;
+
+        value = String.valueOf(player.getAttack());
+        g2.drawString(value, tailX - g2.getFontMetrics().stringWidth(value), textY); textY += lineHeight;
+
+        value = String.valueOf(player.getDefense());
+        g2.drawString(value, tailX - g2.getFontMetrics().stringWidth(value), textY); textY += lineHeight;
+
+        value = String.valueOf(player.getCurrentExp());
+        g2.drawString(value, tailX - g2.getFontMetrics().stringWidth(value), textY); textY += lineHeight;
+
+        value = String.valueOf(player.getExpToNextLevel());
+        g2.drawString(value, tailX - g2.getFontMetrics().stringWidth(value), textY); textY += lineHeight;
+
+        if (player.getCurrentWeapon() != null) {
+            g2.drawImage(player.getCurrentWeapon().getItp().getCurFrame(), tailX - gp.getTileSize(), textY - 14, null);
+        } else {
+            g2.drawString("None", tailX - g2.getFontMetrics().stringWidth("None"), textY);
+        }
+
+        // --- Khung Inventory bên phải ---
+        int invFrameX = gp.getTileSize() * 8; // Dịch sang phải
+        int invFrameY = gp.getTileSize();
+        int invFrameWidth = gp.getTileSize() * 6;
+        int invFrameHeight = gp.getTileSize() * 5;
+        drawSubWindow(invFrameX, invFrameY, invFrameWidth, invFrameHeight, g2);
+
+        // Slot
+        final int slotXstart = invFrameX + 20;
+        final int slotYstart = invFrameY + 20;
         int slotX = slotXstart;
         int slotY = slotYstart;
-        int slotsSize = gp.getTileSize()+3;
+        int slotsSize = gp.getTileSize() + 3;
 
-        //Draw player's item
-        for(int i=0; i < gp.getPlayer().getInventory().getItemStack(); i++) {
-            // Lấy ItemStack ra trước để tránh gọi nhiều lần
+        // Draw player's item
+        for (int i = 0; i < gp.getPlayer().getInventory().getItemStack(); i++) {
             ItemStack currentStack = gp.getPlayer().getInventory().getItemStack(i);
             if (currentStack != null && currentStack.getItem() != null && currentStack.getItem().getItp() != null) {
                 g2.drawImage(currentStack.getItem().getItp().getCurFrame(), slotX, slotY, slotsSize, slotsSize, null);
+                // Highlight equipped weapon
+                if (gp.getPlayer().getCurrentWeapon() != null && currentStack.getItem() == gp.getPlayer().getCurrentWeapon()) {
+                    g2.setColor(new Color(240, 190, 90, 150));
+                    g2.fillRoundRect(slotX, slotY, gp.getTileSize(), gp.getTileSize(), 10, 10);
+                }
             }
-
-            if (gp.getPlayer().getCurrentWeapon() != null && currentStack != null &&
-                    gp.getPlayer().getCurrentWeapon() == currentStack.getItem()) {
-
-                // Vẽ một lớp nền màu vàng để làm nổi bật
-                g2.setColor(new Color(240, 190, 90, 150)); // Màu vàng với độ trong suốt
-                g2.fillRoundRect(slotX, slotY, gp.getTileSize(), gp.getTileSize(), 10, 10);
-            }
-
             slotX += slotsSize;
-
-            if(i == 4 || i == 9 || i == 14) {
+            if (i == 4 || i == 9 || i == 14) {
                 slotX = slotXstart;
                 slotY += slotsSize;
             }
         }
 
-        //CURSOR
-        // Sử dụng slotRow và slotCol đã được giới hạn trong KeyHandler
+        // CURSOR
         int cursorX = slotXstart + (slotsSize * slotCol);
         int cursorY = slotYstart + (slotsSize * slotRow);
         int cursorWidth = gp.getTileSize();
         int cursorHeight = gp.getTileSize();
-        //Draw Cursor
         g2.setColor(Color.white);
-        g2.setStroke(new BasicStroke(3)); // Làm cho con trỏ dày hơn một chút
-        g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight,10,10);
+        g2.setStroke(new BasicStroke(3));
+        g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
 
-        //Description Frame
-        int dFrameX = frameX;
-        int dFrameY = frameY + frameHeight + 10; // Thêm khoảng cách nhỏ
-        int dFrameWidth = frameWidth;
+        // Description Frame
+        int dFrameX = invFrameX; // Canh lề với khung inventory
+        int dFrameY = invFrameY + invFrameHeight + 10;
+        int dFrameWidth = invFrameWidth;
         int dFrameHeight = gp.getTileSize() * 3;
         drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight, g2);
 
-        //Draw Description text
-        int textX = dFrameX + 20;
-        int textY = dFrameY + 30;
-        g2.setFont(pixelFont_Small); // Sử dụng font nhỏ hơn cho mô tả
+        // Draw Description text
+        int descTextX = dFrameX + 20;
+        int descTextY = dFrameY + 30;
+        g2.setFont(pixelFont_Small);
         g2.setColor(Color.WHITE);
-
-        // SỬA LỖI 2: Lấy item index và kiểm tra null trước khi sử dụng
         int itemIndex = getItemIndexOnSlot();
         ItemStack selectedStack = null;
-
         if (itemIndex < gp.getPlayer().getInventory().getItemStack()) {
             selectedStack = gp.getPlayer().getInventory().getItemStack(itemIndex);
         }
-
-        if(selectedStack != null){
+        if (selectedStack != null) {
             Item selectedItem = selectedStack.getItem();
             g2.setFont(pixelFont_XSmall);
             if (selectedItem != null && selectedItem.getDescription() != null) {
-                for(String line: selectedItem.getDescription().split("\n")){
-                    g2.drawString(line, textX, textY);
-                    textY += 30; // Điều chỉnh khoảng cách dòng cho phù hợp với font
+                for (String line : selectedItem.getDescription().split("\n")) {
+                    g2.drawString(line, descTextX, descTextY);
+                    descTextY += 30;
                 }
                 String msg_quantity = "Quantity: " + selectedStack.getQuantity();
-                g2.drawString(msg_quantity, textX, textY);
+                g2.drawString(msg_quantity, descTextX, descTextY);
             }
         }
     }
