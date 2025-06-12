@@ -17,7 +17,7 @@ public class UiManager {
     private final UI victoryUI;
     private final InventoryUI inventoryUI;
     private final ChestUI chestUI;
-
+    private final LoadGameUI loadGameUI;
     public UiManager(GamePanel gp) {
         this.gp = gp;
 
@@ -30,7 +30,7 @@ public class UiManager {
         this.victoryUI = new VictoryUI(gp);
         this.inventoryUI = new InventoryUI(gp);
         this.chestUI = new ChestUI(gp);
-
+        this.loadGameUI = new LoadGameUI(gp);
         // Thiết lập UI mặc định ban đầu
         this.currentUI = titleUI;
     }
@@ -46,6 +46,8 @@ public class UiManager {
             case GamePanel.chestState: currentUI = chestUI; break;
             case GamePanel.gameOverState: currentUI = gameOverUI; break;
             case GamePanel.victoryEndState: currentUI = victoryUI; break;
+            case GamePanel.loadGameState: loadGameUI.refreshHistory(); currentUI = loadGameUI;  break;
+
         }
     }
 

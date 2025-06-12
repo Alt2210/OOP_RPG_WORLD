@@ -68,7 +68,7 @@ public class GamePanel extends JPanel implements Runnable {
     public static final int characterSelectState = 6;
     public static final int InventoryState = 7;
     public static final int chestState = 8;
-
+    public static final int loadGameState = 9;
 
     //GETTERS AND SETTERS
 
@@ -172,21 +172,21 @@ public class GamePanel extends JPanel implements Runnable {
         skillEffects.clear();
     }
 
-    public void resetGameForNewSession() { //
+    public void resetGameForNewSession() {
         System.out.println("Resetting game for new session...");
-        currentMap = 0; // Luôn bắt đầu từ map 0 khi game mới
-        player.setDefaultValues(); // Reset trạng thái Player về mặc định
-        // Đặt lại vị trí Player cho map 0
-        player.setWorldX(getTileSize() * 7);
-        player.setWorldY(getTileSize() * 92);
-        player.setDirection("down");
+        currentMap = 0;
 
-        clearEntitiesForMapChange(); // Xóa tất cả entities cũ
-        aSetter.setupMapAssets(currentMap); // Nạp entities cho map 0
-        skillEffects.clear();
-        dialogueManager.reset(); // Reset DialogueManager
-        ui = new UiManager(this); // Tạo lại UI để reset playtime và các trạng thái khác của UI
+        // Quan trọng: Đặt player về null.
+        // Player mới sẽ được tạo khi người dùng chọn "New Game".
+        this.player = null;
 
+        clearEntitiesForMapChange();
+        aSetter.setupMapAssets(currentMap);
+
+        dialogueManager.reset();
+
+        // Tạo lại UI để reset các trạng thái như playtime
+        ui = new UiManager(this);
     }
 
 
@@ -291,53 +291,37 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        // Vẽ màn hình tiêu đề
-        if (gameState == titleState) {
+        // CÁC TRẠNG THÁI CHỈ VẼ UI (Menu, Lựa chọn, Game Over, v.v.)
+        if (gameState == titleState || gameState == characterSelectState || gameState == loadGameState || gameState == gameOverState || gameState == victoryEndState) {
             ui.draw(g2);
         }
-        // THÊM MỚI: Vẽ màn hình chọn nhân vật
-        else if (gameState == characterSelectState) {
-            ui.draw(g2); // Chỉ cần vẽ UI cho màn hình này
-        }
-        // Các trạng thái còn lại (play, pause, dialogue, v.v.)
+        // CÁC TRẠNG THÁI CẦN VẼ THẾ GIỚI GAME
         else {
-            // Vẽ thế giới game
-            tileM.draw(g2);
+            if (tileM != null) tileM.draw(g2);
 
-            // Vẽ các đối tượng
-            for (int i = 0; i < wObjects.length; i++) {
-                if (wObjects[i] != null) {
-                    wObjects[i].draw(g2, this);
-                }
+            for (WorldObject wObject : wObjects) {
+                if (wObject != null) wObject.draw(g2, this);
             }
-            // Vẽ skillEffects...
             for (SkillEffect p : skillEffects) {
-                if (p.isAlive()) {
-                    p.draw(g2);
-                }
+                if (p != null && p.isAlive()) p.draw(g2);
             }
-
-            // Vẽ NPC
-            for (int i = 0; i < npc.length; i++) {
-                if (npc[i] != null) {
-                    npc[i].draw(g2);
-                }
+            for (Character character : npc) {
+                if (character != null) character.draw(g2);
             }
-
-            for(Monster monster : monsters ){
+            for (Monster monster : monsters) {
                 if (monster != null) monster.draw(g2);
             }
-
-
-            // Vẽ người chơi
             if (player != null) {
                 player.draw(g2);
             }
-
-            // Vẽ UI trên cùng
-            ui.draw(g2);
+            if (ui != null) ui.draw(g2);
         }
         g2.dispose();
+    }
+    public void GameOver() {
+        stopMusic();
+        gameState = gameOverState;
+        ui.setUI(gameOverState); // CỰC KỲ QUAN TRỌNG: Báo cho UiManager thay đổi giao diện
     }
 
 }

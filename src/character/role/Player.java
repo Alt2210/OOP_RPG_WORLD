@@ -83,6 +83,22 @@ public abstract class Player extends character.Character {
         return level;
     }
 
+    public void setAttack(int attack) {
+        this.attack = attack;
+    }
+
+    public void setDefense(int defense) {
+        this.defense = defense;
+    }
+
+    public void setExpToNextLevel(int expToNextLevel) {
+        this.expToNextLevel = expToNextLevel;
+    }
+
+    public void setCurrentExp(int currentExp) {
+        this.currentExp = currentExp;
+    }
+
     public void setLevel(int level) {
         this.level = level;
     }
@@ -269,7 +285,7 @@ public abstract class Player extends character.Character {
             attackerName = attacker.getName();
         }
         gp.getUi().showMessage("You have been defeated by " + attackerName + "!");
-        gp.gameState = gp.gameOverState;
+        gp.GameOver();
     }
 
     // Các phương thức chung khác cho Player

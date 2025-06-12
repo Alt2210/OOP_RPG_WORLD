@@ -49,7 +49,8 @@ public class OBJ_ReviveStatue extends WorldObject {
     public void interactPlayer(Player player, int i, GamePanel gp) {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastSaveTime > SAVE_COOLDOWN) {
-            gp.getSaveLoadManager().saveGame();
+            // Thay đổi dòng này:
+            gp.getSaveLoadManager().saveGame("Chạm vào Tượng Hồi Sinh");
             lastSaveTime = currentTime;
         }
     }

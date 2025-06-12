@@ -79,6 +79,8 @@ public class OBJ_Portal extends WorldObject {
                 player.setWorldX(this.playerTargetWorldX_onNewMap);
                 player.setWorldY(this.playerTargetWorldY_onNewMap);
 
+                gpRef.getSaveLoadManager().saveGame("Bước vào bản đồ số " + this.targetMap);
+
                 gpRef.clearEntitiesForMapChange();
                 gpRef.getaSetter().setupMapAssets(gpRef.getCurrentMap());
 

@@ -3,8 +3,10 @@ package main;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import character.role.*;
+import data.GameHistory;
 import item.Inventory;
 import item.ItemStack;
+import sound.Sound;
 
 public class KeyHandler implements KeyListener {
     private GamePanel gp;
@@ -61,6 +63,9 @@ public class KeyHandler implements KeyListener {
         } else if (gp.gameState == GamePanel.victoryEndState) {
             handleVictoryStateKeys(code);
         }
+        else if (gp.gameState == GamePanel.loadGameState) {
+            handleLoadGameStateKeys(code); // Gọi phương thức xử lý mới
+        }
     }
 
     // --- CÁC PHƯƠNG THỨC XỬ LÝ CHO TỪNG STATE ---
@@ -78,11 +83,8 @@ public class KeyHandler implements KeyListener {
                 gp.getUi().setUI(gp.gameState);
             }
             if (gp.getUi().getCommandNum() == 1) { // Load Game
-                gp.getSaveLoadManager().loadGame();
-                // Chỉ chuyển UI nếu load thành công và gameState đã được đổi thành playState
-                if (gp.gameState == GamePanel.playState) {
-                    gp.getUi().setUI(gp.gameState);
-                }
+                gp.gameState = GamePanel.loadGameState; // CHUYỂN TỚI MÀN HÌNH LOAD GAME MỚI
+                gp.getUi().setUI(gp.gameState);
             }
             if (gp.getUi().getCommandNum() == 2) { // Quit
                 System.exit(0);
@@ -160,7 +162,31 @@ public class KeyHandler implements KeyListener {
             gp.getPlayer().getInventory().useItemInSlot(itemIndex, gp.getPlayer());
         }
     }
+    private void handleLoadGameStateKeys(int code) {
+        int maxSaves = gp.getSaveLoadManager().getSaveHistory().getSavePoints().size();
+        if (maxSaves == 0) { // Nếu không có save, chỉ cho phép thoát
+            if (code == KeyEvent.VK_ESCAPE) {
+                gp.gameState = GamePanel.titleState;
+                gp.getUi().setUI(gp.gameState);
+            }
+            return;
+        }
 
+        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+            gp.getUi().setCommandNum((gp.getUi().getCommandNum() - 1 + maxSaves) % maxSaves);
+        }
+        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+            gp.getUi().setCommandNum((gp.getUi().getCommandNum() + 1) % maxSaves);
+        }
+        if (code == KeyEvent.VK_ENTER) {
+            gp.getSaveLoadManager().loadGame(gp.getUi().getCommandNum());
+            // Phương thức loadGame sẽ tự động chuyển gameState và UI
+        }
+        if (code == KeyEvent.VK_ESCAPE) {
+            gp.gameState = GamePanel.titleState;
+            gp.getUi().setUI(gp.gameState);
+        }
+    }
     private void handleChestStateKeys(int code) {
         if (code == KeyEvent.VK_ESCAPE || code == KeyEvent.VK_C) {
             gp.gameState = GamePanel.playState;
@@ -235,12 +261,24 @@ public class KeyHandler implements KeyListener {
             gp.getUi().setCommandNum((gp.getUi().getCommandNum() + 1) % 2);
         }
         if (code == KeyEvent.VK_ENTER) {
-            if (gp.getUi().getCommandNum() == 0) { // Retry
+            if (gp.getUi().getCommandNum() == 0) { // Lựa chọn "Retry"
+                // Tải lại điểm save cuối cùng
+                GameHistory history = gp.getSaveLoadManager().getSaveHistory();
+                if (!history.getSavePoints().isEmpty()) {
+                    int lastSaveIndex = history.getSavePoints().size() - 1;
+                    gp.getSaveLoadManager().loadGame(lastSaveIndex);
+                    gp.playMusic(Sound.MUSIC_BACKGROUND); // Bật lại nhạc nền
+                } else {
+                    // Nếu không có file save nào, thì coi như "Quit"
+                    gp.resetGameForNewSession();
+                    gp.gameState = GamePanel.titleState;
+                    gp.getUi().setUI(gp.gameState);
+                }
+            } else if (gp.getUi().getCommandNum() == 1) { // Lựa chọn "Quit"
+                // Reset game và quay về màn hình chính
                 gp.resetGameForNewSession();
                 gp.gameState = GamePanel.titleState;
-                gp.getUi().setUI(gp.gameState); // Cập nhật UI
-            } else { // Quit
-                System.exit(0);
+                gp.getUi().setUI(gp.gameState);
             }
         }
     }
