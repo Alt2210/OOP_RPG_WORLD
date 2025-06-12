@@ -55,6 +55,10 @@ public class AssetSetter {
     private void setMap0_Objects() {
 
 
+        gp.getwObjects()[1] = new OBJ_ReviveStatue(gp);
+        gp.getwObjects()[1].setWorldX(49 * gp.getTileSize());
+        gp.getwObjects()[1].setWorldY(54 * gp.getTileSize());
+
         // Portal từ Map 0 (Plain) đến Map 1 (Dungeon)
         gp.getwObjects()[2] = new OBJ_Portal(gp, 1, 10, 12); // targetMap=1, playerTileX_onNewMap=10, playerTileY_onNewMap=12
         gp.getwObjects()[2].setWorldX(67 * gp.getTileSize()); // Vị trí portal trên map 0
@@ -121,6 +125,14 @@ public class AssetSetter {
         gp.getwObjects()[1].setWorldY(12 * gp.getTileSize());
         chest.getInventory().addItem(new Item_HealthPotion(gp), 3);
         chest.getInventory().addItem(new Item_ManaPotion(gp), 3);
+
+        gp.getwObjects()[2] = new OBJ_ReviveStatue(gp);
+        gp.getwObjects()[2].setWorldX(20 * gp.getTileSize());
+        gp.getwObjects()[2].setWorldY(14 * gp.getTileSize());
+
+        gp.getwObjects()[4] = new OBJ_ReviveStatue(gp);
+        gp.getwObjects()[4].setWorldX(34 * gp.getTileSize());
+        gp.getwObjects()[4].setWorldY(75 * gp.getTileSize());
 
         int portalIndex = 2;
         if(gp.getwObjects().length > portalIndex) {
