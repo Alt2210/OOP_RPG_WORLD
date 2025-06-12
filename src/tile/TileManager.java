@@ -13,11 +13,27 @@ import java.util.ArrayList;
 
 public class TileManager {
 
-    GamePanel gp;
-    public Tile[] tile;
-    public int mapTileNum[][][]; // Mảng 3 chiều cho các map
-    ArrayList<String> fileNames = new ArrayList<>();
-    ArrayList<String> collisionStatus = new ArrayList<>();
+    private GamePanel gp;
+    private Tile[] tile;
+    private int mapTileNum[][][]; // Mảng 3 chiều cho các map
+    private ArrayList<String> fileNames = new ArrayList<>();
+    private ArrayList<String> collisionStatus = new ArrayList<>();
+
+    public int[][][] getMapTileNum() {
+        return mapTileNum;
+    }
+
+    public void setMapTileNum(int[][][] mapTileNum) {
+        this.mapTileNum = mapTileNum;
+    }
+
+    public Tile[] getTile() {
+        return tile;
+    }
+
+    public void setTile(Tile[] tile) {
+        this.tile = tile;
+    }
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
@@ -53,7 +69,7 @@ public class TileManager {
         getTileImage();
 
         // Khởi tạo mảng 3 chiều cho map data
-        mapTileNum = new int[gp.maxMap][gp.getMaxWorldCol()][gp.getMaxWorldRow()];
+        mapTileNum = new int[gp.getMaxMap()][gp.getMaxWorldCol()][gp.getMaxWorldRow()];
 
         // Tải dữ liệu cho từng map
         loadMap("/maps/plain.txt", 0); // Map 0
@@ -105,9 +121,9 @@ public class TileManager {
             String fileName = fileNames.get(i);
             boolean collision = collisionStatus.get(i).equalsIgnoreCase("true");
             tile[i] = new Tile();
-            tile[i].image = setup(fileName);
-            tile[i].collision = collision;
-            if (tile[i].image == null) {
+            tile[i].setImage(setup(fileName));
+            tile[i].setCollision(collision);
+            if (tile[i].getImage() == null) {
                 System.err.println("Cảnh báo: Không thể tải hình ảnh cho tile '" + fileName + "'.");
             }
         }
@@ -115,8 +131,8 @@ public class TileManager {
     }
 
     public void loadMap(String filePath, int mapIndex) {
-        if (mapIndex < 0 || mapIndex >= gp.maxMap) {
-            System.err.println("Lỗi: mapIndex " + mapIndex + " không hợp lệ. Phải nằm trong khoảng 0 đến " + (gp.maxMap - 1));
+        if (mapIndex < 0 || mapIndex >= gp.getMaxMap()) {
+            System.err.println("Lỗi: mapIndex " + mapIndex + " không hợp lệ. Phải nằm trong khoảng 0 đến " + (gp.getMaxMap() - 1));
             return;
         }
         try {
@@ -196,11 +212,11 @@ public class TileManager {
         int worldCol = 0;
         int worldRow = 0;
 
-        int currentMapIndex = gp.currentMap;
-        if (currentMapIndex < 0 || currentMapIndex >= gp.maxMap) {
+        int currentMapIndex = gp.getCurrentMap();
+        if (currentMapIndex < 0 || currentMapIndex >= gp.getMaxMap()) {
             System.err.println("Lỗi: currentMapIndex (" + currentMapIndex + ") không hợp lệ trong TileManager.draw(). Vẽ map 0 mặc định.");
             currentMapIndex = 0; // Fallback về map 0
-            if (currentMapIndex >= gp.maxMap) { // Nếu maxMap cũng không hợp lệ (ví dụ 0) thì không thể vẽ
+            if (currentMapIndex >= gp.getMaxMap()) { // Nếu maxMap cũng không hợp lệ (ví dụ 0) thì không thể vẽ
                 g2.setColor(Color.DARK_GRAY);
                 g2.fillRect(0,0,gp.getScreenWidth(), gp.getScreenHeight());
                 g2.setColor(Color.YELLOW);
@@ -237,8 +253,8 @@ public class TileManager {
             if (screenX > -gp.getTileSize() && screenX < gp.getScreenWidth() &&
                     screenY > -gp.getTileSize() && screenY < gp.getScreenHeight()) {
 
-                if (tileNum >= 0 && tileNum < tile.length && tile[tileNum] != null && tile[tileNum].image != null) {
-                    g2.drawImage(tile[tileNum].image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+                if (tileNum >= 0 && tileNum < tile.length && tile[tileNum] != null && tile[tileNum].getImage() != null) {
+                    g2.drawImage(tile[tileNum].getImage(), screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
                 } else {
                     g2.setColor(new Color(255, 0, 255, 150));
                     g2.fillRect(screenX, screenY, gp.getTileSize(), gp.getTileSize());

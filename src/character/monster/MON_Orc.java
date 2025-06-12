@@ -197,10 +197,10 @@ public class MON_Orc extends Monster {
             pathFinder.setNodes(monsterCurrentTileCol, monsterCurrentTileRow, goalCol, goalRow, this);
 
             if (pathFinder.search()) {
-                if (!pathFinder.pathList.isEmpty()) {
-                    Node nextNode = pathFinder.pathList.get(0);
-                    int nextNodeCenterX = nextNode.col * gp.getTileSize() + gp.getTileSize() / 2;
-                    int nextNodeCenterY = nextNode.row * gp.getTileSize() + gp.getTileSize() / 2;
+                if (!pathFinder.getPathList().isEmpty()) {
+                    Node nextNode = pathFinder.getPathList().get(0);
+                    int nextNodeCenterX = nextNode.getCol() * gp.getTileSize() + gp.getTileSize() / 2;
+                    int nextNodeCenterY = nextNode.getRow() * gp.getTileSize() + gp.getTileSize() / 2;
                     int currentOrcCenterX = worldX + solidArea.x + solidArea.width / 2;
                     int currentOrcCenterY = worldY + solidArea.y + solidArea.height / 2;
                     int deltaX = nextNodeCenterX - currentOrcCenterX;

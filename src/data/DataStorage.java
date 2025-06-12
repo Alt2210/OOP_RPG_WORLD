@@ -16,12 +16,20 @@ public class DataStorage implements Serializable {
     int playerWorldX;
     int playerWorldY;
     String playerDirection;
-    int currentMap;
+    private int currentMap;
 
     // World State: Sử dụng mảng List để lưu trạng thái cho từng map
     // Kích thước mảng sẽ bằng GamePanel.maxMap
     List<WorldObjectState>[] objectStates;
     List<MonsterState>[] monsterStates;
+
+    public int getCurrentMap() {
+        return currentMap;
+    }
+
+    public void setCurrentMap(int currentMap) {
+        this.currentMap = currentMap;
+    }
 
     @SuppressWarnings("unchecked")
     public DataStorage(int maxMap) {

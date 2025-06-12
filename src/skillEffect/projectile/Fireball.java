@@ -134,8 +134,8 @@ public class Fireball extends Projectile {
             return;
         }
 
-        int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
-        int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
+        int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX(); // Sửa Y thành X
+        int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY(); // Giữ nguyên
 
         // Chỉ vẽ nếu skillEffect.projectile nằm trong màn hình
         if (worldX + solidArea.width > gp.getPlayer().getWorldX() - gp.getPlayer().getScreenX() &&

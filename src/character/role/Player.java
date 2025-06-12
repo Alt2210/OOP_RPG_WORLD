@@ -122,10 +122,10 @@ public abstract class Player extends character.Character {
             // ... (xử lý input di chuyển và tấn công thường)
 
             // Thay thế handleSkillInputs() bằng logic mới
-            if (keyH.skill1Pressed) {
+            if (keyH.isSkill1Pressed()) {
                 activateSkill(0); // Kích hoạt kỹ năng ở vị trí số 0 (ví dụ Fireball)
             }
-            if (keyH.skill2Pressed){
+            if (keyH.isSkill2Pressed()){
                 activateSkill(1);
             }
 
@@ -164,21 +164,21 @@ public abstract class Player extends character.Character {
             else {
                 handleStaminaAndDash();
                 // --- 2a. Xử lý Input cho Hành động (Tấn công, Dùng skill) ---
-                if (keyH.attackPressed && canAttack()) {
+                if (keyH.isAttackPressed() && canAttack()) {
                     performNormalAttackAction();
                 }
 
-                if (keyH.fPressed) {
+                if (keyH.isfPressed()) {
                     interactWithObject();
-                    keyH.fPressed = false; // Xử lý một lần nhấn để tránh mở/đóng liên tục
+                    keyH.setfPressed(false); // Xử lý một lần nhấn để tránh mở/đóng liên tục
                 }
                 // --- 2b. Xử lý Input cho Di chuyển ---
-                boolean isTryingToMove = (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed);
+                boolean isTryingToMove = (keyH.isUpPressed() || keyH.isDownPressed() || keyH.isLeftPressed() || keyH.isRightPressed());
                 if (isTryingToMove) {
-                    if (keyH.upPressed) direction = "up";
-                    else if (keyH.downPressed) direction = "down";
-                    else if (keyH.leftPressed) direction = "left";
-                    else if (keyH.rightPressed) direction = "right";
+                    if (keyH.isUpPressed()) direction = "up";
+                    else if (keyH.isDownPressed()) direction = "down";
+                    else if (keyH.isLeftPressed()) direction = "left";
+                    else if (keyH.isRightPressed()) direction = "right";
 
                     // Kiểm tra va chạm với Tile, Item, NPC
                     collisionOn = false;
@@ -238,7 +238,7 @@ public abstract class Player extends character.Character {
 
         // Cập nhật sprite animation
         // Animation sẽ chạy nếu Player đang tấn công, hoặc đang di chuyển mà không bị chặn
-        boolean isActuallyMoving = (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) && !collisionOn;
+        boolean isActuallyMoving = (keyH.isUpPressed() || keyH.isDownPressed() || keyH.isLeftPressed() || keyH.isRightPressed()) && !collisionOn;
         if (isAttacking() || isActuallyMoving) {
             cip.update();
         } else {
@@ -399,10 +399,10 @@ public abstract class Player extends character.Character {
     }
 
     private void handleStaminaAndDash() {
-        boolean isTryingToMove = (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed);
+        boolean isTryingToMove = (keyH.isUpPressed() || keyH.isDownPressed() || keyH.isLeftPressed() || keyH.isRightPressed());
 
         // Kiểm tra nếu người chơi muốn dash, đang di chuyển và còn thể lực
-        if (keyH.dashPressed && isTryingToMove && currentStamina > 0) {
+        if (keyH.isDashPressed() && isTryingToMove && currentStamina > 0) {
             isDashing = true;
             // Tiêu hao thể lực, đảm bảo không xuống dưới 0
             currentStamina = Math.max(0, currentStamina - dashCost);

@@ -100,12 +100,12 @@ public class Explosion_projectile extends Projectile{
             return;
         }
 
-        int screenX = worldX - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenX();
-        int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
+        int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX(); // Sửa Y thành X
+        int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY(); // Giữ nguyên
 
         // Chỉ vẽ nếu skillEffect.projectile nằm trong màn hình
-        if (worldX + solidArea.width > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenX() &&
-                worldX - solidArea.width < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenX() && // Sửa: trừ solidArea.width
+        if (worldX + solidArea.width > gp.getPlayer().getWorldX() - gp.getPlayer().getScreenX() &&
+                worldX - solidArea.width < gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX() && // Sửa: trừ solidArea.width
                 worldY + solidArea.height > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() &&
                 worldY - solidArea.height < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()) { // Sửa: trừ solidArea.height
 

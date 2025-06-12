@@ -9,7 +9,7 @@ public abstract class SkillEffect {
     protected int worldX, worldY;
     protected Character caster;
     protected int damage;
-    public boolean alive = true;
+    protected boolean alive = true;
     protected Rectangle solidArea = new Rectangle(0, 0, 0, 0);
     protected int damageTickCounter; // Đếm ngược thời gian giữa các lần gây sát thương
 
@@ -17,6 +17,8 @@ public abstract class SkillEffect {
     public SkillEffect(GamePanel gp) {
         this.gp = gp;
     }
+
+
 
 
     public abstract void update();

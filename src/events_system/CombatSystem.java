@@ -9,6 +9,7 @@ import skillEffect.projectile.Projectile;
 import sound.Sound;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class CombatSystem {
     private GamePanel gp;
@@ -59,49 +60,32 @@ public class CombatSystem {
         if (skillEffect.getCaster() instanceof Player) {
             // Tạo một danh sách tạm thời chứa tất cả quái vật còn sống để duyệt
             // Hoặc bạn có thể duyệt qua từng mảng quái vật riêng biệt như trong checkPlayerMonsterCombat
-            Monster[] allMonstersToCheck[] = {
-                    gp.getMON_GreenSlime(),
-                    gp.getMON_Bat(),
-                    gp.getMON_GolemBoss(),
-                    // Thêm các mảng quái vật khác ở đây nếu có
-            };
+            ArrayList<Monster> monsters = gp.getMonster();
 
-            for (Monster[] monsterArray : allMonstersToCheck) {
-                if (monsterArray == null) continue;
+            for (Monster monster : monsters) {
+                if (monster != null && monster.getCurrentHealth() > 0) {
+                    Rectangle monsterBounds = new Rectangle(
+                            monster.getWorldX() + monster.getSolidArea().x,
+                            monster.getWorldY() + monster.getSolidArea().y,
+                            monster.getSolidArea().width,
+                            monster.getSolidArea().height
+                    );
 
-                for (int i = 0; i < monsterArray.length; i++) {
-                    Monster monster = monsterArray[i];
-                    if (monster != null && monster.getCurrentHealth() > 0) {
-                        Rectangle monsterBounds = new Rectangle(
-                                monster.getWorldX() + monster.getSolidAreaDefaultX(),
-                                monster.getWorldY() + monster.getSolidAreaDefaultY(),
-                                monster.getSolidArea().width,
-                                monster.getSolidArea().height
-                        );
+                    if (skillEffectBounds.intersects(monsterBounds)) {
+                        if (skillEffect.isSingleHit()) {
+                            System.out.println("[" + System.currentTimeMillis() + "] CombatSystem: " +
+                                    skillEffect.getCaster().getName() + "'s skill trúng " + monster.getName());
 
-                        if (skillEffectBounds.intersects(monsterBounds)) {
-                            // Va chạm đã xảy ra.
-                            // StellarField không gây sát thương ở đây, nó có bộ đếm riêng.
-                            // Chúng ta chỉ cần xử lý cho các skillEffect.skillEffect thông thường.
-                            if (skillEffect.isSingleHit()) {
-                                System.out.println("[" + System.currentTimeMillis() + "] CombatSystem.processSkillEffectImpacts: " +
-                                        skillEffect.getCaster().getName() + "'s skillEffect.skillEffect trúng " + monster.getName());
+                            int actualDamageDealt = monster.receiveDamage(skillEffect.getDamageValue(), skillEffect.getCaster());
 
-                                int skillEffectDamageValue = skillEffect.getDamageValue();
-                                int actualDamageDealt = monster.receiveDamage(skillEffectDamageValue, skillEffect.getCaster());
+                            gp.getUi().showMessage(skillEffect.getCaster().getName() + " bắn trúng " +
+                                    monster.getName() + " gây " + actualDamageDealt + " sát thương!");
 
-                                gp.getUi().showMessage(skillEffect.getCaster().getName() + " bắn trúng " +
-                                        monster.getName() + " gây " + actualDamageDealt + " sát thương!");
+                            gp.playSoundEffect(Sound.SFX_FIREBALL_HIT);
+                            skillEffect.setAlive(false); // Vô hiệu hóa skill effect
 
-                                gp.playSoundEffect(Sound.SFX_FIREBALL_HIT);
-                                skillEffect.setAlive(false); // Chỉ biến mất nếu là single-hit
-
-                                if (monster.getCurrentHealth() <= 0) {
-                                    System.out.println("    " + monster.getName() + " đã bị skillEffect.skillEffect đánh bại.");
-                                    monsterArray[i] = null;
-                                }
-                                return; // Dừng lại vì skillEffect.skillEffect single-hit đã hoàn thành nhiệm vụ.
-                            }
+                            // Không cần xóa monster ở đây, GamePanel.update() sẽ làm việc đó
+                            return; // Thoát vì skill đã trúng mục tiêu
                         }
                     }
                 }
@@ -232,6 +216,26 @@ public class CombatSystem {
         return distance <= attacker.getAttackRange() && isInFanShape;
     }
 
+    public void checkPlayerMonsterCombat(Player player, ArrayList<Monster> monsters){
+        if (player == null || player.getCurrentHealth() <= 0) {
+            return;
+        }
+
+
+        int monsterIndex = gp.getcChecker().checkEntity(player, monsters);
+        if (monsterIndex != 999) {
+            Monster monster = monsters.get(monsterIndex);
+            System.out.println("[" + System.currentTimeMillis() + "] checkPlayerMonsterCombat: Player (hướng: " + player.getDirection() + ") định di chuyển vào " + monster.getName() + " (hướng: " + monster.getDirection() + ", HP: " + monster.getCurrentHealth() + ")");
+
+            if (monster.canAttack()) {
+                System.out.println("    Player di chuyển vào " + monster.getName() + ". Monster (cooldown: " + monster.getAttackCooldown() + ") thực hiện phản công.");
+                performAttack(monster, player);
+            } else {
+                System.out.println("    Player di chuyển vào " + monster.getName() + ". Monster (cooldown: " + monster.getAttackCooldown() + ") KHÔNG THỂ phản công (đang cooldown).");
+            }
+        }
+    }
+
     public void checkPlayerMonsterCombat(Player player, Monster[] monsters) {
         if (player == null || player.getCurrentHealth() <= 0) {
             return;
@@ -250,10 +254,10 @@ public class CombatSystem {
                     System.out.println("    Player di chuyển vào " + monster.getName() + ". Monster (cooldown: " + monster.getAttackCooldown() + ") KHÔNG THỂ phản công (đang cooldown).");
                 }
             }
-        }
+    }
 
 
-    public void handleMonsterCollisionAttack(Player player, Monster[] monsters) {
+    public void handleMonsterCollisionAttack(Player player, ArrayList<Monster> monsters) {
         if (player == null || player.getCurrentHealth() <= 0) {
             return;
         }
@@ -278,18 +282,11 @@ public class CombatSystem {
     public void checkAoEAttack(Character caster, Rectangle aoeBounds, int aoeDamage) {
         // Logic cho caster là Player tấn công Monster
         if (caster instanceof character.role.Player) {
-            Monster[][] allMonsterArrays = {
-                    gp.getMON_GreenSlime(), gp.getMON_Bat(), gp.getMON_Orc(),
-                    gp.getMON_GolemBoss(), gp.getSkeletonLord()
-            };
-            for (Monster[] monsterArray : allMonsterArrays) {
-                if (monsterArray == null) continue;
-                for (Monster monster : monsterArray) {
-                    if (monster != null && monster.getCurrentHealth() > 0) {
-                        if (aoeBounds.intersects(monster.getHitbox())) {
-                            // Gọi phương thức AoE chuyên dụng
-                            attackAOE(caster, monster, aoeDamage);
-                        }
+            ArrayList<Monster> monsters = gp.getMonster();
+            for (Monster monster : monsters) {
+                if (monster != null && monster.getCurrentHealth() > 0) {
+                    if (aoeBounds.intersects(monster.getHitbox())) {
+                        attackAOE(caster, monster, aoeDamage);
                     }
                 }
             }
@@ -308,29 +305,21 @@ public class CombatSystem {
 
 
     public void checkAoEAttack(Character caster, int centerX, int centerY, int radius, int aoeDamage) {
-        Monster[][] allMonsters = {
-                gp.getMON_GreenSlime(), gp.getMON_Bat(), gp.getMON_Orc(), gp.getMON_GolemBoss()
-        };
+        ArrayList<Monster> monsters = gp.getMonster();
+        for (Monster target : monsters) {
+            if (target != null && target.getCurrentHealth() > 0) {
+                int monsterLeft = target.getWorldX() + target.getSolidArea().x;
+                int monsterRight = monsterLeft + target.getSolidArea().width;
+                int monsterTop = target.getWorldY() + target.getSolidArea().y;
+                int monsterBottom = monsterTop + target.getSolidArea().height;
 
-        for (Monster[] monsterArray : allMonsters) {
-            if (monsterArray == null) continue;
-            for (int i = 0; i < monsterArray.length; i++) {
-                Monster target = monsterArray[i];
-                if (target != null && target.getCurrentHealth() > 0) {
-                    int monsterLeft = target.getWorldX() + target.getSolidArea().x;
-                    int monsterRight = monsterLeft + target.getSolidArea().width;
-                    int monsterTop = target.getWorldY() + target.getSolidArea().y;
-                    int monsterBottom = monsterTop + target.getSolidArea().height;
+                int closestX = Math.max(monsterLeft, Math.min(centerX, monsterRight));
+                int closestY = Math.max(monsterTop, Math.min(centerY, monsterBottom));
 
-                    int closestX = Math.max(monsterLeft, Math.min(centerX, monsterRight));
-                    int closestY = Math.max(monsterTop, Math.min(centerY, monsterBottom));
+                double distance = Math.sqrt(Math.pow(centerX - closestX, 2) + Math.pow(centerY - closestY, 2));
 
-                    double distance = Math.sqrt(Math.pow(centerX - closestX, 2) + Math.pow(centerY - closestY, 2));
-
-                    if (distance <= radius) {
-                        // THAY ĐỔI: Gọi attackAOE thay vì performAttack
-                        attackAOE(caster, target, aoeDamage);
-                    }
+                if (distance <= radius) {
+                    attackAOE(caster, target, aoeDamage);
                 }
             }
         }
@@ -361,41 +350,26 @@ public class CombatSystem {
                 projectile.getSolidArea().height
         );
 
-        Monster[][] allMonstersToCheck = {
-                gp.getMON_GreenSlime(),
-                gp.getMON_Bat(),
-                gp.getMON_Orc(),
-                gp.getMON_GolemBoss(),
-                gp.getSkeletonLord()
-        };
+        ArrayList<Monster> monsters = gp.getMonster();
+        for (Monster monster : monsters) {
+            if (monster != null && monster.getCurrentHealth() > 0) {
+                Rectangle monsterBounds = new Rectangle(
+                        monster.getWorldX() + monster.getSolidArea().x,
+                        monster.getWorldY() + monster.getSolidArea().y,
+                        monster.getSolidArea().width,
+                        monster.getSolidArea().height
+                );
 
-        for (Monster[] monsterArray : allMonstersToCheck) {
-            if (monsterArray == null) continue;
+                if (projectileBounds.intersects(monsterBounds)) {
+                    int actualDamageDealt = monster.receiveDamage(projectile.getDamageValue(), projectile.getCaster());
+                    gp.getUi().showMessage(projectile.getCaster().getName() + " hits " + monster.getName() + " for " + actualDamageDealt + " damage!");
 
-            for (Monster monster : monsterArray) {
-                if (monster != null && monster.getCurrentHealth() > 0) {
-                    Rectangle monsterBounds = new Rectangle(
-                            monster.getWorldX() + monster.getSolidArea().x,
-                            monster.getWorldY() + monster.getSolidArea().y,
-                            monster.getSolidArea().width,
-                            monster.getSolidArea().height
-                    );
+                    gp.playSoundEffect(Sound.SFX_FIREBALL_HIT);
 
-                    // Nếu có va chạm
-                    if (projectileBounds.intersects(monsterBounds)) {
-                        // Gây sát thương
-                        int actualDamageDealt = monster.receiveDamage(projectile.getDamageValue(), projectile.getCaster());
-                        gp.getUi().showMessage(projectile.getCaster().getName() + " hits " + monster.getName() + " for " + actualDamageDealt + " damage!");
-
-                        // Phát âm thanh
-                        gp.playSoundEffect(Sound.SFX_FIREBALL_HIT);
-
-                        if(projectile.isSingleHit()) {
-                            projectile.setAlive(false);
-                        }
-                        // Thoát khỏi phương thức ngay lập tức để đảm bảo chỉ trúng một mục tiêu
-                        return;
+                    if (projectile.isSingleHit()) {
+                        projectile.setAlive(false);
                     }
+                    return; // Thoát ngay khi trúng
                 }
             }
         }

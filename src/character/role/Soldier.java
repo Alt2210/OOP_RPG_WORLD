@@ -12,6 +12,7 @@ import skill.S_StellaField;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Soldier extends Player {
 
@@ -116,12 +117,10 @@ public class Soldier extends Player {
 
     @Override
     public void checkAttack() {
-        // Tạo một vùng hitbox cho đòn tấn công của Soldier
         Rectangle attackArea = new Rectangle();
         int attackAreaWidth = 36;
         int attackAreaHeight = 36;
 
-        // Căn chỉnh hitbox dựa trên hướng của người chơi
         int solidAreaCenterX = worldX + solidArea.x + solidArea.width / 2;
         int solidAreaCenterY = worldY + solidArea.y + solidArea.height / 2;
 
@@ -140,35 +139,27 @@ public class Soldier extends Player {
                 break;
         }
 
-        // Tạo một danh sách các mảng quái vật để kiểm tra
-        Monster[][] allMonsters = {
-                gp.getMON_GreenSlime(),
-                gp.getMON_Bat(),
-                gp.getMON_Orc(),
-                gp.getMON_GolemBoss()
-        };
+        // Lấy danh sách quái vật duy nhất từ GamePanel
+        ArrayList<Monster> monsters = gp.getMonster();
 
-        // Lặp qua từng loại quái vật
-        for (Monster[] monsterArray : allMonsters) {
-            if (monsterArray == null) continue;
+        // Lặp qua danh sách quái vật để kiểm tra va chạm
+        for (Monster monster : monsters) {
+            if (monster != null && monster.getCurrentHealth() > 0) {
+                // Lấy hitbox của quái vật
+                Rectangle monsterHitbox = new Rectangle(
+                        monster.getWorldX() + monster.getSolidArea().x,
+                        monster.getWorldY() + monster.getSolidArea().y,
+                        monster.getSolidArea().width,
+                        monster.getSolidArea().height
+                );
 
-            for (int i = 0; i < monsterArray.length; i++) {
-                Monster monster = monsterArray[i];
-                if (monster != null && monster.getCurrentHealth() > 0) {
-                    // Lấy hitbox của quái vật
-                    Rectangle monsterHitbox = new Rectangle(
-                            monster.getWorldX() + monster.getSolidArea().x,
-                            monster.getWorldY() + monster.getSolidArea().y,
-                            monster.getSolidArea().width,
-                            monster.getSolidArea().height
-                    );
-
-                    // Kiểm tra va chạm giữa hitbox tấn công và hitbox của quái vật
-                    if (attackArea.intersects(monsterHitbox)) {
-                        System.out.println("Soldier hit " + monster.getName()); // Dòng gỡ lỗi
-                        // Gọi CombatSystem để xử lý sát thương
-                        gp.getCombatSystem().performAttack(this, monster);
-                    }
+                // Kiểm tra va chạm và gây sát thương
+                if (attackArea.intersects(monsterHitbox)) {
+                    System.out.println("Soldier hit " + monster.getName());
+                    gp.getCombatSystem().performAttack(this, monster);
+                    // Lưu ý: Đòn đánh của Soldier có thể trúng nhiều mục tiêu
+                    // nếu chúng đứng gần nhau. Nếu bạn muốn nó chỉ trúng 1 mục tiêu,
+                    // hãy thêm 'break;' sau dòng performAttack.
                 }
             }
         }

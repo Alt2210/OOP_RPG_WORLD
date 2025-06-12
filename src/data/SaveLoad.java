@@ -24,7 +24,7 @@ public class SaveLoad {
 
     public void saveGame() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_FILE_NAME))) {
-            DataStorage data = new DataStorage(gp.maxMap);
+            DataStorage data = new DataStorage(gp.getMaxMap());
             Player player = gp.getPlayer();
 
             if (player == null) {
@@ -41,60 +41,29 @@ public class SaveLoad {
             data.playerWorldX = player.getWorldX();
             data.playerWorldY = player.getWorldY();
             data.playerDirection = player.getDirection();
-            data.currentMap = gp.currentMap;
+            data.setCurrentMap(gp.getCurrentMap());
 
             // 2. Lưu trạng thái của tất cả WorldObject trên map hiện tại
             for (WorldObject wObject : gp.getwObjects()) {
                 if (wObject != null) {
-                    data.objectStates[gp.currentMap].add(new WorldObjectState(wObject.name, wObject.getWorldX(), wObject.getWorldY(), true));
+                    data.objectStates[gp.getCurrentMap()].add(new WorldObjectState(wObject.getName(), wObject.getWorldX(), wObject.getWorldY(), true));
                 }
             }
 
-            // 3. Lưu trạng thái của tất cả Monster trên map hiện tại
-            saveMonsterStates(data.monsterStates[gp.currentMap]);
-
+            for (Monster monster : gp.getMonster()) {
+                if (monster != null) {
+                    data.monsterStates[gp.getCurrentMap()].add(new MonsterState(monster.getName(), monster.getWorldX(), monster.getWorldY(), monster.getCurrentHealth(), monster.isOnPath()));
+                }
+            }
 
             oos.writeObject(data);
             gp.getUi().showMessage("Game Saved!");
-            System.out.println("Game saved for map " + gp.currentMap);
+            System.out.println("Game saved for map " + gp.getCurrentMap());
 
         } catch (IOException e) {
             System.err.println("Save Exception: " + e.getMessage());
             e.printStackTrace();
             gp.getUi().showMessage("Error saving game!");
-        }
-    }
-
-    private void saveMonsterStates(List<MonsterState> monsterStateList) {
-        // Lưu trạng thái của Green Slimes
-        for (Monster monster : gp.getMON_GreenSlime()) {
-            if (monster != null) {
-                monsterStateList.add(new MonsterState(monster.getName(), monster.getWorldX(), monster.getWorldY(), monster.getCurrentHealth(), monster.isOnPath()));
-            }
-        }
-        // Lưu trạng thái của Bats
-        for (Monster monster : gp.getMON_Bat()) {
-            if (monster != null) {
-                monsterStateList.add(new MonsterState(monster.getName(), monster.getWorldX(), monster.getWorldY(), monster.getCurrentHealth(), monster.isOnPath()));
-            }
-        }
-        // Lưu trạng thái của Orcs
-        for (Monster monster : gp.getMON_Orc()) {
-            if (monster != null) {
-                monsterStateList.add(new MonsterState(monster.getName(), monster.getWorldX(), monster.getWorldY(), monster.getCurrentHealth(), monster.isOnPath()));
-            }
-        }
-        // Lưu trạng thái của Skeleton Lords
-        for (Monster monster : gp.getSkeletonLord()) {
-            if (monster != null) {
-                monsterStateList.add(new MonsterState(monster.getName(), monster.getWorldX(), monster.getWorldY(), monster.getCurrentHealth(), monster.isOnPath()));
-            }
-        }
-        // Lưu trạng thái của Golem Bosses
-        for (Monster monster : gp.getMON_GolemBoss()) {
-            if (monster != null) {
-                monsterStateList.add(new MonsterState(monster.getName(), monster.getWorldX(), monster.getWorldY(), monster.getCurrentHealth(), monster.isOnPath()));
-            }
         }
     }
 
@@ -117,15 +86,15 @@ public class SaveLoad {
             player.setWorldX(data.playerWorldX);
             player.setWorldY(data.playerWorldY);
             player.setDirection(data.playerDirection);
-            gp.currentMap = data.currentMap;
+            gp.setCurrentMap(data.getCurrentMap());
 
             // 2. Dọn dẹp thế giới cũ và tái tạo lại từ dữ liệu đã lưu
             gp.clearEntitiesForMapChange();
 
             // Tải trạng thái WorldObject
-            if (data.objectStates[gp.currentMap] != null) {
-                for (int i = 0; i < data.objectStates[gp.currentMap].size(); i++) {
-                    WorldObjectState state = data.objectStates[gp.currentMap].get(i);
+            if (data.objectStates[gp.getCurrentMap()] != null) {
+                for (int i = 0; i < data.objectStates[gp.getCurrentMap()].size(); i++) {
+                    WorldObjectState state = data.objectStates[gp.getCurrentMap()].get(i);
                     if (state.isExists()) {
                         gp.getwObjects()[i] = createObjectFromName(state.getName());
                         if (gp.getwObjects()[i] != null) {
@@ -136,14 +105,24 @@ public class SaveLoad {
                 }
             }
 
-            // Tải trạng thái Monster
-            if (data.monsterStates[gp.currentMap] != null) {
-                loadMonsterStates(data.monsterStates[gp.currentMap]);
+            if(data.monsterStates[gp.getCurrentMap()] != null){
+                for (int i = 0; i < data.monsterStates[gp.getCurrentMap()].size(); i++) {
+                    MonsterState state = data.monsterStates[gp.getCurrentMap()].get(i);
+                    Monster monster = createMonsterFromName(state.getName());
+                    if (monster != null) {
+                        monster.setWorldX(state.getWorldX());
+                        monster.setWorldY(state.getWorldY());
+                        monster.setCurrentHealth(state.getCurrentHealth());
+                        monster.setOnPath(state.isOnPath());
+                        gp.getMonster().add(monster); // Thêm vào ArrayList
+                    }
+                }
             }
+
 
             gp.getUi().showMessage("Game Loaded!");
             gp.gameState = gp.playState;
-            System.out.println("Game loaded for map " + gp.currentMap);
+            System.out.println("Game loaded for map " + gp.getCurrentMap());
 
         } catch (FileNotFoundException e) {
             gp.getUi().showMessage("No save file found.");
@@ -170,56 +149,22 @@ public class SaveLoad {
         }
     }
 
-    private void loadMonsterStates(List<MonsterState> monsterStateList) {
-        int greenSlimeIndex = 0;
-        int batIndex = 0;
-        int orcIndex = 0;
-        int skeletonLordIndex = 0;
-        int golemBossIndex = 0;
-
-        for(MonsterState state : monsterStateList) {
-            Monster monster = null;
-            if (state.getName() == null) continue;
-
-            switch(state.getName()) {
-                case "Green Slime":
-                    if(greenSlimeIndex < gp.getMON_GreenSlime().length) {
-                        monster = new MON_GreenSlime(gp);
-                        gp.getMON_GreenSlime()[greenSlimeIndex++] = (MON_GreenSlime) monster;
-                    }
-                    break;
-                case "Bat":
-                    if(batIndex < gp.getMON_Bat().length) {
-                        monster = new MON_Bat(gp);
-                        gp.getMON_Bat()[batIndex++] = (MON_Bat) monster;
-                    }
-                    break;
-                case "Orc":
-                    if(orcIndex < gp.getMON_Orc().length) {
-                        monster = new MON_Orc(gp);
-                        gp.getMON_Orc()[orcIndex++] = (MON_Orc) monster;
-                    }
-                    break;
-                case "Skeleton Lord":
-                    if(skeletonLordIndex < gp.getSkeletonLord().length) {
-                        monster = new MON_SkeletonLord(gp);
-                        gp.getSkeletonLord()[skeletonLordIndex++] = (MON_SkeletonLord) monster;
-                    }
-                    break;
-                case "GolemBoss":
-                    if(golemBossIndex < gp.getMON_GolemBoss().length) {
-                        monster = new MON_GolemBoss(gp);
-                        gp.getMON_GolemBoss()[golemBossIndex++] = (MON_GolemBoss) monster;
-                    }
-                    break;
-            }
-
-            if(monster != null) {
-                monster.setWorldX(state.getWorldX());
-                monster.setWorldY(state.getWorldY());
-                monster.setCurrentHealth(state.getCurrentHealth());
-                monster.setOnPath(state.isOnPath());
-            }
+    private Monster createMonsterFromName(String name) {
+        if (name == null) return null;
+        switch (name) {
+            case "Green Slime":
+                return new MON_GreenSlime(gp);
+            case "Bat":
+                return new MON_Bat(gp);
+            case "Orc":
+                return new MON_Orc(gp);
+            case "Skeleton Lord":
+                return new MON_SkeletonLord(gp);
+            case "GolemBoss":
+                return new MON_GolemBoss(gp);
+            default:
+                System.err.println("SaveLoad: Unknown monster name '" + name + "' in save file.");
+                return null;
         }
     }
 }

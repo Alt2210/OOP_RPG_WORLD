@@ -158,10 +158,10 @@ public class MON_GreenSlime extends Monster {
             if (pathFinder.search()) {
                 // Nếu tìm thấy đường đi, pathFinder.pathList sẽ chứa các Node
                 // Lấy Node tiếp theo trên đường đi
-                if (!pathFinder.pathList.isEmpty()) {
-                    Node nextNode = pathFinder.pathList.getFirst(); // Node đầu tiên trong path là điểm đến tiếp theo
-                    int nextX = nextNode.col * gp.getTileSize();
-                    int nextY = nextNode.row * gp.getTileSize();
+                if (!pathFinder.getPathList().isEmpty()) {
+                    Node nextNode = pathFinder.getPathList().getFirst(); // Node đầu tiên trong path là điểm đến tiếp theo
+                    int nextX = nextNode.getCol() * gp.getTileSize();
+                    int nextY = nextNode.getRow() * gp.getTileSize();
 
                     // Xác định hướng di chuyển đến nextNode
                     if (worldY > nextY && worldX == nextX) direction = "up";

@@ -134,10 +134,10 @@ public class MON_Bat extends Monster {
             goalRow = Math.max(0, Math.min(goalRow, gp.getMaxWorldRow() - 1));
 
             pathFinder.setNodes(currentMonsterCol, currentMonsterRow, goalCol, goalRow, this);
-            if (pathFinder.search() && !pathFinder.pathList.isEmpty()) {
-                Node nextNode = pathFinder.pathList.getFirst();
-                int nextX = nextNode.col * gp.getTileSize();
-                int nextY = nextNode.row * gp.getTileSize();
+            if (pathFinder.search() && !pathFinder.getPathList().isEmpty()) {
+                Node nextNode = pathFinder.getPathList().getFirst();
+                int nextX = nextNode.getCol() * gp.getTileSize();
+                int nextY = nextNode.getRow() * gp.getTileSize();
 
                 if (worldY > nextY && worldX == nextX) direction = "up";
                 else if (worldY < nextY && worldX == nextX) direction = "down";

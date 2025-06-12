@@ -7,16 +7,60 @@ import item.Inventory;
 import item.ItemStack;
 
 public class KeyHandler implements KeyListener {
-    GamePanel gp;
-    public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed; // Giữ lại enterPressed nếu bạn dùng cho tương tác khác
-    public boolean attackPressed; // Biến theo dõi phím tấn công
-    public boolean skill1Pressed; // Biến theo dõi phím kỹ năng 1
-    public boolean skill2Pressed;
-    public boolean fPressed;
-    public boolean dashPressed;
+    private GamePanel gp;
+    private boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed; // Giữ lại enterPressed nếu bạn dùng cho tương tác khác
+    private boolean attackPressed; // Biến theo dõi phím tấn công
+    private boolean skill1Pressed; // Biến theo dõi phím kỹ năng 1
+    private boolean skill2Pressed;
+    private boolean fPressed;
+    private boolean dashPressed;
 
     public KeyHandler(GamePanel gp) {
         this.gp = gp;
+    }
+
+    public void setfPressed(boolean fPressed) {
+        this.fPressed = fPressed;
+    }
+
+    public boolean isUpPressed() {
+        return upPressed;
+    }
+
+    public boolean isDownPressed() {
+        return downPressed;
+    }
+
+    public boolean isLeftPressed() {
+        return leftPressed;
+    }
+
+    public boolean isRightPressed() {
+        return rightPressed;
+    }
+
+    public boolean isEnterPressed() {
+        return enterPressed;
+    }
+
+    public boolean isAttackPressed() {
+        return attackPressed;
+    }
+
+    public boolean isSkill1Pressed() {
+        return skill1Pressed;
+    }
+
+    public boolean isSkill2Pressed() {
+        return skill2Pressed;
+    }
+
+    public boolean isfPressed() {
+        return fPressed;
+    }
+
+    public boolean isDashPressed() {
+        return dashPressed;
     }
 
     @Override

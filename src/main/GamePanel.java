@@ -29,10 +29,10 @@ public class GamePanel extends JPanel implements Runnable {
     private final int ScreenHeight = tileSize * maxScreenRow;
 
     // WORLD SETTINGS
-    public int maxWorldCol = 100; // Kích thước cố định cho tất cả map
-    public int maxWorldRow = 100; // Kích thước cố định cho tất cả map
-    public final int maxMap = 2; // SỐ LƯỢNG MAP
-    public int currentMap = 0;   // Map hiện tại, bắt đầu từ map 0
+    private int maxWorldCol = 100; // Kích thước cố định cho tất cả map
+    private int maxWorldRow = 100; // Kích thước cố định cho tất cả map
+    private final int maxMap = 2; // SỐ LƯỢNG MAP
+    private int currentMap = 0;   // Map hiện tại, bắt đầu từ map 0
 
     // SYSTEM
     private TileManager tileM = new TileManager(this);
@@ -52,11 +52,7 @@ public class GamePanel extends JPanel implements Runnable {
     private Player player;
     public WorldObject wObjects[] = new WorldObject[20];
     public Character npc[] = new Character[10];
-    public MON_GreenSlime[] greenSlime = new MON_GreenSlime[20];
-    public MON_Bat[] bat = new MON_Bat[10];
-    public MON_GolemBoss[] golemBoss = new MON_GolemBoss[5];
-    public MON_Orc[] orc = new MON_Orc[10];
-    public MON_SkeletonLord[] skeletonLord = new MON_SkeletonLord[10];
+    private ArrayList<Monster> monsters = new ArrayList<>();
     public List<SkillEffect> skillEffects = new ArrayList<>();
     public OBJ_Chest currentChest = null;
 
@@ -74,6 +70,24 @@ public class GamePanel extends JPanel implements Runnable {
     public final int InventoryState = 7;
     public final int chestState = 8;
 
+
+    //GETTERS AND SETTERS
+
+    public ArrayList<Monster> getMonster() {
+        return monsters;
+    }
+
+    public int getMaxMap() {
+        return maxMap;
+    }
+
+    public int getCurrentMap() {
+        return currentMap;
+    }
+
+    public void setCurrentMap(int currentMap) {
+        this.currentMap = currentMap;
+    }
 
     public int getOriginalTileSize() {
         return originalTileSize;
@@ -109,11 +123,6 @@ public class GamePanel extends JPanel implements Runnable {
     public WorldObject[] getwObjects() { return wObjects; }
     public events_system.CombatSystem getCombatSystem() {return combatSystem;}
     public Character[] getNpc() { return npc; }
-    public MON_GreenSlime[] getMON_GreenSlime() { return greenSlime; }
-    public MON_Bat[] getMON_Bat() { return bat; }
-    public MON_GolemBoss[] getMON_GolemBoss() { return golemBoss; }
-    public MON_Orc[] getMON_Orc() { return orc; }
-    public MON_SkeletonLord[] getSkeletonLord(){return skeletonLord; }
     public void setPlayer(Player player) {
         this.player = player;
     }
@@ -164,6 +173,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
         skillEffects.clear();
     }
+
     public void resetGameForNewSession() { //
         System.out.println("Resetting game for new session...");
         currentMap = 0; // Luôn bắt đầu từ map 0 khi game mới
@@ -179,8 +189,6 @@ public class GamePanel extends JPanel implements Runnable {
         dialogueManager.reset(); // Reset DialogueManager
         ui = new UI(this); // Tạo lại UI để reset playtime và các trạng thái khác của UI
 
-        // gameState sẽ được đặt lại thành titleState bởi KeyHandler khi chọn New Game hoặc sau Game Over/Victory
-        // playMusic(Sound.MUSIC_BACKGROUND); // Có thể không cần thiết nếu title screen đã có nhạc
     }
 
 
@@ -228,52 +236,18 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
-            for (int i = 0; i < greenSlime.length; i++) {
-                if (greenSlime[i] != null) {
-                    if (greenSlime[i].getCurrentHealth() > 0) {
-                        greenSlime[i].update();
+            for (int i = monsters.size() - 1; i >= 0; i--) {
+                Monster monster = monsters.get(i);
+                if (monster != null) {
+                    if (monster.getCurrentHealth() > 0) {
+                        monster.update();
                     } else {
-                        aSetter.removeDeadMonster(greenSlime, i, currentMap); //
+                        monsters.remove(i);
                     }
+                } else {
+                    monsters.remove(i);
                 }
             }
-            for (int i = 0; i < skeletonLord.length; i++) {
-                if (skeletonLord[i] != null) {
-                    if (skeletonLord[i].getCurrentHealth() > 0) {
-                        skeletonLord[i].update();
-                    } else {
-                        aSetter.removeDeadMonster(skeletonLord, i, currentMap);
-                    }
-                }
-            }
-            for (int i = 0; i < bat.length; i++) {
-                if (bat[i] != null) {
-                    if (bat[i].getCurrentHealth() > 0) {
-                        bat[i].update();
-                    } else {
-                        aSetter.removeDeadMonster(bat, i, currentMap); //
-                    }
-                }
-            }
-            for (int i = 0; i < orc.length; i++) {
-                if (orc[i] != null) {
-                    if (orc[i].getCurrentHealth() > 0) {
-                        orc[i].update();
-                    } else {
-                        aSetter.removeDeadMonster(orc, i, currentMap); // Tạo phương thức removeDeadMonster cho MON_Orc trong AssetSetter
-                    }
-                }
-            }
-            for (int i = 0; i < golemBoss.length; i++) {
-                if (golemBoss[i] != null) {
-                    if (golemBoss[i].getCurrentHealth() > 0) {
-                        golemBoss[i].update();
-                    } else {
-                        aSetter.removeDeadMonster(golemBoss, i, currentMap); //
-                    }
-                }
-            }
-
 
             for (int i = skillEffects.size() - 1; i >= 0; i--) {
                 SkillEffect p = skillEffects.get(i);
@@ -289,10 +263,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             if (player != null && player.getCurrentHealth() > 0) {
-                combatSystem.checkPlayerMonsterCombat(player, greenSlime);
-                combatSystem.checkPlayerMonsterCombat(player, bat);
-                combatSystem.checkPlayerMonsterCombat(player, golemBoss);
-                combatSystem.checkPlayerMonsterCombat(player, orc);
+                combatSystem.checkPlayerMonsterCombat(player, monsters);
             }
 
         } else if (gameState == pauseState) {
@@ -310,7 +281,8 @@ public class GamePanel extends JPanel implements Runnable {
         for (int i = 0; i < npc.length; i++) {
             npc[i] = null;
         }
-        for (int i = 0; i < greenSlime.length; i++) {
+
+        /*for (int i = 0; i < greenSlime.length; i++) {
             greenSlime[i] = null;
         }
         for (int i = 0; i < orc.length; i++) {
@@ -321,7 +293,8 @@ public class GamePanel extends JPanel implements Runnable {
         }
         for (int i = 0; i < golemBoss.length; i++) {
             golemBoss[i] = null;
-        }
+        }*/
+        monsters.clear();
         skillEffects.clear(); // Xóa tất cả skillEffects khi chuyển map
         System.out.println("GamePanel: Entities and skillEffects cleared for map change.");
     }
@@ -359,7 +332,7 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
             // Vẽ quái vật...
-            for (MON_GreenSlime slime : greenSlime) {
+            /*for (MON_GreenSlime slime : greenSlime) {
                 if (slime != null) slime.draw(g2);
             }
             for (MON_SkeletonLord lord : skeletonLord) {
@@ -373,6 +346,10 @@ public class GamePanel extends JPanel implements Runnable {
             }
             for (MON_GolemBoss boss : golemBoss) {
                 if (boss != null) boss.draw(g2);
+            }*/
+
+            for(Monster monster : monsters ){
+                if (monster != null) monster.draw(g2);
             }
             // Vẽ skillEffects...
             for (SkillEffect p : skillEffects) {

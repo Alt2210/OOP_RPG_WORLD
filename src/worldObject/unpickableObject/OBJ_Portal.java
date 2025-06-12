@@ -14,10 +14,12 @@ import java.awt.Color;
 import java.awt.Font;
 
 public class OBJ_Portal extends WorldObject {
-    public int targetMap;
-    public int playerTargetWorldX_onNewMap; // Tọa độ X của Player trên map mới (tính bằng pixel)
-    public int playerTargetWorldY_onNewMap; // Tọa độ Y của Player trên map mới (tính bằng pixel)
+    private int targetMap;
+    private int playerTargetWorldX_onNewMap; // Tọa độ X của Player trên map mới (tính bằng pixel)
+    private int playerTargetWorldY_onNewMap; // Tọa độ Y của Player trên map mới (tính bằng pixel)
     private GamePanel gp; // Giữ tham chiếu để truy cập GamePanel nếu cần
+
+
 
     public OBJ_Portal(GamePanel gp, int targetMap, int playerTileX_onNewMap, int playerTileY_onNewMap) {
         this.gp = gp; // Lưu tham chiếu GamePanel
@@ -73,14 +75,14 @@ public class OBJ_Portal extends WorldObject {
             if (playerBounds.intersects(portalBounds)) {
                 gpRef.getUi().showMessage("Bước qua cổng dịch chuyển đến map " + targetMap + "...");
 
-                gpRef.currentMap = this.targetMap;
+                gpRef.setCurrentMap(this.targetMap);
                 player.setWorldX(this.playerTargetWorldX_onNewMap);
                 player.setWorldY(this.playerTargetWorldY_onNewMap);
 
                 gpRef.clearEntitiesForMapChange();
-                gpRef.getaSetter().setupMapAssets(gpRef.currentMap);
+                gpRef.getaSetter().setupMapAssets(gpRef.getCurrentMap());
 
-                System.out.println("Player teleported to map: " + gpRef.currentMap + " at (" + player.getWorldX() + "," + player.getWorldY() + ")");
+                System.out.println("Player teleported to map: " + gpRef.getCurrentMap() + " at (" + player.getWorldX() + "," + player.getWorldY() + ")");
 
             }
         }

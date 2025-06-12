@@ -6,16 +6,16 @@ import main.GamePanel;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class WorldObject {
-    public BufferedImage image;
-    public String name;
-    public int id;
-    public boolean collision = false;
+public abstract class WorldObject {
+    protected BufferedImage image;
+    protected String name;
+    protected int id;
+    protected boolean collision = false;
     protected int worldX, worldY;
 
     protected Rectangle solidArea = new Rectangle(0, 0, 48, 48);
-    public int solidAreaDefaultX = 0;
-    public int solidAreaDefaultY = 0;
+    protected int solidAreaDefaultX = 0;
+    protected int solidAreaDefaultY = 0;
 
     public void draw(Graphics2D g2, GamePanel gp) {
         int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
@@ -49,6 +49,18 @@ public class WorldObject {
 
     public void setWorldY(int worldY) {
         this.worldY = worldY;
+    }
+
+    public boolean isCollision() {
+        return collision;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setCollision(boolean collision) {
+        this.collision = collision;
     }
 
     public void interactPlayer(Player player, int i, GamePanel gp){

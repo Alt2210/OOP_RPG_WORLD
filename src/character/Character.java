@@ -28,13 +28,37 @@ public abstract class Character {
 
     // STATE
     protected boolean onPath = false;
+    // CHARACTER ATTRIBUTES
+    // Tính phần máu còn lại (giả sử maxHealth và currentHealth có sẵn)
+    protected int maxHealth;  // ví dụ
+    protected int currentHealth;  // ví dụ, bạn có thể làm thành thuộc tính nhân vật
+    protected int defaultSpeed;
+    protected int attack;
+    protected int defense;
+    protected int attackRange;
+    protected int attackCooldown; // Số frame cho đến khi được tấn công tiếp
+    protected int ATTACK_COOLDOWN_DURATION; // 0.5 giây tại 60 FPS
+    protected int maxMana;
+    protected int currentMana;
+    String name;
 
-    public void setName(String name) {
-        this.name = name;
+    public Character(GamePanel gp) {
+        this.gp = gp;
+        solidArea = new Rectangle();
+        cip = new CharacterImageProcessor(gp, this);
+        // THÊM MỚI: Khởi tạo attackCooldown
+        attackCooldown = 0;
+
+        this.skills = new ArrayList<>();
+        this.skillCooldowns = new HashMap<>();
     }
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDirection() {
@@ -49,16 +73,16 @@ public abstract class Character {
         return collisionOn;
     }
 
+    public void setCollisionOn(boolean collisionOn) {
+        this.collisionOn = collisionOn;
+    }
+
     public boolean isOnPath() {
         return onPath;
     }
 
     public void setOnPath(boolean onPath) {
         this.onPath = onPath;
-    }
-
-    public void setCollisionOn(boolean collisionOn) {
-        this.collisionOn = collisionOn;
     }
 
     public int getActionLockCounter() {
@@ -97,38 +121,8 @@ public abstract class Character {
         this.worldY = worldY;
     }
 
-    // CHARACTER ATTRIBUTES
-    // Tính phần máu còn lại (giả sử maxHealth và currentHealth có sẵn)
-    protected int maxHealth;  // ví dụ
-    protected int currentHealth;  // ví dụ, bạn có thể làm thành thuộc tính nhân vật
-    protected int defaultSpeed;
-    protected int attack;
-    protected int defense;
-    protected int attackRange;
-    protected int attackCooldown; // Số frame cho đến khi được tấn công tiếp
-    protected int ATTACK_COOLDOWN_DURATION; // 0.5 giây tại 60 FPS
-    protected int maxMana;
-    protected int currentMana;
-    String name;
-
-
-    public Character(GamePanel gp) {
-        this.gp = gp;
-        solidArea = new Rectangle();
-        cip = new CharacterImageProcessor(gp, this);
-        // THÊM MỚI: Khởi tạo attackCooldown
-        attackCooldown = 0;
-
-        this.skills = new ArrayList<>();
-        this.skillCooldowns = new HashMap<>();
-    }
-
     public int getSpeed() {
         return speed;
-    }
-
-    public void setMaxMana(int maxMana) {
-        this.maxMana = maxMana;
     }
 
     protected void addSkill(Skill skill) {
@@ -193,11 +187,11 @@ public abstract class Character {
     }
 
     public int getCenterX() {
-        return worldX + cip.getCurFrame().getWidth()/2;
+        return worldX + cip.getCurFrame().getWidth() / 2;
     }
 
     public int getCenterY() {
-        return worldY + cip.getCurFrame().getHeight()/2;
+        return worldY + cip.getCurFrame().getHeight() / 2;
     }
 
     public int getXDistance(Character target) {
@@ -209,7 +203,7 @@ public abstract class Character {
     }
 
     public int getTileDistance(Character target) {
-        return (getXDistance(target) + getYDistance(target))/ gp.getTileSize();
+        return (getXDistance(target) + getYDistance(target)) / gp.getTileSize();
     }
 
     public int getGoalCol(Character target) {
@@ -227,16 +221,23 @@ public abstract class Character {
     public int getDefense() {
         return defense;
     }
+
     public int getAttackCooldown() {
         return attackCooldown;
     }
+
     public int getMaxMana() {
         return maxMana;
+    }
+
+    public void setMaxMana(int maxMana) {
+        this.maxMana = maxMana;
     }
 
     public int getCurrentMana() {
         return currentMana;
     }
+
     public void setCurrentMana(int currentMana) {
         this.currentMana = Math.max(0, Math.min(currentMana, maxMana));
     }
@@ -244,16 +245,6 @@ public abstract class Character {
     public int getCurrentHealth() { // Bạn đã có phương thức này
         return currentHealth;
     }
-
-
-    public int getMaxHealth() {
-        return maxHealth;
-    }
-
-    public void setMaxHealth(int maxHealth) {
-        this.maxHealth = maxHealth;
-    }
-
 
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
@@ -266,11 +257,19 @@ public abstract class Character {
         }
     }
 
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
     public void spendMana(int amount) {
         this.currentMana = Math.max(0, this.currentMana - amount);
     }
 
-    public void coolDown(){
+    public void coolDown() {
         for (Skill skill : skillCooldowns.keySet()) {
             int currentCd = skillCooldowns.get(skill);
             if (currentCd > 0) {
@@ -282,6 +281,7 @@ public abstract class Character {
     public boolean isAttacking() {
         return false;
     }
+
     public void update() {
         collisionOn = false;
         gp.getcChecker().checkTile(this);
@@ -289,12 +289,20 @@ public abstract class Character {
             boolean contactWithPlayer = gp.getcChecker().checkPlayer(this);
         }
 
-        if(!collisionOn) {
-            switch(direction) {
-                case "up": worldY -= speed; break;
-                case "down": worldY += speed; break;
-                case "left": worldX -= speed; break;
-                case "right": worldX += speed; break;
+        if (!collisionOn) {
+            switch (direction) {
+                case "up":
+                    worldY -= speed;
+                    break;
+                case "down":
+                    worldY += speed;
+                    break;
+                case "left":
+                    worldX -= speed;
+                    break;
+                case "right":
+                    worldX += speed;
+                    break;
             }
         }
 
