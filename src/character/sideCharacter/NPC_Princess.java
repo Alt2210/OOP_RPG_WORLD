@@ -1,4 +1,4 @@
-package character;
+package character.sideCharacter;
 
 import dialogue.Dialogue;
 import dialogue.DialogueSpeaker;

@@ -376,7 +376,7 @@ public class UI {
 
             drawSubWindow(g2, messageBoxX, messageBoxY, messageBoxWidth, messageBoxHeight, new Color(0, 0, 0, 180), Color.WHITE, 20, 20, 2);
 
-            g2.setFont(pixelFont_Medium);
+            g2.setFont(pixelFont_XSmall);
             g2.setColor(Color.WHITE);
             int textPaddingX = gp.getTileSize() / 3;
             int textPaddingY = gp.getTileSize() / 3;

@@ -1,5 +1,6 @@
-package character;
+package character.sideCharacter;
 
+import character.Character;
 import dialogue.DialogueSpeaker;
 import main.GamePanel;
 

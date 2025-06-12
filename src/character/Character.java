@@ -40,7 +40,7 @@ public abstract class Character {
     protected int ATTACK_COOLDOWN_DURATION; // 0.5 giây tại 60 FPS
     protected int maxMana;
     protected int currentMana;
-    String name;
+    protected String name;
 
     public Character(GamePanel gp) {
         this.gp = gp;

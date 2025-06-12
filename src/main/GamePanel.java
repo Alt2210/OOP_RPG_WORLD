@@ -282,18 +282,6 @@ public class GamePanel extends JPanel implements Runnable {
             npc[i] = null;
         }
 
-        /*for (int i = 0; i < greenSlime.length; i++) {
-            greenSlime[i] = null;
-        }
-        for (int i = 0; i < orc.length; i++) {
-            orc[i] = null;
-        }
-        for (int i = 0; i < bat.length; i++) {
-            bat[i] = null;
-        }
-        for (int i = 0; i < golemBoss.length; i++) {
-            golemBoss[i] = null;
-        }*/
         monsters.clear();
         skillEffects.clear(); // Xóa tất cả skillEffects khi chuyển map
         System.out.println("GamePanel: Entities and skillEffects cleared for map change.");
@@ -324,6 +312,12 @@ public class GamePanel extends JPanel implements Runnable {
                     wObjects[i].draw(g2, this);
                 }
             }
+            // Vẽ skillEffects...
+            for (SkillEffect p : skillEffects) {
+                if (p.isAlive()) {
+                    p.draw(g2);
+                }
+            }
 
             // Vẽ NPC
             for (int i = 0; i < npc.length; i++) {
@@ -331,32 +325,11 @@ public class GamePanel extends JPanel implements Runnable {
                     npc[i].draw(g2);
                 }
             }
-            // Vẽ quái vật...
-            /*for (MON_GreenSlime slime : greenSlime) {
-                if (slime != null) slime.draw(g2);
-            }
-            for (MON_SkeletonLord lord : skeletonLord) {
-                if (lord != null) lord.draw(g2);
-            }
-            for (MON_Orc currentOrc : orc) {
-                if (currentOrc != null) currentOrc.draw(g2);
-            }
-            for (MON_Bat currentBat : bat) {
-                if (currentBat != null) currentBat.draw(g2);
-            }
-            for (MON_GolemBoss boss : golemBoss) {
-                if (boss != null) boss.draw(g2);
-            }*/
 
             for(Monster monster : monsters ){
                 if (monster != null) monster.draw(g2);
             }
-            // Vẽ skillEffects...
-            for (SkillEffect p : skillEffects) {
-                if (p.isAlive()) {
-                    p.draw(g2);
-                }
-            }
+
 
             // Vẽ người chơi
             if (player != null) {

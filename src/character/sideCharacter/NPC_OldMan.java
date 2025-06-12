@@ -1,4 +1,4 @@
-package character;
+package character.sideCharacter;
 
 import main.GamePanel;
 import dialogue.*;
@@ -42,7 +42,7 @@ public class NPC_OldMan extends SideCharacter {
             this.cip.setNumSprite(2);
             this.cip.getImage("/npc","oldman");
         }
-        name = "Old Man";
+        this.name = "Old Man";
     }
 
     @Override

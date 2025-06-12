@@ -2,19 +2,15 @@ package character.role;
 import item.Inventory;
 
 import character.Character;
-import character.NPC_Princess;
+import character.sideCharacter.NPC_Princess;
 import dialogue.DialogueSpeaker;
 import item.Item;
 import item.itemEquippable.Equippable;
 import item.itemEquippable.Item_Weapon;
 import main.GamePanel;
 import main.KeyHandler;
-import skill.Skill;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class Player extends character.Character {
     protected boolean attackDamageAppliedThisSwing = false;
