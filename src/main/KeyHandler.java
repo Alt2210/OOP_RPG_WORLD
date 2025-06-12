@@ -354,6 +354,7 @@ public class KeyHandler implements KeyListener {
                 if (chestInv.addItem(stackToMove.getItem(), stackToMove.getQuantity())) {
                     playerInv.removeStack(slotIndex);
                     gp.getUi().showMessage("Moved " + stackToMove.getItem().getName() + " to chest.");
+                    gp.currentChest.setOpened(false);
                 } else {
                     gp.getUi().showMessage("Chest is full!");
                 }
@@ -364,6 +365,9 @@ public class KeyHandler implements KeyListener {
                 if (playerInv.addItem(stackToMove.getItem(), stackToMove.getQuantity())) {
                     chestInv.removeStack(slotIndex);
                     gp.getUi().showMessage("Took " + stackToMove.getItem().getName() + " from chest.");
+                    if (chestInv.getItemStack() == 0) {
+                        gp.currentChest.setOpened(true);
+                    }
                 } else {
                     gp.getUi().showMessage("Your inventory is full!");
                 }
