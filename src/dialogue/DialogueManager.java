@@ -51,10 +51,12 @@ public class DialogueManager {
         if (currentSpeaker instanceof NPC_Princess) {
 
             gp.gameState = gp.victoryEndState;
+            gp.getUi().setUi(gp.gameState);
 
         } else {
             // Đối với các NPC khác, quay lại trạng thái chơi bình thường
             gp.gameState = gp.playState;
+            gp.getUi().setUI(gp.playState);
         }
 
         if (currentSpeaker instanceof Character) {
