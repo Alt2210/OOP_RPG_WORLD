@@ -1,13 +1,13 @@
 package skill;
 
-import character.Character;
+import character.role.Player;
 import imageProcessor.SkillImageProcessor;
 import main.GamePanel;
 import skillEffect.areaOfEffect.StellaField; // Import lớp mới của chúng ta
 
 public class S_StellaField extends Skill {
 
-    public S_StellaField(Character caster, GamePanel gp) {
+    public S_StellaField(Player caster, GamePanel gp) {
         // Gọi constructor của lớp cha để thiết lập các thuộc tính cơ bản cho kỹ năng
         super("Stellar Field",                          // Tên kỹ năng
                 "Tạo ra một vùng gây sát thương liên tục.", // Mô tả
@@ -18,7 +18,7 @@ public class S_StellaField extends Skill {
     }
 
     @Override
-    public void activate(Character caster, GamePanel gp) {
+    public void activate(Player caster, GamePanel gp) {
 
         // 1. Hiển thị thông báo và âm thanh (nếu có)
         gp.getUi().showMessage("Stellar Field!");

@@ -2,13 +2,14 @@
 package skill;
 
 import character.Character;
+import character.role.Player;
 import imageProcessor.SkillImageProcessor;
 import main.GamePanel;
 import skillEffect.projectile.Fireball;
 
 public class S_Fireball extends Skill {
 
-    public S_Fireball(Character caster, GamePanel gp) {
+    public S_Fireball(Player caster, GamePanel gp) {
         // Gọi constructor của lớp cha Skill
         super("Fireball", "Bắn ra một quả cầu lửa gây sát thương.", 10, 60); // Tên, Mô tả, Mana, Cooldown (1 giây)
         this.sip = new SkillImageProcessor(gp, caster, true);
@@ -18,7 +19,7 @@ public class S_Fireball extends Skill {
 
 
     @Override
-    public void activate(Character caster, GamePanel gp) {
+    public void activate(Player caster, GamePanel gp) {
         // Đây là logic bạn đã có trong Soldier.castFireball()
         gp.getUi().showMessage("Fireball! -" + this.getManaCost() + " MP");
 //        gp.playSoundEffect(Sound.SFX_FIREBALL_SHOOT);

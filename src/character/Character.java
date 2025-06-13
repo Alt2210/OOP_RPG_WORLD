@@ -14,8 +14,7 @@ public abstract class Character {
 
     protected GamePanel gp;
     protected CharacterImageProcessor cip;
-    protected ArrayList<Skill> skills;
-    protected Map<Skill, Integer> skillCooldowns;
+
 
     protected int worldX, worldY;
     protected int speed;
@@ -38,8 +37,7 @@ public abstract class Character {
     protected int attackRange;
     protected int attackCooldown; // Số frame cho đến khi được tấn công tiếp
     protected int ATTACK_COOLDOWN_DURATION; // 0.5 giây tại 60 FPS
-    protected int maxMana;
-    protected int currentMana;
+
     protected String name;
 
     public Character(GamePanel gp) {
@@ -49,9 +47,7 @@ public abstract class Character {
         // THÊM MỚI: Khởi tạo attackCooldown
         attackCooldown = 0;
 
-        this.skills = new ArrayList<>();
-        this.skillCooldowns = new HashMap<>();
-    }
+       }
 
     public String getName() {
         return name;
@@ -125,44 +121,7 @@ public abstract class Character {
         return speed;
     }
 
-    protected void addSkill(Skill skill) {
-        if (skill != null) {
-            this.skills.add(skill);
-            this.skillCooldowns.put(skill, 0); // Ban đầu không có cooldown
-        }
-    }
 
-    public void activateSkill(int skillIndex) {
-        if (skillIndex < 0 || skillIndex >= skills.size()) {
-            return; // Index không hợp lệ
-        }
-
-        Skill skillToUse = skills.get(skillIndex);
-
-        // Kiểm tra cooldown
-        if (skillCooldowns.get(skillToUse) > 0) {
-            // Đối với quái vật, chúng ta không cần hiển thị message
-            if (this instanceof Player) {
-                gp.getUi().showMessage(skillToUse.getName() + " is on cooldown!");
-            }
-            return;
-        }
-
-        // Kiểm tra mana (chỉ áp dụng cho Player hoặc loại Character có mana)
-        if (this.currentMana < skillToUse.getManaCost()) {
-            if (this instanceof Player) {
-                gp.getUi().showMessage("not enough mana!");
-            }
-            return;
-        }
-
-        // Trừ mana và kích hoạt kỹ năng
-        spendMana(skillToUse.getManaCost());
-        skillToUse.activate(this, gp);
-
-        // Đặt lại cooldown
-        skillCooldowns.put(skillToUse, skillToUse.getCooldownDuration());
-    }
 
     public abstract void draw(Graphics2D g2);
 
@@ -226,21 +185,6 @@ public abstract class Character {
         return attackCooldown;
     }
 
-    public int getMaxMana() {
-        return maxMana;
-    }
-
-    public void setMaxMana(int maxMana) {
-        this.maxMana = maxMana;
-    }
-
-    public int getCurrentMana() {
-        return currentMana;
-    }
-
-    public void setCurrentMana(int currentMana) {
-        this.currentMana = Math.max(0, Math.min(currentMana, maxMana));
-    }
 
     public int getCurrentHealth() { // Bạn đã có phương thức này
         return currentHealth;
@@ -265,18 +209,8 @@ public abstract class Character {
         this.maxHealth = maxHealth;
     }
 
-    public void spendMana(int amount) {
-        this.currentMana = Math.max(0, this.currentMana - amount);
-    }
 
-    public void coolDown() {
-        for (Skill skill : skillCooldowns.keySet()) {
-            int currentCd = skillCooldowns.get(skill);
-            if (currentCd > 0) {
-                skillCooldowns.put(skill, currentCd - 1);
-            }
-        }
-    }
+
 
     public boolean isAttacking() {
         return false;
@@ -311,7 +245,6 @@ public abstract class Character {
             attackCooldown--;
         }
 
-        coolDown();
 
         cip.update();
     }

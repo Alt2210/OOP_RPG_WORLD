@@ -2,6 +2,7 @@
 package skill;
 
 import character.Character;
+import character.role.Player;
 import imageProcessor.SkillImageProcessor;
 import main.GamePanel;
 
@@ -24,7 +25,7 @@ public abstract class Skill {
      * @param caster Người chơi sử dụng kỹ năng.
      * @param gp Tham chiếu đến GamePanel.
      */
-    public abstract void activate(Character caster, GamePanel gp);
+    public abstract void activate(Player caster, GamePanel gp);
 
     // Getters để UI có thể lấy thông tin
     public String getName() {

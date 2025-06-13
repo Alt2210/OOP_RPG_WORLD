@@ -1,12 +1,12 @@
 package skill;
 
-import character.Character;
+import character.role.Player;
 import imageProcessor.SkillImageProcessor;
 import main.GamePanel;
 import skillEffect.projectile.Tornado;
 
 public class S_Tornado extends  Skill{
-    public S_Tornado(character.Character caster, GamePanel gp) {
+    public S_Tornado(Player caster, GamePanel gp) {
         // Gọi constructor của lớp cha Skill
         super("Tornado", "Tạo ra một lốc xoáy hủy diệt mọi thứ trên đường đi của nó.", 50, 60); // Tên, Mô tả, Mana, Cooldown (1 giây)
         this.sip = new SkillImageProcessor(gp, caster, false);
@@ -14,7 +14,7 @@ public class S_Tornado extends  Skill{
     }
 
     @Override
-    public void activate(Character caster, GamePanel gp) {
+    public void activate(Player caster, GamePanel gp) {
         // Đây là logic bạn đã có trong Soldier.castTornado()
         gp.getUi().showMessage("Tornado! -" + this.getManaCost() + " MP");
 //        gp.playSoundEffect(Sound.SFX_SHOOT);

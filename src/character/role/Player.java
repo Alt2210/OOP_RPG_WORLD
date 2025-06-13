@@ -9,8 +9,12 @@ import item.itemEquippable.Equippable;
 import item.itemEquippable.Item_Weapon;
 import main.GamePanel;
 import main.KeyHandler;
+import skill.Skill;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Player extends character.Character {
     protected boolean attackDamageAppliedThisSwing = false;
@@ -20,6 +24,11 @@ public abstract class Player extends character.Character {
     protected int hasKey = 0;
     protected String characterClassIdentifier;
     protected Inventory inventory;
+    protected int maxMana;
+    protected int currentMana;
+
+    protected ArrayList<Skill> skills;
+    protected Map<Skill, Integer> skillCooldowns;
 
     private boolean canInteractWithCurrentNPC = true; // Cho phép tương tác với NPC hiện tại đang va chạm
     private Character currentlyCollidingNPC = null;   // NPC hiện tại đang va chạm
@@ -58,6 +67,9 @@ public abstract class Player extends character.Character {
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
+        this.skills = new ArrayList<>();
+        this.skillCooldowns = new HashMap<>();
+
     }
 
 
@@ -90,6 +102,27 @@ public abstract class Player extends character.Character {
     public void setAttack(int attack) {
         this.attack = attack;
     }
+
+    public int getMaxMana() {
+        return maxMana;
+    }
+
+    public void setMaxMana(int maxMana) {
+        this.maxMana = maxMana;
+    }
+
+    public int getCurrentMana() {
+        return currentMana;
+    }
+
+    public void setCurrentMana(int currentMana) {
+        this.currentMana = Math.max(0, Math.min(currentMana, maxMana));
+    }
+
+    public void spendMana(int amount) {
+        this.currentMana = Math.max(0, this.currentMana - amount);
+    }
+
 
     public void setDefense(int defense) {
         this.defense = defense;
@@ -142,6 +175,54 @@ public abstract class Player extends character.Character {
         return this.attackStateCounter > 0;
     }
 
+    public void coolDown() {
+        for (Skill skill : skillCooldowns.keySet()) {
+            int currentCd = skillCooldowns.get(skill);
+            if (currentCd > 0) {
+                skillCooldowns.put(skill, currentCd - 1);
+            }
+        }
+    }
+
+
+    protected void addSkill(Skill skill) {
+        if (skill != null) {
+            this.skills.add(skill);
+            this.skillCooldowns.put(skill, 0); // Ban đầu không có cooldown
+        }
+    }
+
+    public void activateSkill(int skillIndex) {
+        if (skillIndex < 0 || skillIndex >= skills.size()) {
+            return; // Index không hợp lệ
+        }
+
+        Skill skillToUse = skills.get(skillIndex);
+
+        // Kiểm tra cooldown
+        if (skillCooldowns.get(skillToUse) > 0) {
+            // Đối với quái vật, chúng ta không cần hiển thị message
+            if (this instanceof Player) {
+                gp.getUi().showMessage(skillToUse.getName() + " is on cooldown!");
+            }
+            return;
+        }
+
+        // Kiểm tra mana (chỉ áp dụng cho Player hoặc loại Character có mana)
+        if (this.currentMana < skillToUse.getManaCost()) {
+            if (this instanceof Player) {
+                gp.getUi().showMessage("not enough mana!");
+            }
+            return;
+        }
+
+        // Trừ mana và kích hoạt kỹ năng
+        spendMana(skillToUse.getManaCost());
+        skillToUse.activate(this, gp);
+
+        // Đặt lại cooldown
+        skillCooldowns.put(skillToUse, skillToUse.getCooldownDuration());
+    }
 
     @Override
     public void update() {

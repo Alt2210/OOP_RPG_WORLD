@@ -1,6 +1,6 @@
 package skill;
 
-import character.Character;
+import character.role.Player;
 import imageProcessor.SkillImageProcessor;
 import main.GamePanel;
 import skillEffect.areaOfEffect.Laser; // Import lớp Laser mới
@@ -9,7 +9,7 @@ public class S_Laser extends Skill {
 
     private SkillImageProcessor sip;
 
-    public S_Laser(Character caster, GamePanel gp) {
+    public S_Laser(Player caster, GamePanel gp) {
         super("Static Laser",
                 "Tạo ra một bức tường laser tồn tại trong 5 giây, gây sát thương khi chạm phải.",
                 0,   // Ví dụ: 40 mana
@@ -19,7 +19,7 @@ public class S_Laser extends Skill {
     }
 
     @Override
-    public void activate(Character caster, GamePanel gp) {
+    public void activate(Player caster, GamePanel gp) {
         // Khóa hành động của caster trong 30 frame (0.5 giây) để thực hiện animation "thi triển"
         caster.setActionLockCounter(300);
 
