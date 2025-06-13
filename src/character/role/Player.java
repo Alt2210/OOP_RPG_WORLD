@@ -35,6 +35,8 @@ public abstract class Player extends character.Character {
     private int currentExp;
     private int expToNextLevel;
 
+    private int currentCoin;
+
     private int maxStamina;
     private int currentStamina;
     private int staminaRegenCounter = 0;
@@ -74,6 +76,8 @@ public abstract class Player extends character.Character {
     public int getCurrentExp() {
         return currentExp;
     }
+
+    public int getCurrentCoin() { return  currentCoin; }
 
     public Inventory getInventory() {
         return inventory;
@@ -383,6 +387,11 @@ public abstract class Player extends character.Character {
         }
     }
 
+    public void gainCoin(int coinGained) {
+        this.currentCoin += coinGained;
+        gp.getUi().showMessage("Gained " + coinGained + " COIN!");
+    }
+
     protected void setInitLevel(){
         this.level = 1;
         this.currentExp = 0;
@@ -420,6 +429,7 @@ public abstract class Player extends character.Character {
                     gp.currentChest = (worldObject.unpickableObject.OBJ_Chest) obj;
                     gp.gameState = gp.chestState;
                     // Reset vị trí con trỏ trong UI
+                    gp.getUi().setUI(gp.gameState);
                     gp.getUi().setSlotCol(0);
                     gp.getUi().setSlotRow(0);
                     gp.getUi().setCommandNum(0); // Bắt đầu ở bảng đồ của Player

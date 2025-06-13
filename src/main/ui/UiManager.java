@@ -81,19 +81,23 @@ public class UiManager {
         return 0;
     }
     public void setSlotCol(int col) {
+        if(currentUI instanceof ChestUI)  ((ChestUI) currentUI).setSlotCol(col);
         if(currentUI instanceof InventoryUI) ((InventoryUI) currentUI).setSlotCol(col);
     }
 
     public int getSlotRow() {
         if(currentUI instanceof InventoryUI) return ((InventoryUI) currentUI).getSlotRow();
+        if(currentUI instanceof ChestUI) return ((ChestUI) currentUI).getSlotRow();
         return 0;
     }
     public void setSlotRow(int row) {
+        if(currentUI instanceof ChestUI) ((ChestUI) currentUI).setSlotRow(row);
         if(currentUI instanceof InventoryUI) ((InventoryUI) currentUI).setSlotRow(row);
     }
 
     public int getItemIndexOnSlot() {
         if(currentUI instanceof InventoryUI) return ((InventoryUI) currentUI).getItemIndexOnSlot();
+        if(currentUI instanceof ChestUI) return ((ChestUI) currentUI).getItemIndexOnSlot();
         return 0;
     }
 }

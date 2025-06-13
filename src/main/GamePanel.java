@@ -50,7 +50,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     // ENTITY AND OBJECT
     private Player player;
-    public WorldObject wObjects[] = new WorldObject[20];
+    public WorldObject wObjects[] = new WorldObject[50];
     public Character npc[] = new Character[10];
     private ArrayList<Monster> monsters = new ArrayList<>();
     public List<SkillEffect> skillEffects = new ArrayList<>();

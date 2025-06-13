@@ -6,6 +6,7 @@ import main.GamePanel;
 import pathfinder.Node;
 import pathfinder.PathFinder;
 import skillEffect.projectile.GolemArmProjectile;
+import worldObject.pickableObject.OBJ_Key;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -54,11 +55,12 @@ public class MON_GolemBoss extends Monster {
         setName("GolemBoss");
         defaultSpeed = 1;
         speed = defaultSpeed;
-        maxHealth = 500;
+        maxHealth = 10;
         currentHealth = maxHealth;
         attack = 8;
         defense = 2;
         exp = 50;
+        coinValue = 1000;
         attackRange = gp.getTileSize() * 3;
         ATTACK_COOLDOWN_DURATION = 600;
         contactDamageAmount = attack;
@@ -93,12 +95,8 @@ public class MON_GolemBoss extends Monster {
 
     @Override
     protected void onDeath(Character attacker) {
-        if (attacker instanceof Player) {
-            Player player = (Player) attacker;
-            player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
-        }
+        super.onDeath(attacker);
 
-        //checkDrop();
         gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
     }
 

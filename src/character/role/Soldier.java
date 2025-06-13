@@ -156,7 +156,6 @@ public class Soldier extends Player {
 
                 // Kiểm tra va chạm và gây sát thương
                 if (attackArea.intersects(monsterHitbox)) {
-                    System.out.println("Soldier hit " + monster.getName());
                     gp.getCombatSystem().performAttack(this, monster);
                     // Lưu ý: Đòn đánh của Soldier có thể trúng nhiều mục tiêu
                     // nếu chúng đứng gần nhau. Nếu bạn muốn nó chỉ trúng 1 mục tiêu,

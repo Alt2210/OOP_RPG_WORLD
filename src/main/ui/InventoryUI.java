@@ -42,9 +42,10 @@ public class InventoryUI extends UI {
 
         int textX = frameX + 20;
         int textY = frameY + gp.getTileSize();
-        final int lineHeight = 50;
+        final int lineHeight = 45;
 
         g2.drawString("Level", textX, textY); textY += lineHeight;
+        g2.drawString("Coin", textX, textY); textY += lineHeight;
         g2.drawString("Health", textX, textY); textY += lineHeight;
         g2.drawString("Mana", textX, textY); textY += lineHeight;
         g2.drawString("Stamina", textX, textY); textY += lineHeight;
@@ -59,6 +60,9 @@ public class InventoryUI extends UI {
         Player player = gp.getPlayer();
 
         String value = String.valueOf(player.getLevel());
+        g2.drawString(value, tailX - g2.getFontMetrics().stringWidth(value), textY); textY += lineHeight;
+
+        value = String.valueOf(player.getCurrentCoin()) ;
         g2.drawString(value, tailX - g2.getFontMetrics().stringWidth(value), textY); textY += lineHeight;
 
         value = player.getCurrentHealth() + "/" + player.getMaxHealth();

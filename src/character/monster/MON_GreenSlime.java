@@ -5,8 +5,12 @@ import character.role.Player;
 import main.GamePanel;
 import skillEffect.projectile.Slimeball;
 import pathfinder.*;
+import worldObject.pickableObject.OBJ_HealthPotion;
+import worldObject.pickableObject.OBJ_ManaPotion;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class MON_GreenSlime extends Monster {
     private int projectileCooldown;
@@ -31,11 +35,12 @@ public class MON_GreenSlime extends Monster {
         setName("Green Slime");
         defaultSpeed = 1;
         speed = defaultSpeed;
-        maxHealth = 75;
+        maxHealth = 40;
         currentHealth = maxHealth;
         attack = 5;
         defense = 0;
         exp = 2;
+        coinValue = 100;
         ATTACK_COOLDOWN_DURATION = 30;
         contactDamageAmount = 3;
 
@@ -101,7 +106,7 @@ public class MON_GreenSlime extends Monster {
 
             projectileCooldown = PROJECTILE_COOLDOWN_DURATION; // Reset cooldown
             // gp.playSoundEffect(Sound.SFX_SLIME_SHOOT); // Thêm âm thanh nếu có
-            System.out.println(getName() + " bắn Slimeball về phía Player!");
+           //  System.out.println(getName() + " bắn Slimeball về phía Player!");
         }
     }
 
@@ -223,29 +228,22 @@ public class MON_GreenSlime extends Monster {
 
     @Override
     protected void onDeath(Character attacker) {
-        if (attacker instanceof Player) {
-            Player player = (Player) attacker;
-            player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
-        }
+        super.onDeath(attacker);
 
-        //checkDrop();
-        gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
-    }
-
-    public void checkDrop() {
         // CAST A DIE
-        //int i = new Random().nextInt(100) + 1;
+        int i = new Random().nextInt(100) + 1;
 
         // SET THE MONSTER DROP
-        /*if (i < 50) {
-            dropItem(new OBJ_Coin_Bronze(gp));
+        if (i < 30) {
+            dropItem(new OBJ_HealthPotion(gp));
         }
-        if (i >= 50 && i < 75) {
-            dropItem(new OBJ_Heart(gp));
+        // từ 30 ~ 69 không drop ra gì
+        if (i >= 70 && i < 100) {
+            dropItem(new OBJ_ManaPotion(gp));
         }
-        if (i >= 75 && i < 100) {
-            dropItem(new OBJ_ManaCrystal(gp));
-        }*/
+        gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!" + "\n"
+                + "Bạn nhận được " + this.coinValue + "vàng!");
     }
+
 
 }

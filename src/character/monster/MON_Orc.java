@@ -35,12 +35,7 @@ public class MON_Orc extends Monster {
 
     @Override
     protected void onDeath(Character attacker) {
-        if (attacker instanceof Player) {
-            Player player = (Player) attacker;
-            player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
-        }
-
-        //checkDrop();
+        super.onDeath(attacker);
         gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
     }
 
@@ -57,6 +52,7 @@ public class MON_Orc extends Monster {
         attack = 12;
         defense = 3;
         exp = 15;
+        coinValue = 300;
         contactDamageAmount = 5;
 
         // Thiết lập Cooldown cho đòn tấn công của Orc

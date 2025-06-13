@@ -9,10 +9,6 @@ import main.ui.UI;
 import java.awt.*;
 import java.util.List;
 
-/**
- * Lớp này chịu trách nhiệm vẽ giao diện khi người chơi mở rương đồ (Chest).
- * Nó hiển thị cả túi đồ của người chơi và túi đồ của rương.
- */
 public class ChestUI extends UI {
 
     public ChestUI(GamePanel gp) {

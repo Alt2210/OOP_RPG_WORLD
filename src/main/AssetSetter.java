@@ -111,9 +111,6 @@ public class AssetSetter {
     }
 
     private void setMap1_Objects() {
-        gp.getwObjects()[3] = new OBJ_Key(gp);
-        gp.getwObjects()[3].setWorldX(35 * gp.getTileSize());
-        gp.getwObjects()[3].setWorldY(92 * gp.getTileSize());
 
         gp.getwObjects()[0] = new OBJ_Door();
         gp.getwObjects()[0].setWorldX(74 * gp.getTileSize());

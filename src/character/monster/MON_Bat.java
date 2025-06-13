@@ -5,9 +5,12 @@ import character.role.Player;
 import main.GamePanel;
 import pathfinder.Node;
 import pathfinder.PathFinder;
+import worldObject.pickableObject.OBJ_HealthPotion;
+import worldObject.pickableObject.OBJ_ManaPotion;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class MON_Bat extends Monster {
     private int dashCounter;
@@ -47,6 +50,7 @@ public class MON_Bat extends Monster {
         attack = 4;
         defense = 0;
         exp = 2;
+        coinValue = 50;
         attackRange = 10;
         ATTACK_COOLDOWN_DURATION = 60;
         contactDamageAmount = attack;
@@ -72,12 +76,19 @@ public class MON_Bat extends Monster {
 
     @Override
     protected void onDeath(Character attacker) {
-        if (attacker instanceof Player) {
-            Player player = (Player) attacker;
-            player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
+        super.onDeath(attacker);
+
+        int i = new Random().nextInt(100) + 1;
+
+        // SET THE MONSTER DROP
+        if (i <= 20) {
+            dropItem(new OBJ_HealthPotion(gp));
+        }
+        // từ 21~79 không drop ra gì
+        if (i >= 80 && i < 100) {
+            dropItem(new OBJ_ManaPotion(gp));
         }
 
-        //checkDrop();
         gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
     }
 
