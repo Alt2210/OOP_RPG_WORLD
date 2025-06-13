@@ -420,6 +420,7 @@ public abstract class Player extends character.Character {
                     gp.currentChest = (worldObject.unpickableObject.OBJ_Chest) obj;
                     gp.gameState = gp.chestState;
                     // Reset vị trí con trỏ trong UI
+                    gp.getUi().setUI(gp.gameState);
                     gp.getUi().setSlotCol(0);
                     gp.getUi().setSlotRow(0);
                     gp.getUi().setCommandNum(0); // Bắt đầu ở bảng đồ của Player
