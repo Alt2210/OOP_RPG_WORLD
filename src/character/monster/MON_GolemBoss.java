@@ -6,6 +6,7 @@ import main.GamePanel;
 import pathfinder.Node;
 import pathfinder.PathFinder;
 import skillEffect.projectile.GolemArmProjectile;
+import worldObject.pickableObject.OBJ_Key;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -54,7 +55,7 @@ public class MON_GolemBoss extends Monster {
         setName("GolemBoss");
         defaultSpeed = 1;
         speed = defaultSpeed;
-        maxHealth = 500;
+        maxHealth = 10;
         currentHealth = maxHealth;
         attack = 8;
         defense = 2;
@@ -96,6 +97,7 @@ public class MON_GolemBoss extends Monster {
         if (attacker instanceof Player) {
             Player player = (Player) attacker;
             player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
+            dropItem(new OBJ_Key(gp)); // Thả chìa khóa
         }
 
         //checkDrop();
