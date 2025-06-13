@@ -5,8 +5,12 @@ import character.role.Player;
 import main.GamePanel;
 import skillEffect.projectile.Slimeball;
 import pathfinder.*;
+import worldObject.pickableObject.OBJ_HealthPotion;
+import worldObject.pickableObject.OBJ_ManaPotion;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class MON_GreenSlime extends Monster {
     private int projectileCooldown;
@@ -228,24 +232,19 @@ public class MON_GreenSlime extends Monster {
             player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
         }
 
-        //checkDrop();
+        // CAST A DIE
+        int i = new Random().nextInt(100) + 1;
+
+        // SET THE MONSTER DROP
+        if (i < 30) {
+            dropItem(new OBJ_HealthPotion(gp));
+        }
+        // từ 30 ~ 69 không drop ra gì
+        if (i >= 70 && i < 100) {
+            dropItem(new OBJ_ManaPotion(gp));
+        }
         gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
     }
 
-    public void checkDrop() {
-        // CAST A DIE
-        //int i = new Random().nextInt(100) + 1;
-
-        // SET THE MONSTER DROP
-        /*if (i < 50) {
-            dropItem(new OBJ_Coin_Bronze(gp));
-        }
-        if (i >= 50 && i < 75) {
-            dropItem(new OBJ_Heart(gp));
-        }
-        if (i >= 75 && i < 100) {
-            dropItem(new OBJ_ManaCrystal(gp));
-        }*/
-    }
 
 }
