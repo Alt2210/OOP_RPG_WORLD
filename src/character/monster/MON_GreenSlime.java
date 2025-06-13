@@ -35,11 +35,12 @@ public class MON_GreenSlime extends Monster {
         setName("Green Slime");
         defaultSpeed = 1;
         speed = defaultSpeed;
-        maxHealth = 75;
+        maxHealth = 40;
         currentHealth = maxHealth;
         attack = 5;
         defense = 0;
         exp = 2;
+        coinValue = 100;
         ATTACK_COOLDOWN_DURATION = 30;
         contactDamageAmount = 3;
 
@@ -105,7 +106,7 @@ public class MON_GreenSlime extends Monster {
 
             projectileCooldown = PROJECTILE_COOLDOWN_DURATION; // Reset cooldown
             // gp.playSoundEffect(Sound.SFX_SLIME_SHOOT); // Thêm âm thanh nếu có
-            System.out.println(getName() + " bắn Slimeball về phía Player!");
+           //  System.out.println(getName() + " bắn Slimeball về phía Player!");
         }
     }
 
@@ -227,10 +228,7 @@ public class MON_GreenSlime extends Monster {
 
     @Override
     protected void onDeath(Character attacker) {
-        if (attacker instanceof Player) {
-            Player player = (Player) attacker;
-            player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
-        }
+        super.onDeath(attacker);
 
         // CAST A DIE
         int i = new Random().nextInt(100) + 1;
@@ -243,7 +241,8 @@ public class MON_GreenSlime extends Monster {
         if (i >= 70 && i < 100) {
             dropItem(new OBJ_ManaPotion(gp));
         }
-        gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
+        gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!" + "\n"
+                + "Bạn nhận được " + this.coinValue + "vàng!");
     }
 
 

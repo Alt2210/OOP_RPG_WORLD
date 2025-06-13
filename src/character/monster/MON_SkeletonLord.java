@@ -56,6 +56,7 @@ public class MON_SkeletonLord extends Monster {
         attack = 15; // Tăng sát thương (phù hợp boss)
         defense = 5; // Tăng phòng thủ (phù hợp boss)
         exp = 100; // Tăng EXP
+        coinValue = 1000;
         contactDamageAmount = 8; // Sát thương chạm
 
         // Thiết lập Cooldown cho đòn tấn công của Skeleton Lord (giống Orc nhưng có thể điều chỉnh)
@@ -257,13 +258,7 @@ public class MON_SkeletonLord extends Monster {
 
     @Override
     protected void onDeath(Character attacker) {
-        if (attacker instanceof Player) {
-            Player player = (Player) attacker;
-            player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
-        }
-
-        //checkDrop();
-        gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
+        super.onDeath(attacker);
     }
 
     public void checkDrop() {

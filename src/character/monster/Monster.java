@@ -12,6 +12,7 @@ import java.util.Random;
 public abstract class Monster extends Character {
 
     protected int exp;
+    protected int coinValue;
     protected PathFinder pathFinder;
     protected int contactDamageAmount;
     protected int contactDamageCooldown;
@@ -107,6 +108,16 @@ public abstract class Monster extends Character {
                 break;
             }
         }
+    }
+    protected void onDeath(Character attacker) {
+        if (attacker instanceof Player) {
+            Player player = (Player) attacker;
+            player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
+            player.gainCoin(this.coinValue);
+        }
+
+        //checkDrop();
+        gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
     }
 
     protected void giveExp(Character attacker){

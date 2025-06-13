@@ -60,6 +60,7 @@ public class MON_GolemBoss extends Monster {
         attack = 8;
         defense = 2;
         exp = 50;
+        coinValue = 1000;
         attackRange = gp.getTileSize() * 3;
         ATTACK_COOLDOWN_DURATION = 600;
         contactDamageAmount = attack;
@@ -94,13 +95,8 @@ public class MON_GolemBoss extends Monster {
 
     @Override
     protected void onDeath(Character attacker) {
-        if (attacker instanceof Player) {
-            Player player = (Player) attacker;
-            player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
-            dropItem(new OBJ_Key(gp)); // Thả chìa khóa
-        }
+        super.onDeath(attacker);
 
-        //checkDrop();
         gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
     }
 

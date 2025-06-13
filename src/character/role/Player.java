@@ -35,6 +35,8 @@ public abstract class Player extends character.Character {
     private int currentExp;
     private int expToNextLevel;
 
+    private int currentCoin;
+
     private int maxStamina;
     private int currentStamina;
     private int staminaRegenCounter = 0;
@@ -74,6 +76,8 @@ public abstract class Player extends character.Character {
     public int getCurrentExp() {
         return currentExp;
     }
+
+    public int getCurrentCoin() { return  currentCoin; }
 
     public Inventory getInventory() {
         return inventory;
@@ -381,6 +385,11 @@ public abstract class Player extends character.Character {
         while (currentExp >= expToNextLevel) {
             levelUp();
         }
+    }
+
+    public void gainCoin(int coinGained) {
+        this.currentCoin += coinGained;
+        gp.getUi().showMessage("Gained " + coinGained + " COIN!");
     }
 
     protected void setInitLevel(){

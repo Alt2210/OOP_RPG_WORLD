@@ -50,6 +50,7 @@ public class MON_Bat extends Monster {
         attack = 4;
         defense = 0;
         exp = 2;
+        coinValue = 50;
         attackRange = 10;
         ATTACK_COOLDOWN_DURATION = 60;
         contactDamageAmount = attack;
@@ -75,10 +76,7 @@ public class MON_Bat extends Monster {
 
     @Override
     protected void onDeath(Character attacker) {
-        if (attacker instanceof Player) {
-            Player player = (Player) attacker;
-            player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
-        }
+        super.onDeath(attacker);
 
         int i = new Random().nextInt(100) + 1;
 
