@@ -11,7 +11,7 @@ import worldObject.WorldObject;
 import dialogue.DialogueManager;
 import sound.Sound;
 import worldObject.unpickableObject.OBJ_Chest;
-
+import map.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -158,7 +158,7 @@ public class GamePanel extends JPanel implements Runnable {
         aSetter.setupMapAssets(currentMap);
 
         playMusic(Sound.MUSIC_BACKGROUND);
-        if (player != null) {
+        if (player != null && (gameState == characterSelectState || gameState == titleState)) {
             player.setDefaultValues();
             // Ví dụ đặt vị trí khởi đầu cho Player
             if(currentMap == 0) {
@@ -169,7 +169,6 @@ public class GamePanel extends JPanel implements Runnable {
                 player.setWorldY( getTileSize() * 10);
             }
         }
-        skillEffects.clear();
     }
 
     public void resetGameForNewSession() {
@@ -180,7 +179,6 @@ public class GamePanel extends JPanel implements Runnable {
         // Player mới sẽ được tạo khi người dùng chọn "New Game".
         this.player = null;
 
-        clearEntitiesForMapChange();
         aSetter.setupMapAssets(currentMap);
 
         dialogueManager.reset();
