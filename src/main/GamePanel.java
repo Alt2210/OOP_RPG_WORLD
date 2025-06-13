@@ -323,5 +323,10 @@ public class GamePanel extends JPanel implements Runnable {
         gameState = gameOverState;
         ui.setUI(gameOverState); // CỰC KỲ QUAN TRỌNG: Báo cho UiManager thay đổi giao diện
     }
+    public void Victory() {
+        stopMusic();
+        gameState = victoryEndState;
+        ui.setUI(victoryEndState); // CỰC KỲ QUAN TRỌNG: Báo cho UiManager thay đổi giao diện
+    }
 
 }

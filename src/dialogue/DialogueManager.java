@@ -50,9 +50,7 @@ public class DialogueManager {
         // KIỂM TRA XEM CÓ PHẢI LÀ PRINCESS VÀ QUYẾT ĐỊNH TRẠNG THÁI TIẾP THEO
         if (currentSpeaker instanceof NPC_Princess) {
 
-            gp.gameState = gp.victoryEndState;
-            gp.getUi().setUi(gp.gameState);
-
+            gp.Victory();
         } else {
             // Đối với các NPC khác, quay lại trạng thái chơi bình thường
             gp.gameState = gp.playState;

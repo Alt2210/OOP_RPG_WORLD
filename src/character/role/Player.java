@@ -316,7 +316,7 @@ public abstract class Player extends character.Character {
                         this.canInteractWithCurrentNPC = false;
                     }
                 } else if (npcCharacter instanceof NPC_Princess) {
-                    gp.gameState = gp.victoryEndState;
+                    gp.Victory();
                 }
             }
         }

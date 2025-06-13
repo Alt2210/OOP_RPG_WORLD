@@ -2,6 +2,7 @@ package main;
 import character.monster.*;
 import character.sideCharacter.NPC_OldMan;
 import character.sideCharacter.NPC_Princess;
+import item.Item_Key;
 import item.itemConsumable.Item_HealthPotion;
 import item.itemConsumable.Item_ManaPotion;
 import item.itemEquippable.Item_Book;
@@ -69,6 +70,7 @@ public class AssetSetter {
         chest.getInventory().addItem(new Item_Book(gp), 1);
         chest.getInventory().addItem(new Item_HealthPotion(gp), 3);
         chest.getInventory().addItem(new Item_ManaPotion(gp), 3);
+        chest.getInventory().addItem(new Item_Key(gp),1);
 
         gp.getwObjects()[3] = chest;
         gp.getwObjects()[3].setWorldX(12 * gp.getTileSize());
@@ -81,6 +83,10 @@ public class AssetSetter {
         gp.getNpc()[0] = new NPC_OldMan(gp);
         gp.getNpc()[0].setWorldX(gp.getTileSize() * 50);
         gp.getNpc()[0].setWorldY(gp.getTileSize() * 92);
+
+        gp.getNpc()[1] = new NPC_Princess(gp);
+        gp.getNpc()[1].setWorldX(gp.getTileSize() * 55);
+        gp.getNpc()[1].setWorldY(gp.getTileSize() * 92);
         System.out.println("Map 0 NPCs Set.");
     }
 
@@ -122,6 +128,7 @@ public class AssetSetter {
         gp.getwObjects()[1].setWorldY(12 * gp.getTileSize());
         chest.getInventory().addItem(new Item_HealthPotion(gp), 3);
         chest.getInventory().addItem(new Item_ManaPotion(gp), 3);
+        chest.getInventory().addItem(new Item_Key(gp), 3);
 
         gp.getwObjects()[2] = new OBJ_ReviveStatue(gp);
         gp.getwObjects()[2].setWorldX(20 * gp.getTileSize());
