@@ -176,19 +176,16 @@ public class CharacterImageProcessor extends ImageProcessor {
                 walkSpriteCount = 7;
                 break;
             case "merchant":
-                BufferedImage img1 = setup(folder + "/" + characterIdentifier + "_down1.png");
-                BufferedImage img2 = setup(folder + "/" + characterIdentifier + "_down2.png");
-                if (img1 != null) {
-                    down.add(img1);
-                    if (img2 != null) {
-                        down.add(img2);
-                    } else {
-                        down.add(img1);
-                    }
-                    up.addAll(down);
-                    left.addAll(down);
-                    right.addAll(down);
+                BufferedImage img;
+                for(int i = 1; i <= 8; i++){
+                    String path = folder + "/" + characterIdentifier + "_down" + i + ".png";
+                    System.out.println(path);
+                    img = setup(path);
+                    down.add(img);
                 }
+                up.addAll(down);
+                left.addAll(down);
+                right.addAll(down);
                 break;
             case "oldman":
             case "greenslime":
