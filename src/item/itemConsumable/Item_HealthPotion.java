@@ -4,6 +4,7 @@ import character.role.Player;
 import imageProcessor.ItemImageProcessor;
 import item.Item;
 import main.GamePanel;
+import sound.Sound;
 
 public class Item_HealthPotion extends Item implements Consumable{
 
@@ -24,6 +25,7 @@ public class Item_HealthPotion extends Item implements Consumable{
     public void consumeItem(Player user){
         user.setCurrentHealth(user.getCurrentHealth() + healingValue);
         user.getGp().getUi().showMessage("Healed for " + healingValue + " HP!");
+        user.getGp().playSoundEffect(Sound.SFX_USE_POTION);
     }
 
     @Override

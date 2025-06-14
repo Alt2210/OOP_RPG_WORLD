@@ -4,6 +4,7 @@ import character.role.Player;
 import imageProcessor.ItemImageProcessor;
 import item.Item;
 import main.GamePanel;
+import sound.Sound;
 
 public class Item_ManaPotion extends Item implements Consumable{
     private final int manaValue = 50; // Lượng máu hồi
@@ -23,6 +24,7 @@ public class Item_ManaPotion extends Item implements Consumable{
     public void consumeItem(Player user){
         user.setCurrentMana(user.getCurrentMana() + manaValue);
         user.getGp().getUi().showMessage("Restore for " + manaValue + " Mana!");
+        user.getGp().playSoundEffect(Sound.SFX_USE_POTION);
     }
 
     public void useItem(Player user){

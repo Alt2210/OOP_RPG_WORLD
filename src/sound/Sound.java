@@ -39,7 +39,9 @@ public class Sound implements  LineListener {
     public static final int SFX_CHEST_CLOSE = 19;
     public static final int SFX_CURSOR_MOVE = 20;
     public static final int SFX_ITEM_TRANSFER = 21;
-
+    public static final int SFX_EQUIP_WEAPON = 22;
+    public static final int SFX_USE_POTION = 23;
+    public static final int SFX_ARM_SHOT = 24;
     public Sound() {
         try {
             soundURL[MUSIC_BACKGROUND] = getClass().getResource("/sound/BlueBoyAdventure.wav");
@@ -60,6 +62,9 @@ public class Sound implements  LineListener {
             soundURL[SFX_CHEST_CLOSE] = getClass().getResource("/sound/chest_close.wav");
             soundURL[SFX_CURSOR_MOVE] = getClass().getResource("/sound/inventory.wav");
             soundURL[SFX_ITEM_TRANSFER] = getClass().getResource("/sound/collect_item.wav");
+            soundURL[SFX_EQUIP_WEAPON] = getClass().getResource("/sound/equip.wav");
+            soundURL[SFX_USE_POTION] = getClass().getResource("/sound/drink_potion.wav"); // Giữ lại nếu bạn có file use_potion.wav
+            soundURL[SFX_ARM_SHOT] = getClass().getResource("/sound/stone_man_punch.wav"); // Giữ lại nếu bạn có file arm_shot.wav
             // Tùy chọn: Kiểm tra null cho các URL (rất hữu ích để debug)
             // for (int i = 0; i <= SFX_PICKUP_KEY; i++) { // Chỉ ví dụ đến SFX_PICKUP_KEY
             //     if (soundURL[i] == null && i != SFX_COIN /*ví dụ nếu coin.wav chưa có*/) {

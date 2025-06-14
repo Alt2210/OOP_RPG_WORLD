@@ -271,6 +271,7 @@ public class MON_GolemBoss extends Monster {
                 }
                 armProjectile.set(startX, startY, direction, this, attack);
                 gp.skillEffects.add(armProjectile); // Thêm vào skillEffects
+                gp.playSoundEffect(Sound.SFX_ARM_SHOT);
                 System.out.println("GolemBoss fired arm projectile at (" + startX + ", " + startY + "), direction: " + direction);
             }
         }

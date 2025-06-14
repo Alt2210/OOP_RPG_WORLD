@@ -403,6 +403,7 @@ public abstract class Player extends CombatableCharacter {
                 this.currentWeapon.specialBuff(this);
                 gp.getUi().showMessage("Equipped: " + weapon.getName());
                 // Không cần cập nhật sát thương ở đây vì getAttack() đã tự động tính toán
+            gp.playSoundEffect(Sound.SFX_EQUIP_WEAPON);
         }
     }
 
@@ -417,6 +418,7 @@ public abstract class Player extends CombatableCharacter {
             this.currentWeapon.unapplySpecialBuff(this);
             // Đặt vũ khí về null
             this.currentWeapon = null;
+            gp.playSoundEffect(Sound.SFX_EQUIP_WEAPON);
         }
     }
 
