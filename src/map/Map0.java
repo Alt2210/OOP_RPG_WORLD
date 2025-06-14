@@ -2,9 +2,7 @@ package map;
 
 import main.GamePanel;
 import character.monster.*;
-import character.sideCharacter.NPC_OldMan;
-import character.sideCharacter.NPC_Princess;
-import item.Item_Key;
+import character.sideCharacter.*;
 import item.itemConsumable.Item_HealthPotion;
 import item.itemConsumable.Item_ManaPotion;
 import item.itemEquippable.Item_Book;
@@ -52,6 +50,11 @@ public class Map0 extends GameMap{
         npc0.setWorldX(gp.getTileSize() * 50);
         npc0.setWorldY(gp.getTileSize() * 92);
         npcs.add(npc0);
+
+        Character npc1 = new NPC_Merchant(gp);
+        npc1.setWorldX(gp.getTileSize() * 11);
+        npc1.setWorldY(gp.getTileSize() * 23);
+        npcs.add(npc1);
 
         // MONSTERS
         // Sử dụng phương thức spawnMonster mới

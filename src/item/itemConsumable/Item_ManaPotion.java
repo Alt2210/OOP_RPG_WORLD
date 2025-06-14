@@ -12,6 +12,7 @@ public class Item_ManaPotion extends Item implements Consumable{
         name = "Mana";
         id = 102; // ID duy nhất cho vật phẩm này
         type = "CONSUMABLE"; // Loại vật phẩm là "dùng một lần"
+        this.buyPrice = 10;
         itp = new ItemImageProcessor(gp);
         // Giả sử bạn có ảnh health_potion.png trong res/objects/
         itp.getImage("/objects", "potion_mana");

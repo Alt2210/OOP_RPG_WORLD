@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlayUI extends UI {
@@ -18,6 +19,9 @@ public class PlayUI extends UI {
     public boolean messageOn = false;
     public String message = "";
     private int messageCounter = 0;
+    public boolean textOn = false;
+    public String floatingText = "";
+    private int textCounter = 0;
     public String currentDialogue = "";
     private double playtime = 0.0;
     private final DecimalFormat dFormat = new DecimalFormat("#0.00");
@@ -142,36 +146,58 @@ public class PlayUI extends UI {
         drawTextWithShadow(g2, staText, textX, textY, Color.WHITE, menuTextShadowColor, 1);
     }
 
+    public void drawMessage(Graphics2D g2) {
+        {
+            if (messageOn) {
+                int messageBoxWidth = gp.getScreenWidth() - gp.getTileSize() * 6;
+                int messageBoxHeight = gp.getTileSize() * 2;
+                int messageBoxX = gp.getScreenWidth() / 2 - messageBoxWidth / 2;
+                int messageBoxY = gp.getScreenHeight() - gp.getTileSize() * 3 - gp.getTileSize() / 2;
 
-    private void drawMessage(Graphics2D g2) {
-        if (messageOn) {
-            int messageBoxWidth = gp.getScreenWidth() - gp.getTileSize() * 6;
-            int messageBoxHeight = gp.getTileSize() * 2;
-            int messageBoxX = gp.getScreenWidth() / 2 - messageBoxWidth / 2;
-            int messageBoxY = gp.getScreenHeight() - gp.getTileSize() * 3 - gp.getTileSize() / 2;
+                drawSubWindow(g2, messageBoxX, messageBoxY, messageBoxWidth, messageBoxHeight, new Color(0, 0, 0, 180), Color.WHITE, 20, 20, 2);
 
-            drawSubWindow(g2, messageBoxX, messageBoxY, messageBoxWidth, messageBoxHeight, new Color(0, 0, 0, 180), Color.WHITE, 20, 20, 2);
+                g2.setFont(pixelFont_XSmall);
+                g2.setColor(Color.WHITE);
+                int textPaddingX = gp.getTileSize() / 3;
+                int currentTextY = messageBoxY + textPaddingX + g2.getFontMetrics().getAscent();
 
-            g2.setFont(pixelFont_XSmall);
-            g2.setColor(Color.WHITE);
-            int textPaddingX = gp.getTileSize() / 3;
-            int currentTextY = messageBoxY + textPaddingX + g2.getFontMetrics().getAscent();
+                List<String> wrappedLines = wrapText(message, g2.getFontMetrics(), messageBoxWidth - (textPaddingX * 2));
+                for (String lineToDraw : wrappedLines) {
+                    int lineX = messageBoxX + textPaddingX;
+                    drawTextWithShadow(g2, lineToDraw, lineX, currentTextY, Color.WHITE, menuTextShadowColor, 1);
+                    currentTextY += g2.getFontMetrics().getHeight();
+                }
 
-            List<String> wrappedLines = wrapText(message, g2.getFontMetrics(), messageBoxWidth - (textPaddingX * 2));
-            for (String lineToDraw : wrappedLines) {
-                int lineX = messageBoxX + textPaddingX;
-                drawTextWithShadow(g2, lineToDraw, lineX, currentTextY, Color.WHITE, menuTextShadowColor, 1);
-                currentTextY += g2.getFontMetrics().getHeight();
-            }
-
-            messageCounter++;
-            if (messageCounter > 120) {
-                messageCounter = 0;
-                messageOn = false;
+                messageCounter++;
+                if (messageCounter > 120) {
+                    messageCounter = 0;
+                    messageOn = false;
+                }
             }
         }
     }
 
+    public void showFloatingText(String text){
+        this.floatingText = text;
+        this.textOn  = true;
+    }
+
+    public void drawFloatingText(Graphics2D g2) {
+        {
+            if (textOn) {
+
+                g2.setFont(pixelFont_XSmall);
+                g2.setColor(Color.WHITE);
+                g2.drawString(floatingText, 15, gp.getTileSize()*5);
+
+                textCounter++;
+                if (textCounter > 120) {
+                    textCounter = 0;
+                    textOn = false;
+                }
+            }
+        }
+    }
 
     private void drawDialogueWindow(Graphics2D g2) {
         int x = gp.getTileSize();

@@ -11,6 +11,22 @@ public abstract class Item {
     protected ItemImageProcessor itp;
     protected String description;
 
+    protected int buyPrice;
+    protected boolean sellable = true;
+
+    // Thêm 2 getters này
+    public int getBuyPrice() {
+        return buyPrice;
+    }
+
+    public int getSellPrice() {
+        return buyPrice / 2;
+    }
+
+    public boolean isSellable() {
+        return sellable;
+    }
+
     public enum ItemType {
         WEAPON,
         ARMOR,

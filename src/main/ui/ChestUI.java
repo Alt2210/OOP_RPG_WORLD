@@ -41,8 +41,8 @@ public class ChestUI extends UI {
 
         // --- Vẽ các ô vật phẩm (Slots) ---
         drawSlots(g2, playerFrameX, frameY, gp.getPlayer().getInventory()); // Vẽ túi đồ người chơi
-        if (gp.currentChest != null) {
-            drawSlots(g2, chestFrameX, frameY, gp.currentChest.getInventory()); // Vẽ túi đồ của rương
+        if (gp.getCurrentChest() != null) {
+            drawSlots(g2, chestFrameX, frameY, gp.getCurrentChest().getInventory()); // Vẽ túi đồ của rương
         }
 
         // --- Vẽ Con trỏ (Cursor) ---
@@ -128,8 +128,8 @@ public class ChestUI extends UI {
                 selectedStack = gp.getPlayer().getInventory().getItemStack(itemIndex);
             }
         } else { // Lấy item từ kho rương
-            if (gp.currentChest != null && itemIndex < gp.currentChest.getInventory().getItemStack()) {
-                selectedStack = gp.currentChest.getInventory().getItemStack(itemIndex);
+            if (gp.getCurrentChest() != null && itemIndex < gp.getCurrentChest().getInventory().getItemStack()) {
+                selectedStack = gp.getCurrentChest().getInventory().getItemStack(itemIndex);
             }
         }
 

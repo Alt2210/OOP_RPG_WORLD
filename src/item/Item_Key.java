@@ -15,6 +15,8 @@ public class Item_Key extends Item {
         itp = new ItemImageProcessor(gp);
         itp.getImage("/objects", "key");
         description = "[" + name + "]\nAn item to open doors";
+        this.buyPrice = 100000;
+        this.sellable = false;
     }
 
 }

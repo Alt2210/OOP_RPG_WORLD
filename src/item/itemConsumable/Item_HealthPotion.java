@@ -14,6 +14,7 @@ public class Item_HealthPotion extends Item implements Consumable{
         id = 101; // ID duy nhất cho vật phẩm này
         type = "CONSUMABLE"; // Loại vật phẩm là "dùng một lần"
         itp = new ItemImageProcessor(gp);
+        this.buyPrice = 10;
         // Giả sử bạn có ảnh health_potion.png trong res/objects/
         itp.getImage("/objects", "potion_health");
         description = "[" + name + "]\nA magical potion that\nrestores " + healingValue + " HP.";

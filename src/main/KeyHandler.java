@@ -7,6 +7,7 @@ import data.GameHistory;
 import item.Inventory;
 import item.ItemStack;
 import sound.Sound;
+import character.sideCharacter.NPC_Merchant; // THÊM DÒNG NÀY
 
 public class KeyHandler implements KeyListener {
     private GamePanel gp;
@@ -62,9 +63,10 @@ public class KeyHandler implements KeyListener {
             handleGameOverStateKeys(code);
         } else if (gp.gameState == GamePanel.victoryEndState) {
             handleVictoryStateKeys(code);
-        }
-        else if (gp.gameState == GamePanel.loadGameState) {
-            handleLoadGameStateKeys(code); // Gọi phương thức xử lý mới
+        } else if (gp.gameState == GamePanel.loadGameState) {
+            handleLoadGameStateKeys(code);
+        } else if (gp.gameState == GamePanel.tradeState) {
+            handleTradeStateKeys(code);
         }
     }
 
@@ -78,15 +80,15 @@ public class KeyHandler implements KeyListener {
             gp.getUi().setCommandNum((gp.getUi().getCommandNum() + 1) % 3);
         }
         if (code == KeyEvent.VK_ENTER) {
-            if (gp.getUi().getCommandNum() == 0) { // New Game
+            if (gp.getUi().getCommandNum() == 0) {
                 gp.gameState = GamePanel.characterSelectState;
                 gp.getUi().setUI(gp.gameState);
             }
-            if (gp.getUi().getCommandNum() == 1) { // Load Game
-                gp.gameState = GamePanel.loadGameState; // CHUYỂN TỚI MÀN HÌNH LOAD GAME MỚI
+            if (gp.getUi().getCommandNum() == 1) {
+                gp.gameState = GamePanel.loadGameState;
                 gp.getUi().setUI(gp.gameState);
             }
-            if (gp.getUi().getCommandNum() == 2) { // Quit
+            if (gp.getUi().getCommandNum() == 2) {
                 System.exit(0);
             }
         }
@@ -105,10 +107,10 @@ public class KeyHandler implements KeyListener {
             }
             gp.setupGame();
             gp.gameState = GamePanel.playState;
-            gp.getUi().setUI(gp.gameState); // Cập nhật UI sang màn hình chơi game
+            gp.getUi().setUI(gp.gameState);
         } else if (code == KeyEvent.VK_ESCAPE) {
             gp.gameState = GamePanel.titleState;
-            gp.getUi().setUI(gp.gameState); // Cập nhật UI về màn hình tiêu đề
+            gp.getUi().setUI(gp.gameState);
         }
     }
 
@@ -142,8 +144,23 @@ public class KeyHandler implements KeyListener {
     }
 
     private void handleDialogueStateKeys(int code) {
-        if (code == KeyEvent.VK_ENTER) {
-            gp.getDialogueManager().advance();
+        // Kiểm tra nếu NPC hiện tại là Merchant
+        if (gp.getDialogueManager().getInteractingNPC() instanceof NPC_Merchant) {
+            if (!gp.getDialogueManager().hasMoreLinesInCurrentDialogue() && code == KeyEvent.VK_ENTER) {
+                ((NPC_Merchant) gp.getDialogueManager().getInteractingNPC()).startTradeSession();
+            } else if (code == KeyEvent.VK_ESCAPE) {
+                gp.getDialogueManager().endDialogue();
+                gp.setCurrentMerchant(null);
+            } else if (code == KeyEvent.VK_ENTER) { // Nếu chưa hết dialogue, tiếp tục
+                gp.getDialogueManager().advance();
+            }
+        } else {
+            // Logic mặc định cho các dialogue khác hoặc khi chưa hết dòng
+            if (code == KeyEvent.VK_ENTER) {
+                gp.getDialogueManager().advance();
+            } else if (code == KeyEvent.VK_ESCAPE) { // Cho phép thoát dialogue bất kỳ lúc nào với ESC
+                gp.getDialogueManager().endDialogue();
+            }
         }
     }
 
@@ -164,7 +181,7 @@ public class KeyHandler implements KeyListener {
     }
     private void handleLoadGameStateKeys(int code) {
         int maxSaves = gp.getSaveLoadManager().getSaveHistory().getSavePoints().size();
-        if (maxSaves == 0) { // Nếu không có save, chỉ cho phép thoát
+        if (maxSaves == 0) {
             if (code == KeyEvent.VK_ESCAPE) {
                 gp.gameState = GamePanel.titleState;
                 gp.getUi().setUI(gp.gameState);
@@ -180,7 +197,6 @@ public class KeyHandler implements KeyListener {
         }
         if (code == KeyEvent.VK_ENTER) {
             gp.getSaveLoadManager().loadGame(gp.getUi().getCommandNum());
-            // Phương thức loadGame sẽ tự động chuyển gameState và UI
         }
         if (code == KeyEvent.VK_ESCAPE) {
             gp.gameState = GamePanel.titleState;
@@ -191,13 +207,12 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_ESCAPE || code == KeyEvent.VK_C) {
             gp.gameState = GamePanel.playState;
             gp.getUi().setUI(gp.gameState);
-            gp.currentChest = null;
+            gp.setCurrentChest(null);
         }
 
         int playerPanel = 0;
         int chestPanel = 1;
 
-        // Di chuyển lên/xuống
         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
             if (gp.getUi().getSlotRow() > 0) {
                 gp.getUi().setSlotRow(gp.getUi().getSlotRow() - 1);
@@ -215,7 +230,6 @@ public class KeyHandler implements KeyListener {
             }
         }
 
-        // Di chuyển trái/phải và chuyển panel
         if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
             if (gp.getUi().getCommandNum() == playerPanel) {
                 if (gp.getUi().getSlotCol() > 0) {
@@ -261,21 +275,18 @@ public class KeyHandler implements KeyListener {
             gp.getUi().setCommandNum((gp.getUi().getCommandNum() + 1) % 2);
         }
         if (code == KeyEvent.VK_ENTER) {
-            if (gp.getUi().getCommandNum() == 0) { // Lựa chọn "Retry"
-                // Tải lại điểm save cuối cùng
+            if (gp.getUi().getCommandNum() == 0) {
                 GameHistory history = gp.getSaveLoadManager().getSaveHistory();
                 if (!history.getSavePoints().isEmpty()) {
                     int lastSaveIndex = history.getSavePoints().size() - 1;
                     gp.getSaveLoadManager().loadGame(lastSaveIndex);
-                    gp.playMusic(Sound.MUSIC_BACKGROUND); // Bật lại nhạc nền
+                    gp.playMusic(Sound.MUSIC_BACKGROUND);
                 } else {
-                    // Nếu không có file save nào, thì coi như "Quit"
                     gp.resetGameForNewSession();
                     gp.gameState = GamePanel.titleState;
                     gp.getUi().setUI(gp.gameState);
                 }
-            } else if (gp.getUi().getCommandNum() == 1) { // Lựa chọn "Quit"
-                // Reset game và quay về màn hình chính
+            } else if (gp.getUi().getCommandNum() == 1) {
                 gp.resetGameForNewSession();
                 gp.gameState = GamePanel.titleState;
                 gp.getUi().setUI(gp.gameState);
@@ -287,17 +298,71 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_ENTER) {
             gp.resetGameForNewSession();
             gp.gameState = GamePanel.titleState;
-            gp.getUi().setUI(gp.gameState); // Cập nhật UI
+            gp.getUi().setUI(gp.gameState);
+        }
+    }
+
+    private void handleTradeStateKeys(int code) {
+        if (code == KeyEvent.VK_C) {
+            gp.gameState = GamePanel.playState;
+            gp.getUi().setUI(gp.gameState);
+            gp.setCurrentMerchant(null);
+        }
+
+        int playerPanel = 0;
+        int merchantPanel = 1;
+        int maxCol = 4;
+        int maxPlayerRow = 3;
+        int maxMerchantRow = 3;
+
+        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+            if (gp.getUi().getSlotRow() > 0) {
+                gp.getUi().setSlotRow(gp.getUi().getSlotRow() - 1);
+            }
+        }
+        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+            if (gp.getUi().getCommandNum() == playerPanel && gp.getUi().getSlotRow() < maxPlayerRow) {
+                gp.getUi().setSlotRow(gp.getUi().getSlotRow() + 1);
+            } else if (gp.getUi().getCommandNum() == merchantPanel && gp.getUi().getSlotRow() < maxMerchantRow) {
+                gp.getUi().setSlotRow(gp.getUi().getSlotRow() + 1);
+            }
+        }
+
+        if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+            if (gp.getUi().getSlotCol() > 0) {
+                gp.getUi().setSlotCol(gp.getUi().getSlotCol() - 1);
+            } else {
+                if (gp.getUi().getCommandNum() == merchantPanel) {
+                    gp.getUi().setCommandNum(playerPanel);
+                    gp.getUi().setSlotCol(maxCol);
+                }
+            }
+        }
+        if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+            if (gp.getUi().getSlotCol() < maxCol) {
+                gp.getUi().setSlotCol(gp.getUi().getSlotCol() + 1);
+            } else {
+                if (gp.getUi().getCommandNum() == playerPanel) {
+                    gp.getUi().setCommandNum(merchantPanel);
+                    gp.getUi().setSlotCol(0);
+                }
+            }
+        }
+
+        if (code == KeyEvent.VK_ENTER) {
+            if (gp.getCurrentMerchant() != null) {
+                gp.getCurrentMerchant().tradeItem();
+            }
         }
     }
 
     private void transferItem() {
-        if (gp.currentChest == null) return;
+        if (gp.getCurrentChest() == null) return;
         int slotIndex = gp.getUi().getItemIndexOnSlot();
         Inventory playerInv = gp.getPlayer().getInventory();
-        Inventory chestInv = gp.currentChest.getInventory();
+        Inventory chestInv = gp.getCurrentChest().getInventory();
 
-        if (gp.getUi().getCommandNum() == 0) { // Từ Player -> Rương
+        if (gp.getUi().getCommandNum() == 0) {
             ItemStack stackToMove = playerInv.getItemStack(slotIndex);
             if (stackToMove != null) {
                 if (stackToMove.getItem() == gp.getPlayer().getCurrentWeapon()) {
@@ -307,19 +372,19 @@ public class KeyHandler implements KeyListener {
                 if (chestInv.addItem(stackToMove.getItem(), stackToMove.getQuantity())) {
                     playerInv.removeStack(slotIndex);
                     gp.getUi().showMessage("Moved " + stackToMove.getItem().getName() + " to chest.");
-                    gp.currentChest.setOpened(false);
+                    gp.getCurrentChest().setOpened(false);
                 } else {
                     gp.getUi().showMessage("Chest is full!");
                 }
             }
-        } else { // Từ Rương -> Player
+        } else {
             ItemStack stackToMove = chestInv.getItemStack(slotIndex);
             if (stackToMove != null) {
                 if (playerInv.addItem(stackToMove.getItem(), stackToMove.getQuantity())) {
                     chestInv.removeStack(slotIndex);
                     gp.getUi().showMessage("Took " + stackToMove.getItem().getName() + " from chest.");
                     if (chestInv.getItemStack() == 0) {
-                        gp.currentChest.setOpened(true);
+                        gp.getCurrentChest().setOpened(true);
                     }
                 } else {
                     gp.getUi().showMessage("Your inventory is full!");

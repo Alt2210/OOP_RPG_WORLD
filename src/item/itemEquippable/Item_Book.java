@@ -13,6 +13,7 @@ public class Item_Book extends Item_Weapon implements Equippable{
         description = "[" + name + "]\nMột quyển sách cũ kỹ.\nTăng 5 sát thương tấn công.";
 
         this.attackBonus = 5;
+        this.buyPrice = 20;
         itp = new ItemImageProcessor(gp);
         itp.getImage("/weapon", "book_normal");
     }

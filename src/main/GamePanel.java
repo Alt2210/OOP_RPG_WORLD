@@ -3,6 +3,7 @@ package main;
 import character.Character;
 import character.role.Player;
 import character.monster.*;
+import character.sideCharacter.*;
 import data.SaveLoad;
 import main.ui.*;
 import skillEffect.SkillEffect;
@@ -55,7 +56,9 @@ public class GamePanel extends JPanel implements Runnable {
     private ArrayList<Monster> monsters = new ArrayList<>();*/
     private GameMap currentMap;
     public List<SkillEffect> skillEffects = new ArrayList<>();
-    public OBJ_Chest currentChest = null;
+    private OBJ_Chest currentChest = null;
+    private NPC_Merchant currentMerchant = null;
+
 
 
     // GAME STATE
@@ -70,6 +73,7 @@ public class GamePanel extends JPanel implements Runnable {
     public static final int InventoryState = 7;
     public static final int chestState = 8;
     public static final int loadGameState = 9;
+    public static final int tradeState = 10;
 
     //GETTERS AND SETTERS
     public GameMap getCurrentMap() {
@@ -80,9 +84,21 @@ public class GamePanel extends JPanel implements Runnable {
         this.currentMap = currentMap;
     }
 
-    /*public ArrayList<Monster> getMonster() {
-        return monsters;
-    }*/
+    public NPC_Merchant getCurrentMerchant() {
+        return currentMerchant;
+    }
+
+    public void setCurrentMerchant(NPC_Merchant currentMerchant) {
+        this.currentMerchant = currentMerchant;
+    }
+
+    public OBJ_Chest getCurrentChest() {
+        return currentChest;
+    }
+
+    public void setCurrentChest(OBJ_Chest currentChest) {
+        this.currentChest = currentChest;
+    }
 
     public int getMaxMap() {
         return maxMap;

@@ -36,15 +36,24 @@ public class Dialogue {
         return null;
     }
 
+
+    public void reset() {
+        currentLineIndex = -1;
+        System.out.println("Dialogue: RESET called. currentLineIndex = " + currentLineIndex);
+
+    }
+
     public boolean hasMoreLines() {
         boolean moreLines = (currentLineIndex + 1 < lines.size());
         System.out.println("Dialogue.hasMoreLines: Index=" + currentLineIndex + ", Size=" + lines.size() + ", More=" + moreLines);
         return moreLines;
     }
 
-    public void reset() {
-        currentLineIndex = -1;
-        System.out.println("Dialogue: RESET called. currentLineIndex = " + currentLineIndex);
-
+    // THÊM PHƯƠNG THỨC NÀY
+    public int getCurrentLineIndex() {
+        return currentLineIndex;
+    }
+    public int getTotalLines() {
+        return lines.size();
     }
 }
