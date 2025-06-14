@@ -149,8 +149,8 @@ public class Fireball extends Projectile {
             //g2.drawImage(image, screenX, screenY, image.getWidth(), image.getHeight(), null);
             //g2.drawImage(image, screenX, screenY, image.getWidth() * gp.getScale(), image.getHeight() * gp.getScale(), null);
             // Optional: Vẽ vùng solidArea để debug
-             g2.setColor(Color.RED);
-             g2.drawRect(screenX, screenY, solidArea.width , solidArea.height);
+             //g2.setColor(Color.RED);
+             //g2.drawRect(screenX, screenY, solidArea.width , solidArea.height);
         }
     }
 }
