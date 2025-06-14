@@ -46,6 +46,12 @@ public abstract class Monster extends CombatableCharacter {
 
     @Override
     public void update() {
+        collisionOn = false;
+        gp.getcChecker().checkTile(this);
+        gp.getcChecker().checkItem(this, false); // Quái vật va chạm với vật thể nhưng không nhặt
+        gp.getcChecker().checkEntity(this, gp.getCurrentMap().getNpc()); // Va chạm với NPC
+        gp.getcChecker().checkEntity(this, gp.getCurrentMap().getMonster()); // Va chạm với quái vật khác
+        gp.getcChecker().checkPlayer(this); // Va chạm với người chơi
         super.update(); // Gọi logic update của lớp Character (di chuyển, animation, cooldown)
         updateContactDamageCooldown();
     }

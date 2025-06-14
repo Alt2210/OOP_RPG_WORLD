@@ -166,66 +166,24 @@ public class MON_Bat extends Monster {
     @Override
     public void update() {
         try {
-            attemptToDash(); // Cập nhật trạng thái lướt
+            // 1. Logic quyết định hành động
+            attemptToDash(); // Cập nhật trạng thái lướt, tốc độ và hướng
             if (!isDashing) {
-                playerChasing(); // Đuổi theo người chơi khi không lướt
+                playerChasing(); // Cập nhật hướng khi đang đuổi theo
             }
 
-            // Kiểm tra va chạm với ô
-            collisionOn = false;
-            gp.getcChecker().checkTile(this);
+            // 2. Gọi logic update của lớp Monster cha
+            // Monster.update() giờ đây sẽ xử lý tất cả các va chạm (tile, item, player...)
+            // và thực hiện di chuyển nếu không có va chạm.
+            super.update();
 
-            if (isDashing) {
-                // Kiểm tra va chạm với người chơi khi lướt
-                Player player = gp.getPlayer();
-                if (player != null && player.getCurrentHealth() > 0) {
-                    Rectangle batBounds = new Rectangle(
-                            worldX + solidArea.x,
-                            worldY + solidArea.y,
-                            solidArea.width,
-                            solidArea.height
-                    );
-                    Rectangle playerBounds = new Rectangle(
-                            player.getWorldX() + player.getSolidArea().x,
-                            player.getWorldY() + player.getSolidArea().y,
-                            player.getSolidArea().width,
-                            player.getSolidArea().height
-                    );
-                    if (batBounds.intersects(playerBounds)) {
-                        // Gây sát thương không cần cooldown khi lướt
-                        player.receiveDamage(contactDamageAmount, this);
-                        System.out.println("MON_Bat dashed through Player, dealt " + contactDamageAmount + " damage");
-                    }
-                }
-
-                // Khi lướt, chỉ dừng nếu va chạm với ô
-                if (!collisionOn) {
-                    switch (direction) {
-                        case "up": worldY -= speed; break;
-                        case "down": worldY += speed; break;
-                        case "left": worldX -= speed; break;
-                        case "right": worldX += speed; break;
-                    }
-                } else {
-                    isDashing = false;
-                    speed = 1;
-                    dashCounter = DASH_INTERVAL - 30; // Thử lại sau 0.5 giây
-                    System.out.println("MON_Bat stopped dashing due to tile collision");
-                }
-            } else {
-                // Khi không lướt, tôn trọng cả va chạm với ô và người chơi
-                gp.getcChecker().checkPlayer(this);
-                if (!collisionOn) {
-                    switch (direction) {
-                        case "up": worldY -= speed; break;
-                        case "down": worldY += speed; break;
-                        case "left": worldX -= speed; break;
-                        case "right": worldX += speed; break;
-                    }
-                }
+            // 3. Xử lý logic sau khi va chạm đã được phát hiện
+            // Nếu đang lướt và cờ collisionOn được bật lên (do va chạm tường), dừng lướt.
+            if (collisionOn && isDashing) {
+                isDashing = false;
+                speed = defaultSpeed; // Trả lại tốc độ bình thường
+                dashCounter = DASH_INTERVAL - 30; // Chờ một chút trước khi thử lướt lại
             }
-
-            cip.update();
         } catch (Exception e) {
             System.err.println("Error updating MON_Bat: " + e.getMessage());
             e.printStackTrace();
