@@ -72,23 +72,23 @@ public class SaveLoad {
             data.playerWorldX = player.getWorldX();
             data.playerWorldY = player.getWorldY();
             data.playerDirection = player.getDirection();
-            data.setCurrentMap(gp.getCurrentMap());
+            data.setCurrentMapIndex(gp.getCurrentMapIndex());
             data.playerClassIdentifier = player.getCharacterClassIdentifier();
             // Lưu thông tin mô tả và timestamp
             data.setTimestamp(System.currentTimeMillis());
             data.setDescription(description);
 
             // 2. Lưu trạng thái của tất cả WorldObject trên map hiện tại
-            for (WorldObject wObject : gp.getwObjects()) { //
+            for (WorldObject wObject : gp.getCurrentMap().getwObjects()) { //
                 if (wObject != null) {
-                    data.objectStates[gp.getCurrentMap()].add(new WorldObjectState(wObject.getName(), wObject.getWorldX(), wObject.getWorldY(), true)); //
+                    data.objectStates[gp.getCurrentMapIndex()].add(new WorldObjectState(wObject.getName(), wObject.getWorldX(), wObject.getWorldY(), true)); //
                 }
             }
 
             // 3. Lưu trạng thái Monster
-            for (Monster monster : gp.getMonster()) { //
+            for (Monster monster : gp.getCurrentMap().getMonster()) { //
                 if (monster != null) {
-                    data.monsterStates[gp.getCurrentMap()].add(new MonsterState(monster.getName(), monster.getWorldX(), monster.getWorldY(), monster.getCurrentHealth(), monster.isOnPath())); //
+                    data.monsterStates[gp.getCurrentMapIndex()].add(new MonsterState(monster.getName(), monster.getWorldX(), monster.getWorldY(), monster.getCurrentHealth(), monster.isOnPath())); //
                 }
             }
 
@@ -97,7 +97,7 @@ public class SaveLoad {
             oos.writeObject(history);
 
             gp.getUi().showMessage("Game Saved: " + description);
-            System.out.println("Game saved for map " + gp.getCurrentMap());
+            System.out.println("Game saved for map " + gp.getCurrentMapIndex());
 
         } catch (IOException e) {
             System.err.println("Save Exception: " + e.getMessage());
@@ -120,6 +120,8 @@ public class SaveLoad {
         try {
             DataStorage data = history.getSavePoints().get(slotIndex);
 
+            // 1. Tải trạng thái Player
+            // ... (Giữ nguyên logic tạo Player và thiết lập Player stats)
             if ("sodier".equals(data.playerClassIdentifier)) {
                 gp.setPlayer(new Soldier(gp, gp.getKeyH()));
             } else if ("astrologist".equals(data.playerClassIdentifier)) {
@@ -131,66 +133,85 @@ public class SaveLoad {
             }
 
             Player player = gp.getPlayer();
-
-            // 1. Tải trạng thái Player
             player.setMaxHealth(data.maxHealth);
             player.setCurrentHealth(data.currentHealth);
             player.setMaxMana(data.maxMana);
             player.setCurrentMana(data.currentMana);
             player.setHasKey(data.hasKey);
-
             player.setLevel(data.level);
             player.setCurrentExp(data.currentExp);
             player.setExpToNextLevel(data.expToNextLevel);
             player.setAttack(data.attack);
             player.setDefense(data.defense);
-
             player.setWorldX(data.playerWorldX);
             player.setWorldY(data.playerWorldY);
             player.setDirection(data.playerDirection);
-            gp.setCurrentMap(data.getCurrentMap());
 
-            // 2. Dọn dẹp thế giới cũ
-            gp.clearEntitiesForMapChange();
-            // BỎ LỆNH gp.getaSetter().setupMapAssets(gp.getCurrentMap());
-            // Chúng ta sẽ tái tạo thế giới hoàn toàn từ file save.
+            // 2. Thiết lập bản đồ mới và xóa các thực thể
+            gp.setCurrentMapIndex(data.getCurrentMapIndex()); // Đảm bảo map index đúng
+            gp.clearEntitiesForMapChange(); // Xóa các thực thể của bản đồ cũ (nếu có) HOẶC map mới sau khi set currentMap
 
-            // Tải trạng thái WorldObject từ file save
-            if (data.objectStates[gp.getCurrentMap()] != null) {
-                for (int i = 0; i < data.objectStates[gp.getCurrentMap()].size(); i++) {
-                    WorldObjectState state = data.objectStates[gp.getCurrentMap()].get(i);
-                    if (state.isExists()) {
-                        gp.getwObjects()[i] = createObjectFromName(state.getName());
-                        if (gp.getwObjects()[i] != null) {
-                            gp.getwObjects()[i].setWorldX(state.getWorldX());
-                            gp.getwObjects()[i].setWorldY(state.getWorldY());
+            // QUAN TRỌNG: Gọi setupMapAssets để khởi tạo bản đồ MỚI với các thực thể mặc định
+            gp.getaSetter().setupMapAssets(gp.getCurrentMapIndex()); //
+            gp.setCurrentMap(gp.getaSetter().getMap(gp.getCurrentMapIndex())); // Cập nhật currentMap reference
+
+
+            // 3. Ghi đè trạng thái của WorldObject từ file save
+            // Sau khi `setupMapAssets` đã tạo ra các đối tượng mặc định cho map hiện tại,
+            // chúng ta sẽ xóa chúng và chỉ thêm lại những gì có trong save.
+            // Điều này là cần thiết nếu bạn có các đối tượng có trạng thái (như rương đã mở, hoặc đã bị nhặt).
+
+            // Xóa tất cả WorldObject và Monster mặc định của bản đồ vừa được setupMapAssets tạo
+            gp.getCurrentMap().getwObjects().clear(); //
+            gp.getCurrentMap().getMonster().clear(); //
+            gp.getCurrentMap().getNpc().clear(); // Cũng cần xóa NPC nếu trạng thái NPC cũng được lưu
+
+            if (data.objectStates[gp.getCurrentMapIndex()] != null) { //
+                for (WorldObjectState state : data.objectStates[gp.getCurrentMapIndex()]) { //
+                    if (state.isExists()) { //
+                        WorldObject loadedObject = createObjectFromName(state.getName()); //
+                        if (loadedObject != null) { //
+                            loadedObject.setWorldX(state.getWorldX()); //
+                            loadedObject.setWorldY(state.getWorldY()); //
+                            // Xử lý các trạng thái đặc biệt của object (ví dụ: isOpened cho Chest)
+                            if (loadedObject instanceof OBJ_Chest) {
+                                // Nếu bạn lưu trạng thái isOpened của Chest trong WorldObjectState, hãy tải nó ở đây
+                                // Hiện tại WorldObjectState chỉ có name, worldX, worldY, exists
+                                // Bạn cần mở rộng WorldObjectState và OBJ_Chest để lưu và tải trạng thái này.
+                                // Ví dụ: ((OBJ_Chest) loadedObject).setOpened(state.isChestOpened());
+                            }
+                            gp.getCurrentMap().getwObjects().add(loadedObject); // Thêm vào danh sách của currentMap
                         }
                     }
                 }
             }
 
             // Tải trạng thái Monster từ file save
-            if (data.monsterStates[gp.getCurrentMap()] != null) {
-                for (MonsterState state : data.monsterStates[gp.getCurrentMap()]) {
-                    Monster monster = createMonsterFromName(state.getName());
-                    if (monster != null) {
-                        monster.setWorldX(state.getWorldX());
-                        monster.setWorldY(state.getWorldY());
-                        monster.setCurrentHealth(state.getCurrentHealth());
-                        monster.setOnPath(state.isOnPath());
-                        gp.getMonster().add(monster);
+            if (data.monsterStates[gp.getCurrentMapIndex()] != null) { //
+                for (MonsterState state : data.monsterStates[gp.getCurrentMapIndex()]) { //
+                    Monster monster = createMonsterFromName(state.getName()); //
+                    if (monster != null) { //
+                        monster.setWorldX(state.getWorldX()); //
+                        monster.setWorldY(state.getWorldY()); //
+                        monster.setCurrentHealth(state.getCurrentHealth()); //
+                        monster.setOnPath(state.isOnPath()); //
+                        gp.getCurrentMap().getMonster().add(monster); //
                     }
                 }
             }
 
-            gp.getUi().showMessage("Game Loaded: " + data.getDescription());
-            gp.gameState = GamePanel.playState;
-            gp.getUi().setUI(gp.gameState);
+            // Tải trạng thái NPC (nếu bạn lưu NPC)
+            // Tương tự cho NPC, bạn sẽ cần một NpcState và thêm logic tải vào đây.
+            // Nếu NPC luôn có mặt và không thay đổi vị trí/trạng thái (trừ dialogue), có thể không cần lưu.
+
+            gp.getUi().showMessage("Game Loaded: " + data.getDescription()); //
+            gp.gameState = GamePanel.playState; //
+            gp.getUi().setUI(gp.gameState); //
 
         } catch (Exception e) {
-            System.err.println("Load Exception: " + e.getMessage());
-            e.printStackTrace();
-            gp.getUi().showMessage("Error loading game: File corrupted or incompatible.");
+            System.err.println("Load Exception: " + e.getMessage()); //
+            e.printStackTrace(); //
+            gp.getUi().showMessage("Error loading game: File corrupted or incompatible."); //
         }
     }
 

@@ -299,10 +299,10 @@ public abstract class Player extends CombatableCharacter {
                     gp.getcChecker().checkTile(this);
                     int itemIndex = gp.getcChecker().checkItem(this, true);
                     pickUpItem(itemIndex);
-                    int npcIndex = gp.getcChecker().checkEntity(this, gp.getNpc());
+                    int npcIndex = gp.getcChecker().checkEntity(this, gp.getCurrentMap().getNpc());
 
                     if (npcIndex != 999) { // Player đang va chạm với một NPC
-                        Character newlyCollidedNPC = gp.getNpc()[npcIndex];
+                        Character newlyCollidedNPC = gp.getCurrentMap().getNpc().get(npcIndex);
                         this.collisionOn = true; // Player bị chặn bởi NPC này
 
                         if (this.currentlyCollidingNPC != newlyCollidedNPC) {
@@ -382,14 +382,14 @@ public abstract class Player extends CombatableCharacter {
     public void decrementKeyCount() { if (this.hasKey > 0) this.hasKey--; }
 
     public void pickUpItem(int i) {
-        if (i != 999 && gp.getwObjects()[i] != null) {
-            gp.getwObjects()[i].interactPlayer(this, i, this.gp);
+        if (i != 999 && gp.getCurrentMap().getwObjects().get(i) != null) {
+            gp.getCurrentMap().getwObjects().get(i).interactPlayer(this, i, this.gp);
         }
     }
     public void interactWithNPC(int npcIndex) {
         if (npcIndex != 999) {
             if (gp.gameState == gp.playState) {
-                Character npcCharacter = gp.getNpc()[npcIndex];
+                Character npcCharacter = gp.getCurrentMap().getNpc().get(npcIndex);
 
                 if (npcCharacter instanceof DialogueSpeaker) {
                     ((DialogueSpeaker) npcCharacter).initiateDialogue(gp); // Điều này sẽ chuyển gameState sang dialogueState
@@ -503,7 +503,7 @@ public abstract class Player extends CombatableCharacter {
         }
 
         // Kiểm tra xem vùng tương tác có chạm vào rương không
-        for (worldObject.WorldObject obj : gp.getwObjects()) {
+        for (worldObject.WorldObject obj : gp.getCurrentMap().getwObjects()) {
             if (obj instanceof worldObject.unpickableObject.OBJ_Chest) {
                 Rectangle objBounds = new Rectangle(obj.getWorldX() + obj.getSolidArea().x, obj.getWorldY() + obj.getSolidArea().y, obj.getSolidArea().width, obj.getSolidArea().height);
                 if (interactionArea.intersects(objBounds)) {

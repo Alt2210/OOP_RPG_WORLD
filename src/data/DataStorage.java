@@ -49,11 +49,11 @@ public class DataStorage implements Serializable {
         this.description = description;
     }
 
-    public int getCurrentMap() {
+    public int getCurrentMapIndex() {
         return currentMap;
     }
 
-    public void setCurrentMap(int currentMap) {
+    public void setCurrentMapIndex(int currentMap) {
         this.currentMap = currentMap;
     }
 

@@ -87,26 +87,26 @@ public class PathFinder {
 
                 // Từ Tiles - SỬ DỤNG gp.getCurrentMp(
                 // Đảm bảo gp.getCurrentMp( là hợp lệ (0 <= gp.getCurrentMp( < gp.getMaxMap()
-                if (gp.getCurrentMap() < 0 || gp.getCurrentMap() >= gp.getMaxMap()) {
-                    System.err.println("PathFinder Error: gp.getCurrentMap() (" + gp.getCurrentMap() + ") không hợp lệ!");
+                if (gp.getCurrentMapIndex() < 0 || gp.getCurrentMapIndex() >= gp.getMaxMap()) {
+                    System.err.println("PathFinder Error: gp.getCurrentMapIndex() (" + gp.getCurrentMapIndex() + ") không hợp lệ!");
                     return;
                 }
                 // Đảm bảo TileManager và mapTileNum đã được khởi tạo đúng
                 if (gp.getTileM() == null || gp.getTileM().getMapTileNum() == null ||
-                        gp.getTileM().getMapTileNum()[gp.getCurrentMap()] == null) {
+                        gp.getTileM().getMapTileNum()[gp.getCurrentMapIndex()] == null) {
                     System.err.println("PathFinder Error: TileManager hoặc mapTileNum cho map hiện tại chưa được khởi tạo!");
                     return;
                 }
 
                 // Kiểm tra biên cho truy cập mapTileNum[gp.getCurrentMp(][c][r]
-                if (c < 0 || c >= gp.getTileM().getMapTileNum()[gp.getCurrentMap()].length ||
-                        r < 0 || r >= gp.getTileM().getMapTileNum()[gp.getCurrentMap()][c].length) {
-                    System.err.println("PathFinder Warning: Truy cập ngoài biên mapTileNum cho map " + gp.getCurrentMap() + " tại (" + c + "," + r + "). Bỏ qua tile này.");
+                if (c < 0 || c >= gp.getTileM().getMapTileNum()[gp.getCurrentMapIndex()].length ||
+                        r < 0 || r >= gp.getTileM().getMapTileNum()[gp.getCurrentMapIndex()][c].length) {
+                    System.err.println("PathFinder Warning: Truy cập ngoài biên mapTileNum cho map " + gp.getCurrentMapIndex() + " tại (" + c + "," + r + "). Bỏ qua tile này.");
                     continue;
                 }
 
 
-                int tileNum = gp.getTileM().getMapTileNum()[gp.getCurrentMap()][c][r];
+                int tileNum = gp.getTileM().getMapTileNum()[gp.getCurrentMapIndex()][c][r];
                 // Giả sử mapTileNum là [mapIndex][col][row]
 
                 if (tileNum >= 0 && tileNum < gp.getTileM().getTile().length &&

@@ -10,6 +10,7 @@ import sound.Sound;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CombatSystem {
     private GamePanel gp;
@@ -60,7 +61,7 @@ public class CombatSystem {
         if (skillEffect.getCaster() instanceof Player) {
             // Tạo một danh sách tạm thời chứa tất cả quái vật còn sống để duyệt
             // Hoặc bạn có thể duyệt qua từng mảng quái vật riêng biệt như trong checkPlayerMonsterCombat
-            ArrayList<Monster> monsters = gp.getMonster();
+            List<Monster> monsters = gp.getCurrentMap().getMonster();
 
             for (Monster monster : monsters) {
                 if (monster != null && monster.getCurrentHealth() > 0) {
@@ -216,7 +217,8 @@ public class CombatSystem {
         return distance <= attacker.getAttackRange() && isInFanShape;
     }
 
-    public void checkPlayerMonsterCombat(Player player, ArrayList<Monster> monsters){
+
+    public void checkPlayerMonsterCombat(Player player, java.util.List<? extends Monster> monsters){ // MODIFIED
         if (player == null || player.getCurrentHealth() <= 0) {
             return;
         }
@@ -235,29 +237,7 @@ public class CombatSystem {
             }
         }
     }
-
-    public void checkPlayerMonsterCombat(Player player, Monster[] monsters) {
-        if (player == null || player.getCurrentHealth() <= 0) {
-            return;
-        }
-
-
-            int monsterIndex = gp.getcChecker().checkEntity(player, monsters);
-            if (monsterIndex != 999) {
-                Monster monster = monsters[monsterIndex];
-                System.out.println("[" + System.currentTimeMillis() + "] checkPlayerMonsterCombat: Player (hướng: " + player.getDirection() + ") định di chuyển vào " + monster.getName() + " (hướng: " + monster.getDirection() + ", HP: " + monster.getCurrentHealth() + ")");
-
-                if (monster.canAttack()) {
-                    System.out.println("    Player di chuyển vào " + monster.getName() + ". Monster (cooldown: " + monster.getAttackCooldown() + ") thực hiện phản công.");
-                    performAttack(monster, player);
-                } else {
-                    System.out.println("    Player di chuyển vào " + monster.getName() + ". Monster (cooldown: " + monster.getAttackCooldown() + ") KHÔNG THỂ phản công (đang cooldown).");
-                }
-            }
-    }
-
-
-    public void handleMonsterCollisionAttack(Player player, ArrayList<Monster> monsters) {
+    public void handleMonsterCollisionAttack(Player player, java.util.List<? extends Monster> monsters) { // MODIFIED
         if (player == null || player.getCurrentHealth() <= 0) {
             return;
         }
@@ -278,11 +258,11 @@ public class CombatSystem {
             }
         }
     }
-
+    
     public void checkAoEAttack(CombatableCharacter caster, Rectangle aoeBounds, int aoeDamage) {
         // Logic cho caster là Player tấn công Monster
         if (caster instanceof character.role.Player) {
-            ArrayList<Monster> monsters = gp.getMonster();
+            List<Monster> monsters = gp.getCurrentMap().getMonster();
             for (Monster monster : monsters) {
                 if (monster != null && monster.getCurrentHealth() > 0) {
                     if (aoeBounds.intersects(monster.getHitbox())) {
@@ -305,7 +285,7 @@ public class CombatSystem {
 
 
     public void checkAoEAttack(CombatableCharacter caster, int centerX, int centerY, int radius, int aoeDamage) {
-        ArrayList<Monster> monsters = gp.getMonster();
+        List<Monster> monsters = gp.getCurrentMap().getMonster();
         for (Monster target : monsters) {
             if (target != null && target.getCurrentHealth() > 0) {
                 int monsterLeft = target.getWorldX() + target.getSolidArea().x;
@@ -350,7 +330,7 @@ public class CombatSystem {
                 projectile.getSolidArea().height
         );
 
-        ArrayList<Monster> monsters = gp.getMonster();
+        List<Monster> monsters = gp.getCurrentMap().getMonster();
         for (Monster monster : monsters) {
             if (monster != null && monster.getCurrentHealth() > 0) {
                 Rectangle monsterBounds = new Rectangle(

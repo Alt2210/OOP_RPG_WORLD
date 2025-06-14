@@ -80,11 +80,11 @@ public class MON_Bat extends Monster {
         int i = new Random().nextInt(100) + 1;
 
         // SET THE MONSTER DROP
-        if (i <= 20) {
+        if (i <= 30) {
             dropItem(new OBJ_HealthPotion(gp));
         }
         // từ 21~79 không drop ra gì
-        if (i >= 80 && i < 100) {
+        if (i >= 70 && i < 100) {
             dropItem(new OBJ_ManaPotion(gp));
         }
 

@@ -3,9 +3,11 @@ package main;
 import character.Character;
 import character.role.Player;
 import character.monster.Monster; // Quan trọng: Thêm import cho Monster
+import worldObject.WorldObject;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CollisionChecker {
 
@@ -36,8 +38,8 @@ public class CollisionChecker {
                     entity.setCollisionOn(true);
                     return;
                 }
-                tileNum1 = gp.getTileM().getMapTileNum()[gp.getCurrentMap()][entityLeftCol][entityTopRow];
-                tileNum2 = gp.getTileM().getMapTileNum()[gp.getCurrentMap()][entityRightCol][entityTopRow];
+                tileNum1 = gp.getTileM().getMapTileNum()[gp.getCurrentMapIndex()][entityLeftCol][entityTopRow];
+                tileNum2 = gp.getTileM().getMapTileNum()[gp.getCurrentMapIndex()][entityRightCol][entityTopRow];
                 if (gp.getTileM().getTile()[tileNum1].isCollision() || gp.getTileM().getTile()[tileNum2].isCollision()) {
                     entity.setCollisionOn(true);
                 }
@@ -48,8 +50,8 @@ public class CollisionChecker {
                     entity.setCollisionOn(true);
                     return;
                 }
-                tileNum1 = gp.getTileM().getMapTileNum()[gp.getCurrentMap()][entityLeftCol][entityBottomRow];
-                tileNum2 = gp.getTileM().getMapTileNum()[gp.getCurrentMap()][entityRightCol][entityBottomRow];
+                tileNum1 = gp.getTileM().getMapTileNum()[gp.getCurrentMapIndex()][entityLeftCol][entityBottomRow];
+                tileNum2 = gp.getTileM().getMapTileNum()[gp.getCurrentMapIndex()][entityRightCol][entityBottomRow];
                 if (gp.getTileM().getTile()[tileNum1].isCollision() || gp.getTileM().getTile()[tileNum2].isCollision()) {
                     entity.setCollisionOn(true);
                 }
@@ -60,8 +62,8 @@ public class CollisionChecker {
                     entity.setCollisionOn(true);
                     return;
                 }
-                tileNum1 = gp.getTileM().getMapTileNum()[gp.getCurrentMap()][entityLeftCol][entityTopRow];
-                tileNum2 = gp.getTileM().getMapTileNum()[gp.getCurrentMap()][entityLeftCol][entityBottomRow];
+                tileNum1 = gp.getTileM().getMapTileNum()[gp.getCurrentMapIndex()][entityLeftCol][entityTopRow];
+                tileNum2 = gp.getTileM().getMapTileNum()[gp.getCurrentMapIndex()][entityLeftCol][entityBottomRow];
                 if (gp.getTileM().getTile()[tileNum1].isCollision() || gp.getTileM().getTile()[tileNum2].isCollision()) {
                     entity.setCollisionOn(true);
                 }
@@ -72,8 +74,8 @@ public class CollisionChecker {
                     entity.setCollisionOn(true);
                     return;
                 }
-                tileNum1 = gp.getTileM().getMapTileNum()[gp.getCurrentMap()][entityRightCol][entityTopRow];
-                tileNum2 = gp.getTileM().getMapTileNum()[gp.getCurrentMap()][entityRightCol][entityBottomRow];
+                tileNum1 = gp.getTileM().getMapTileNum()[gp.getCurrentMapIndex()][entityRightCol][entityTopRow];
+                tileNum2 = gp.getTileM().getMapTileNum()[gp.getCurrentMapIndex()][entityRightCol][entityBottomRow];
                 if (gp.getTileM().getTile()[tileNum1].isCollision() || gp.getTileM().getTile()[tileNum2].isCollision()) {
                     entity.setCollisionOn(true);
                 }
@@ -81,7 +83,7 @@ public class CollisionChecker {
         }
     }
 
-    public int checkEntity(Character entity, ArrayList<Monster> targetArray){
+    public int checkEntity(Character entity, java.util.List<? extends Character> targetList) { // MODIFIED
         int index = 999; // Giá trị mặc định nếu không có va chạm
 
         // Vùng va chạm hiện tại của entity đang kiểm tra
@@ -92,57 +94,18 @@ public class CollisionChecker {
                 entity.getSolidArea().height
         );
 
-        for (int i = 0; i < targetArray.size(); i++) {
-            if (targetArray.get(i) != null && targetArray.get(i) != entity) { // Mục tiêu tồn tại và không phải là chính entity đó
+        // MODIFIED: Loop through List
+        for (int i = 0; i < targetList.size(); i++) { // MODIFIED
+            // MODIFIED: Access element using .get()
+            if (targetList.get(i) != null && targetList.get(i) != entity) { // MODIFIED
 
                 // Vùng va chạm hiện tại của mục tiêu
                 Rectangle targetCurrentBounds = new Rectangle(
-                        targetArray.get(i).getWorldX() + targetArray.get(i).getSolidArea().x,
-                        targetArray.get(i).getWorldY() + targetArray.get(i).getSolidArea().y,
-                        targetArray.get(i).getSolidArea().width,
-                        targetArray.get(i).getSolidArea().height
-                );
-
-                // Tính toán vùng va chạm dự kiến của entity ở bước di chuyển tiếp theo
-                Rectangle entityNextStepBounds = new Rectangle(entityCurrentBounds);
-                switch (entity.getDirection()) {
-                    case "up": entityNextStepBounds.y -= entity.getSpeed(); break;
-                    case "down": entityNextStepBounds.y += entity.getSpeed(); break;
-                    case "left": entityNextStepBounds.x -= entity.getSpeed(); break;
-                    case "right": entityNextStepBounds.x += entity.getSpeed(); break;
-                }
-
-                // Kiểm tra nếu vùng va chạm dự kiến của entity giao với vùng va chạm hiện tại của mục tiêu
-                if (entityNextStepBounds.intersects(targetCurrentBounds)) {
-                    entity.setCollisionOn(true); // Đặt cờ va chạm cho entity đang kiểm tra
-                    index = i; // Trả về chỉ số của mục tiêu đã va chạm
-                    // (Hữu ích cho Player biết đã va chạm NPC/Monster nào, hoặc Monster biết đã va chạm Player)
-                }
-            }
-        }
-        return index;
-    }
-
-    public int checkEntity(Character entity, Character[] targetArray) {
-        int index = 999; // Giá trị mặc định nếu không có va chạm
-
-        // Vùng va chạm hiện tại của entity đang kiểm tra
-        Rectangle entityCurrentBounds = new Rectangle(
-                entity.getWorldX() + entity.getSolidArea().x,
-                entity.getWorldY() + entity.getSolidArea().y,
-                entity.getSolidArea().width,
-                entity.getSolidArea().height
-        );
-
-        for (int i = 0; i < targetArray.length; i++) {
-            if (targetArray[i] != null && targetArray[i] != entity) { // Mục tiêu tồn tại và không phải là chính entity đó
-
-                // Vùng va chạm hiện tại của mục tiêu
-                Rectangle targetCurrentBounds = new Rectangle(
-                        targetArray[i].getWorldX() + targetArray[i].getSolidArea().x,
-                        targetArray[i].getWorldY() + targetArray[i].getSolidArea().y,
-                        targetArray[i].getSolidArea().width,
-                        targetArray[i].getSolidArea().height
+                        // MODIFIED: Access element using .get()
+                        targetList.get(i).getWorldX() + targetList.get(i).getSolidArea().x, // MODIFIED
+                        targetList.get(i).getWorldY() + targetList.get(i).getSolidArea().y, // MODIFIED
+                        targetList.get(i).getSolidArea().width, // MODIFIED
+                        targetList.get(i).getSolidArea().height // MODIFIED
                 );
 
                 // Tính toán vùng va chạm dự kiến của entity ở bước di chuyển tiếp theo
@@ -225,8 +188,8 @@ public class CollisionChecker {
 
     public int checkItem(Character character, boolean isPlayer) {
         int index = 999;
-        for (int i = 0; i < gp.getwObjects().length; i++) {
-            if (gp.getwObjects()[i] != null) {
+        for (int i = 0; i < gp.getCurrentMap().getwObjects().size(); i++) {
+            if (gp.getCurrentMap().getwObjects().get(i) != null) {
                 Rectangle characterCurrentBounds = new Rectangle(
                         character.getWorldX() + character.getSolidArea().x,
                         character.getWorldY() + character.getSolidArea().y,
@@ -234,10 +197,10 @@ public class CollisionChecker {
                         character.getSolidArea().height);
 
                 Rectangle objectBounds = new Rectangle(
-                        gp.getwObjects()[i].getWorldX() + gp.getwObjects()[i].getSolidArea().x,
-                        gp.getwObjects()[i].getWorldY() + gp.getwObjects()[i].getSolidArea().y,
-                        gp.getwObjects()[i].getSolidArea().width,
-                        gp.getwObjects()[i].getSolidArea().height);
+                        gp.getCurrentMap().getwObjects().get(i).getWorldX() + gp.getCurrentMap().getwObjects().get(i).getSolidArea().x,
+                        gp.getCurrentMap().getwObjects().get(i).getWorldY() + gp.getCurrentMap().getwObjects().get(i).getSolidArea().y,
+                        gp.getCurrentMap().getwObjects().get(i).getSolidArea().width,
+                        gp.getCurrentMap().getwObjects().get(i).getSolidArea().height);
 
                 Rectangle characterNextStepBounds = new Rectangle(characterCurrentBounds);
                 if (character.getSpeed() > 0) { // Chỉ điều chỉnh nếu đang di chuyển
@@ -250,7 +213,7 @@ public class CollisionChecker {
                 }
 
                 if (characterNextStepBounds.intersects(objectBounds)) {
-                    if (gp.getwObjects()[i].isCollision()) { // Nếu item đó là vật cản
+                    if (gp.getCurrentMap().getwObjects().get(i).isCollision()) { // Nếu item đó là vật cản
                         character.setCollisionOn(true);
                     }
                     if (isPlayer) { // Nếu người kiểm tra là player (để nhặt item)

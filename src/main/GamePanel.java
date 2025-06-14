@@ -32,7 +32,7 @@ public class GamePanel extends JPanel implements Runnable {
     private int maxWorldCol = 100; // Kích thước cố định cho tất cả map
     private int maxWorldRow = 100; // Kích thước cố định cho tất cả map
     private final int maxMap = 2; // SỐ LƯỢNG MAP
-    private int currentMap = 0;   // Map hiện tại, bắt đầu từ map 0
+    private int currentMapIndex = 0;   // Map hiện tại, bắt đầu từ map 0
 
     // SYSTEM
     private TileManager tileM = new TileManager(this);
@@ -50,9 +50,10 @@ public class GamePanel extends JPanel implements Runnable {
 
     // ENTITY AND OBJECT
     private Player player;
-    public WorldObject wObjects[] = new WorldObject[50];
+    /*public WorldObject wObjects[] = new WorldObject[50];
     public Character npc[] = new Character[10];
-    private ArrayList<Monster> monsters = new ArrayList<>();
+    private ArrayList<Monster> monsters = new ArrayList<>();*/
+    private GameMap currentMap;
     public List<SkillEffect> skillEffects = new ArrayList<>();
     public OBJ_Chest currentChest = null;
 
@@ -71,21 +72,28 @@ public class GamePanel extends JPanel implements Runnable {
     public static final int loadGameState = 9;
 
     //GETTERS AND SETTERS
-
-    public ArrayList<Monster> getMonster() {
-        return monsters;
+    public GameMap getCurrentMap() {
+        return currentMap;
     }
+
+    public void setCurrentMap(GameMap currentMap) {
+        this.currentMap = currentMap;
+    }
+
+    /*public ArrayList<Monster> getMonster() {
+        return monsters;
+    }*/
 
     public int getMaxMap() {
         return maxMap;
     }
 
-    public int getCurrentMap() {
-        return currentMap;
+    public int getCurrentMapIndex() {
+        return currentMapIndex;
     }
 
-    public void setCurrentMap(int currentMap) {
-        this.currentMap = currentMap;
+    public void setCurrentMapIndex(int currentMapIndex) {
+        this.currentMapIndex = currentMapIndex;
     }
 
     public int getOriginalTileSize() {
@@ -118,9 +126,9 @@ public class GamePanel extends JPanel implements Runnable {
     public SaveLoad getSaveLoadManager() { return saveLoadManager; }
     public Character getInteractingNPC() { return currentInteractingNPC; }
     public void setInteractingNPC(Character npc) { this.currentInteractingNPC = npc; }
-    public WorldObject[] getwObjects() { return wObjects; }
+    //public WorldObject[] getwObjects() { return wObjects; }
     public events_system.CombatSystem getCombatSystem() {return combatSystem;}
-    public Character[] getNpc() { return npc; }
+    //public Character[] getNpc() { return npc; }
     public void setPlayer(Player player) {
         this.player = player;
     }
@@ -144,7 +152,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.gameThread = null; //
     }
 
-
     public GamePanel() {
         this.setPreferredSize(new Dimension(ScreenWidth, ScreenHeight));
         this.setBackground(Color.black); // Màu nền mặc định
@@ -154,17 +161,21 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void setupGame() {
-        // Đặt các thực thể cho map hiện tại (ban đầu là currentMap = 0)
-        aSetter.setupMapAssets(currentMap);
+        // Đặt bản đồ hiện tại (ban đầu là currentMap = 0)
+        // Lấy instance Map từ AssetSetter và gán cho currentMap của GamePanel
+        this.currentMap = aSetter.getMap(currentMapIndex);
+        if (this.currentMap != null) {
+            this.currentMap.initialize(); // Gọi initialize để điền các đối tượng mặc định
+        }
 
         playMusic(Sound.MUSIC_BACKGROUND);
-        if (player != null && (gameState == characterSelectState || gameState == titleState)) {
+        if (player != null) {
             player.setDefaultValues();
             // Ví dụ đặt vị trí khởi đầu cho Player
-            if(currentMap == 0) {
+            if(currentMapIndex == 0) {
                 player.setWorldX(getTileSize() * 7);
                 player.setWorldY(getTileSize() * 92);
-            } else if (currentMap == 1) {
+            } else if (currentMapIndex == 1) {
                 player.setWorldX(getTileSize() * 5);
                 player.setWorldY( getTileSize() * 10);
             }
@@ -173,13 +184,14 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void resetGameForNewSession() {
         System.out.println("Resetting game for new session...");
-        currentMap = 0;
+        currentMapIndex = 0;
+        this.currentMap = null;
 
         // Quan trọng: Đặt player về null.
         // Player mới sẽ được tạo khi người dùng chọn "New Game".
         this.player = null;
 
-        aSetter.setupMapAssets(currentMap);
+        aSetter.setupMapAssets(currentMapIndex);
 
         dialogueManager.reset();
 
@@ -226,22 +238,26 @@ public class GamePanel extends JPanel implements Runnable {
         if (gameState == playState) {
             player.update();
 
-            for (int i = 0; i < npc.length; i++) {
-                if (npc[i] != null) {
-                    npc[i].update();
+            // Cập nhật NPC từ currentMap
+            for (int i = currentMap.getNpc().size() - 1; i >= 0; i--) { //
+                Character npcChar = currentMap.getNpc().get(i); //
+                if (npcChar != null) {
+                    npcChar.update();
                 }
             }
 
-            for (int i = monsters.size() - 1; i >= 0; i--) {
-                Monster monster = monsters.get(i);
+            // Cập nhật Monsters từ currentMap
+            for (int i = currentMap.getMonster().size() - 1; i >= 0; i--) { //
+                Monster monster = currentMap.getMonster().get(i); //
                 if (monster != null) {
                     if (monster.getCurrentHealth() > 0) {
                         monster.update();
                     } else {
-                        monsters.remove(i);
+                        // Xóa quái vật đã chết khỏi danh sách
+                        currentMap.getMonster().remove(i); //
                     }
                 } else {
-                    monsters.remove(i);
+                    currentMap.getMonster().remove(i); //
                 }
             }
 
@@ -259,7 +275,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             if (player != null && player.getCurrentHealth() > 0) {
-                combatSystem.checkPlayerMonsterCombat(player, monsters);
+                combatSystem.checkPlayerMonsterCombat(player, currentMap.getMonster());
             }
 
         } else if (gameState == pauseState) {
@@ -270,18 +286,15 @@ public class GamePanel extends JPanel implements Runnable {
 
      // Xóa các thực thể (NPC, Monster, WorldObject) khỏi map hiện tại.
      // Player và skillEffects sẽ được xử lý riêng nếu cần.
-    public void clearEntitiesForMapChange() {
-        for (int i = 0; i < wObjects.length; i++) {
-            wObjects[i] = null;
-        }
-        for (int i = 0; i < npc.length; i++) {
-            npc[i] = null;
-        }
-
-        monsters.clear();
-        skillEffects.clear(); // Xóa tất cả skillEffects khi chuyển map
-        System.out.println("GamePanel: Entities and skillEffects cleared for map change.");
-    }
+     public void clearEntitiesForMapChange() {
+         if (currentMap != null) {
+             currentMap.getwObjects().clear(); //
+             currentMap.getNpc().clear(); //
+             currentMap.getMonster().clear(); //
+         }
+         skillEffects.clear(); // Xóa tất cả skillEffects khi chuyển map
+         System.out.println("GamePanel: Entities and skillEffects cleared for map change.");
+     }
 
 
     @Override
@@ -297,18 +310,30 @@ public class GamePanel extends JPanel implements Runnable {
         else {
             if (tileM != null) tileM.draw(g2);
 
-            for (WorldObject wObject : wObjects) {
-                if (wObject != null) wObject.draw(g2, this);
+            // Vẫn vẽ các đối tượng từ currentMap
+            if (currentMap != null) {
+                for (WorldObject wObject : currentMap.getwObjects()) { //
+                    if (wObject != null) wObject.draw(g2, this);
+                }
             }
+
             for (SkillEffect p : skillEffects) {
                 if (p != null && p.isAlive()) p.draw(g2);
             }
-            for (Character character : npc) {
-                if (character != null) character.draw(g2);
+
+            // Vẫn vẽ các NPC từ currentMap
+            if (currentMap != null) {
+                for (Character character : currentMap.getNpc()) { //
+                    if (character != null) character.draw(g2);
+                }
             }
-            for (Monster monster : monsters) {
-                if (monster != null) monster.draw(g2);
+            // Vẫn vẽ các Monster từ currentMap
+            if (currentMap != null) {
+                for (Monster monster : currentMap.getMonster()) { //
+                    if (monster != null) monster.draw(g2);
+                }
             }
+
             if (player != null) {
                 player.draw(g2);
             }
@@ -326,5 +351,4 @@ public class GamePanel extends JPanel implements Runnable {
         gameState = victoryEndState;
         ui.setUI(victoryEndState); // CỰC KỲ QUAN TRỌNG: Báo cho UiManager thay đổi giao diện
     }
-
 }

@@ -101,13 +101,12 @@ public abstract class Monster extends CombatableCharacter {
 
     // Phương thức thả vật phẩm tại vị trí của quái vật
     protected void dropItem(WorldObject item) {
-        for (int i = 0; i < gp.getwObjects().length; i++) {
-            if (gp.getwObjects()[i] == null) {
-                gp.getwObjects()[i] = item;
-                item.setWorldX(this.worldX);
-                item.setWorldY(this.worldY);
-                break;
-            }
+        if (gp.getCurrentMap() != null) { // Đảm bảo có map hiện tại
+            gp.getCurrentMap().getwObjects().add(item); // Thêm item vào danh sách của bản đồ
+            item.setWorldX(this.worldX);
+            item.setWorldY(this.worldY);
+        } else {
+            System.err.println("Monster.dropItem: Cannot drop item, currentMap is null.");
         }
     }
     protected void onDeath(CombatableCharacter attacker) {
