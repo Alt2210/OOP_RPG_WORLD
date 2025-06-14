@@ -96,7 +96,7 @@ public class MON_GolemBoss extends Monster {
     @Override
     protected void onDeath(Character attacker) {
         super.onDeath(attacker);
-
+        dropItem(new OBJ_Key(gp));
         gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
     }
 
