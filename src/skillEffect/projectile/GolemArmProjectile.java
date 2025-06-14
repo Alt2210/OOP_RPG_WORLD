@@ -157,8 +157,8 @@ public class GolemArmProjectile extends Projectile {
             g2.drawImage(image, screenX + offsetX, screenY + offsetY, drawWidth, drawHeight, null);
 
             // Vẽ hitbox để debug
-            g2.setColor(Color.RED);
-            g2.drawRect(screenX, screenY, solidArea.width, solidArea.height);
+            //g2.setColor(Color.RED);
+            //g2.drawRect(screenX, screenY, solidArea.width, solidArea.height);
         }
     }
 }

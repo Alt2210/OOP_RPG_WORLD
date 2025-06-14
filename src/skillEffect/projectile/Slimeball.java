@@ -126,7 +126,7 @@ public class Slimeball extends Projectile {
             // Optional: Vẽ solidArea để debug
             // g2.setColor(Color.GREEN);
             // g2.drawRect(screenX, screenY, solidArea.width, solidArea.height);
-            g2.drawRect(screenX, screenY, solidArea.width , solidArea.height);
+            //g2.drawRect(screenX, screenY, solidArea.width , solidArea.height);
         }
     }
 }

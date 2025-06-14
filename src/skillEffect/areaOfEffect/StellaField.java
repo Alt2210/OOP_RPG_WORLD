@@ -88,7 +88,7 @@ public class StellaField extends AreaOfEffect {
                 worldY - (radius*2) < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()) {
 
             Rectangle boundingRect = new Rectangle(screenX, screenY, radius * 2, radius * 2);
-            g2.draw(boundingRect);
+            //g2.draw(boundingRect);
             BufferedImage currentFrame = sip.getCurFrame();
             g2.drawImage(currentFrame, screenX, screenY, radius * 2, radius * 2, null);
         }

@@ -130,9 +130,9 @@ public class MON_GreenSlime extends Monster {
             }
 
                 drawHealthBar(g2, screenX, screenY);
-            g2.setColor(Color.RED); // Hoặc một màu khác để phân biệt
+            //g2.setColor(Color.RED); // Hoặc một màu khác để phân biệt
             // screenX và screenY là tọa độ vẽ của sprite trên màn hình
-            g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+            //g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
         }
     }
 

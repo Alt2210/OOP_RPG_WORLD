@@ -369,13 +369,13 @@ public class MON_GolemBoss extends Monster {
                         }
                     }
 
-                    g2.setColor(Color.RED);
-                    g2.drawRect(
-                            (int) (laserHitbox.x - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX()),
-                            (int) (laserHitbox.y - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()),
-                            laserHitbox.width,
-                            laserHitbox.height
-                    );
+//                    g2.setColor(Color.RED);
+//                    g2.drawRect(
+//                            (int) (laserHitbox.x - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX()),
+//                            (int) (laserHitbox.y - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()),
+//                            laserHitbox.width,
+//                            laserHitbox.height
+//                    );
                 }
 
                 // Vẽ cánh tay skillEffect.projectile
