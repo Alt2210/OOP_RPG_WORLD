@@ -35,6 +35,8 @@ public class Sound implements  LineListener {
     public static final int MUSIC_GAME_2 = 13;
     public static final int MUSIC_GAME_3 = 14;
     public static final int MUSIC_GAME_4 = 15;
+    public static final int SFX_CHEST_OPEN = 18;
+    public static final int SFX_CHEST_CLOSE = 19;
 
     public Sound() {
         try {
@@ -52,6 +54,8 @@ public class Sound implements  LineListener {
             soundURL[SFX_SWORD_SWING] = getClass().getResource("/sound/sword_swing.wav"); // Giữ lại nếu bạn có file sword_swing.wav
             soundURL[SFX_LASER] = getClass().getResource("/sound/laser.wav"); // Giữ lại nếu bạn có file laser.wav
             soundURL[SFX_HIT] = getClass().getResource("/sound/hitmonster.wav");
+            soundURL[SFX_CHEST_OPEN] = getClass().getResource("/sound/chest_open.wav");
+            soundURL[SFX_CHEST_CLOSE] = getClass().getResource("/sound/chest_close.wav");
             // Tùy chọn: Kiểm tra null cho các URL (rất hữu ích để debug)
             // for (int i = 0; i <= SFX_PICKUP_KEY; i++) { // Chỉ ví dụ đến SFX_PICKUP_KEY
             //     if (soundURL[i] == null && i != SFX_COIN /*ví dụ nếu coin.wav chưa có*/) {
@@ -130,10 +134,13 @@ public class Sound implements  LineListener {
         Clip clipToPlay = getClip(soundIndex);
         if (clipToPlay != null) {
             if (soundIndex == SFX_SHOOT) {
-                setVolume(clipToPlay, -5.0f); // Giảm âm thanh SHOOT đi 15dB
+                setVolume(clipToPlay, -8.0f); // Giảm âm thanh SHOOT đi 15dB
             }
             else if (soundIndex == SFX_LASER) {
                 setVolume(clipToPlay, -15.0f); // Giảm âm thanh LASER đi 20dB
+            }
+            else if (soundIndex == SFX_WATER_SPLASH) {
+                setVolume(clipToPlay, -5.0f); // Giảm âm thanh LASER đi 20dB
             }
             if (clipToPlay.isRunning()) { // Nếu âm thanh này đang phát, dừng và phát lại từ đầu
                 clipToPlay.stop();

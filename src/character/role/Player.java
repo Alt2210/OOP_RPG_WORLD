@@ -11,6 +11,7 @@ import item.itemEquippable.Item_Weapon;
 import main.GamePanel;
 import main.KeyHandler;
 import skill.Skill;
+import sound.Sound;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -530,6 +531,7 @@ public abstract class Player extends CombatableCharacter {
             Rectangle objBounds = new Rectangle(obj.getWorldX() + obj.getSolidArea().x, obj.getWorldY() + obj.getSolidArea().y, obj.getSolidArea().width, obj.getSolidArea().height);
             if (obj instanceof worldObject.unpickableObject.OBJ_Chest) {
                 if (interactionArea.intersects(objBounds)) {
+                    gp.playSoundEffect(Sound.SFX_CHEST_OPEN);
                     gp.setCurrentChest((worldObject.unpickableObject.OBJ_Chest) obj);
                     gp.gameState = gp.chestState;
                     gp.getUi().setUI(gp.gameState);

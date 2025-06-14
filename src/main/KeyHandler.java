@@ -200,6 +200,7 @@ public class KeyHandler implements KeyListener {
     }
     private void handleChestStateKeys(int code) {
         if (code == KeyEvent.VK_ESCAPE || code == KeyEvent.VK_C) {
+            gp.playSoundEffect(Sound.SFX_CHEST_CLOSE);
             gp.gameState = GamePanel.playState;
             gp.getUi().setUI(gp.gameState);
             gp.setCurrentChest(null);
