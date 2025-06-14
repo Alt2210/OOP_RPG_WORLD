@@ -1,6 +1,7 @@
 package skillEffect.areaOfEffect;
 
 import character.Character;
+import character.CombatableCharacter;
 import character.monster.Monster;
 import character.role.Player;
 import imageProcessor.SkillImageProcessor;
@@ -21,7 +22,7 @@ public class Laser extends AreaOfEffect {
     }
 
     @Override
-    public void set(int worldX, int worldY, Character caster, int damage) {
+    public void set(int worldX, int worldY, CombatableCharacter caster, int damage) {
         this.caster = caster;
         this.damage = damage;
         this.alive = true;

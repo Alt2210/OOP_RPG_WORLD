@@ -1,6 +1,7 @@
 package skillEffect.areaOfEffect;
 
 import character.Character;
+import character.CombatableCharacter;
 import imageProcessor.SkillImageProcessor;
 import main.GamePanel;
 
@@ -19,7 +20,7 @@ public class Explosion_area extends AreaOfEffect{
     }
 
     // Phương thức set sẽ được gọi từ Skill khi kích hoạt kỹ năng
-    public void set(int worldX, int worldY, Character caster, int damage) {
+    public void set(int worldX, int worldY, CombatableCharacter caster, int damage) {
         this.worldX = worldX;
         this.worldY = worldY;
         this.caster = caster;

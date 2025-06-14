@@ -1,6 +1,7 @@
 package skillEffect.projectile;
 
 import character.Character;
+import character.CombatableCharacter;
 import main.GamePanel;
 
 import javax.imageio.ImageIO;
@@ -56,7 +57,7 @@ public class Slimeball extends Projectile {
     }
 
     @Override
-    public void set(int startWorldX, int startWorldY, String direction, Character caster, int damage) {
+    public void set(int startWorldX, int startWorldY, String direction, CombatableCharacter caster, int damage) {
         // Căn giữa skillEffect.projectile tại điểm bắn
         this.worldX = startWorldX - solidArea.width / 2;
         this.worldY = startWorldY - solidArea.height / 2;

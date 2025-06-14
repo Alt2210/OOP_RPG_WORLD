@@ -1,6 +1,7 @@
 package character.monster;
 
 import character.Character;
+import character.CombatableCharacter;
 import character.role.Player;
 import main.GamePanel;
 import pathfinder.Node;
@@ -248,7 +249,7 @@ public class MON_SkeletonLord extends Monster {
 
     // Sao chép logic damageReaction từ MON_Orc
     @Override
-    public void damageReaction(Character attacker) {
+    public void damageReaction(CombatableCharacter attacker) {
         super.damageReaction(attacker);
         attacking = false; // Đảm bảo không còn trong trạng thái tấn công
         attackAnimationCounter = 0; // Reset animation counter
@@ -257,7 +258,7 @@ public class MON_SkeletonLord extends Monster {
     }
 
     @Override
-    protected void onDeath(Character attacker) {
+    protected void onDeath(CombatableCharacter attacker) {
         super.onDeath(attacker);
     }
 

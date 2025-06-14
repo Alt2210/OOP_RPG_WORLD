@@ -1,13 +1,14 @@
 package skillEffect;
 
 import character.Character;
+import character.CombatableCharacter;
 import main.GamePanel;
 import java.awt.*;
 
 public abstract class SkillEffect {
     protected GamePanel gp;
     protected int worldX, worldY;
-    protected Character caster;
+    protected CombatableCharacter caster;
     protected int damage;
     protected boolean alive = true;
     protected Rectangle solidArea = new Rectangle(0, 0, 0, 0);
@@ -25,7 +26,7 @@ public abstract class SkillEffect {
     public abstract void draw(Graphics2D g2);
 
     // Getters
-    public Character getCaster() { return caster; }
+    public CombatableCharacter getCaster() { return caster; }
     public boolean isAlive() { return alive; }
     public void setAlive(boolean alive) { this.alive = alive; }
     public int getDamageValue() { return damage; }

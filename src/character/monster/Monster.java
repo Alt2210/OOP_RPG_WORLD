@@ -1,5 +1,6 @@
 package character.monster;
 
+import character.CombatableCharacter;
 import character.role.Player;
 import pathfinder.PathFinder;
 import character.Character;
@@ -9,7 +10,7 @@ import worldObject.WorldObject;
 import java.awt.*;
 import java.util.Random;
 
-public abstract class Monster extends Character {
+public abstract class Monster extends CombatableCharacter {
 
     protected int exp;
     protected int coinValue;
@@ -92,7 +93,7 @@ public abstract class Monster extends Character {
 //        direction = gp.player.direction;
         onPath = true;
     }
-    public void damageReaction(Character attacker) {
+    public void damageReaction(CombatableCharacter attacker) {
         actionLockCounter = 0;
 //        direction = gp.player.direction;
         onPath = true;
@@ -109,7 +110,7 @@ public abstract class Monster extends Character {
             }
         }
     }
-    protected void onDeath(Character attacker) {
+    protected void onDeath(CombatableCharacter attacker) {
         if (attacker instanceof Player) {
             Player player = (Player) attacker;
             player.gainExp(this.exp); // this.exp đã có sẵn trong lớp Monster
@@ -120,7 +121,7 @@ public abstract class Monster extends Character {
         gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
     }
 
-    protected void giveExp(Character attacker){
+    protected void giveExp(CombatableCharacter attacker){
         if (attacker instanceof Player) {
             Player player = (Player) attacker;
             player.gainExp(this.exp);

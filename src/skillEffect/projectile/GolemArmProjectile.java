@@ -1,6 +1,7 @@
 package skillEffect.projectile;
 
 import character.Character;
+import character.CombatableCharacter;
 import main.GamePanel;
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -82,7 +83,7 @@ public class GolemArmProjectile extends Projectile {
     }
 
     @Override
-    public void set(int worldX, int worldY, String direction, Character caster, int damage) {
+    public void set(int worldX, int worldY, String direction, CombatableCharacter caster, int damage) {
         this.worldX = worldX - solidArea.width / 2; // Căn giữa tại điểm xuất phát
         this.worldY = worldY - solidArea.height / 2;
         this.direction = direction;

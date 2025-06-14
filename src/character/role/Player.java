@@ -1,4 +1,5 @@
 package character.role;
+import character.CombatableCharacter;
 import item.Inventory;
 
 import character.Character;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Player extends character.Character {
+public abstract class Player extends CombatableCharacter {
     protected boolean attackDamageAppliedThisSwing = false;
     protected KeyHandler keyH;
     protected final int screenX;
@@ -364,7 +365,7 @@ public abstract class Player extends character.Character {
     public abstract void draw(Graphics2D g2);
 
     @Override
-    protected void onDeath(character.Character attacker) {
+    protected void onDeath(CombatableCharacter attacker) {
         String attackerName = "the environment";
         if (attacker != null) {
             attackerName = attacker.getName();

@@ -1,6 +1,7 @@
 package character.monster;
 
 import character.Character;
+import character.CombatableCharacter;
 import character.role.Player;
 import main.GamePanel;
 import pathfinder.Node;
@@ -81,7 +82,7 @@ public class MON_GolemBoss extends Monster {
         return isChargingArmShot;
     }
 
-    private String getDirectionToTarget(Character target) {
+    private String getDirectionToTarget(CombatableCharacter target) {
         if (target == null || target.getCurrentHealth() <= 0) return this.direction;
         int dx = target.getCenterX() - this.getCenterX();
         int dy = target.getCenterY() - this.getCenterY();
@@ -93,8 +94,7 @@ public class MON_GolemBoss extends Monster {
         else return "left";
     }
 
-    @Override
-    protected void onDeath(Character attacker) {
+    protected void onDeath(CombatableCharacter attacker) {
         super.onDeath(attacker);
         dropItem(new OBJ_Key(gp));
         gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");

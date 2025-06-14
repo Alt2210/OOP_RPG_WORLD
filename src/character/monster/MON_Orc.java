@@ -1,6 +1,7 @@
 package character.monster;
 
 import character.Character;
+import character.CombatableCharacter;
 import character.role.Player;
 import main.GamePanel;
 import pathfinder.Node;
@@ -34,7 +35,7 @@ public class MON_Orc extends Monster {
     }
 
     @Override
-    protected void onDeath(Character attacker) {
+    protected void onDeath(CombatableCharacter attacker) {
         super.onDeath(attacker);
         gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
     }
@@ -225,7 +226,7 @@ public class MON_Orc extends Monster {
     }
 
     @Override
-    public void damageReaction(Character attacker) {
+    public void damageReaction(CombatableCharacter attacker) {
         super.damageReaction(attacker);
         attacking = false;
         attackAnimationCounter = 0;

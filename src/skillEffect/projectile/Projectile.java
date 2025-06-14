@@ -1,6 +1,7 @@
 package skillEffect.projectile;
 
 import character.Character;
+import character.CombatableCharacter;
 import main.GamePanel;
 import skillEffect.SkillEffect;
 
@@ -35,7 +36,7 @@ public abstract class Projectile extends SkillEffect {
         return damage;
     }
 
-    public Character getCaster() {
+    public CombatableCharacter getCaster() {
         return caster;
     }
 
@@ -47,7 +48,7 @@ public abstract class Projectile extends SkillEffect {
         this.alive = alive;
     }
 
-    public abstract void set(int worldX, int worldY, String direction, Character caster, int damage);
+    public abstract void set(int worldX, int worldY, String direction, CombatableCharacter caster, int damage);
 
     public abstract void update();
 

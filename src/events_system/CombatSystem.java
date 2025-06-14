@@ -1,6 +1,6 @@
 package events_system;
 
-import character.Character;
+import character.CombatableCharacter;
 import character.role.Player;
 import character.monster.Monster;
 import main.GamePanel;
@@ -18,7 +18,7 @@ public class CombatSystem {
         this.gp = gp;
     }
 
-    public void performAttack(Character attacker, Character target) {
+    public void performAttack(CombatableCharacter attacker, CombatableCharacter target) {
         System.out.println("[" + System.currentTimeMillis() + "] performAttack: " + attacker.getName() + " (hướng: " + attacker.getDirection() + ") định tấn công " + target.getName() + " (hướng: " + target.getDirection() + ")");
         System.out.println("    Attacker (" + attacker.getName() + ") canAttack: " + attacker.canAttack() + " (Cooldown: " + attacker.getAttackCooldown() + ")");
         System.out.println("    Target (" + target.getName() + ") currentHealth: " + target.getCurrentHealth());
@@ -125,7 +125,7 @@ public class CombatSystem {
         }
     }
 
-    private boolean isWithinAttackRange(Character attacker, Character target) {
+    private boolean isWithinAttackRange(CombatableCharacter attacker, CombatableCharacter target) {
         // Tính trung tâm của attacker và target
         int attackerCenterX = attacker.getWorldX() + attacker.getSolidArea().x + attacker.getSolidArea().width / 2;
         int attackerCenterY = attacker.getWorldY() + attacker.getSolidArea().y + attacker.getSolidArea().height / 2;
@@ -279,7 +279,7 @@ public class CombatSystem {
         }
     }
 
-    public void checkAoEAttack(Character caster, Rectangle aoeBounds, int aoeDamage) {
+    public void checkAoEAttack(CombatableCharacter caster, Rectangle aoeBounds, int aoeDamage) {
         // Logic cho caster là Player tấn công Monster
         if (caster instanceof character.role.Player) {
             ArrayList<Monster> monsters = gp.getMonster();
@@ -304,7 +304,7 @@ public class CombatSystem {
     }
 
 
-    public void checkAoEAttack(Character caster, int centerX, int centerY, int radius, int aoeDamage) {
+    public void checkAoEAttack(CombatableCharacter caster, int centerX, int centerY, int radius, int aoeDamage) {
         ArrayList<Monster> monsters = gp.getMonster();
         for (Monster target : monsters) {
             if (target != null && target.getCurrentHealth() > 0) {
@@ -325,7 +325,7 @@ public class CombatSystem {
         }
     }
 
-    public void attackAOE(Character caster, Character target, int aoeDamage) {
+    public void attackAOE(CombatableCharacter caster, CombatableCharacter target, int aoeDamage) {
         if (target != null && target.getCurrentHealth() > 0 && caster != null) {
             // Gọi receiveDamage và LƯU LẠI sát thương thực tế đã gây ra
             int actualDamageDealt = target.receiveDamage(aoeDamage, caster);

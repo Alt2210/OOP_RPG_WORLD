@@ -1,6 +1,7 @@
 package character.monster;
 
 import character.Character;
+import character.CombatableCharacter;
 import character.role.Player;
 import main.GamePanel;
 import skillEffect.projectile.Slimeball;
@@ -206,12 +207,12 @@ public class MON_GreenSlime extends Monster {
     }
 
     @Override
-    public void damageReaction(Character attacker) {
+    public void damageReaction(CombatableCharacter attacker) {
         actionLockCounter = 120; // Reset bộ đếm khóa hành động để quái vật có thể hành động ngay
         onPath = true;
     }
     @Override
-    public int receiveDamage(int damage, Character attacker) {
+    public int receiveDamage(int damage, CombatableCharacter attacker) {
         super.receiveDamage(damage, attacker); // Gọi Character.receiveDamage() để giảm máu và kiểm tra onDeath
 
         if (this.currentHealth > 0) { // Nếu quái vật vẫn còn sống sau khi nhận sát thương
@@ -227,7 +228,7 @@ public class MON_GreenSlime extends Monster {
     }
 
     @Override
-    protected void onDeath(Character attacker) {
+    protected void onDeath(CombatableCharacter attacker) {
         super.onDeath(attacker);
 
         // CAST A DIE

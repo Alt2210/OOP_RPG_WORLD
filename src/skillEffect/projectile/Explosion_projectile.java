@@ -1,6 +1,7 @@
 package skillEffect.projectile;
 
 import character.Character;
+import character.CombatableCharacter;
 import imageProcessor.SkillImageProcessor;
 import main.GamePanel;
 import skillEffect.areaOfEffect.Explosion_area;
@@ -25,7 +26,7 @@ public class Explosion_projectile extends Projectile{
     }
 
     @Override
-    public void set(int startWorldX, int startWorldY, String direction, Character caster, int damage) {
+    public void set(int startWorldX, int startWorldY, String direction, CombatableCharacter caster, int damage) {
         this.worldX = startWorldX - solidArea.width / 2;   // Căn giữa fireball tại điểm xuất phát
         this.worldY = startWorldY - solidArea.height / 2;
         this.direction = direction;

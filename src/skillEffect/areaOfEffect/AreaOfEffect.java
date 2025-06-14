@@ -1,6 +1,7 @@
 package skillEffect.areaOfEffect;
 
 import character.Character;
+import character.CombatableCharacter;
 import main.GamePanel;
 import skillEffect.SkillEffect;
 
@@ -13,7 +14,7 @@ public abstract class AreaOfEffect extends SkillEffect {
         super(gp);
     }
 
-    public abstract void set(int worldX, int worldY, Character caster, int damage);
+    public abstract void set(int worldX, int worldY, CombatableCharacter caster, int damage);
 
     // Vùng hiệu ứng không bao giờ biến mất khi va chạm
     public boolean isSingleHit() {

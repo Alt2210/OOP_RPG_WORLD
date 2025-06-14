@@ -1,6 +1,7 @@
 package skillEffect.projectile;
 
 import character.Character;
+import character.CombatableCharacter;
 import imageProcessor.SkillImageProcessor;
 import main.GamePanel;
 
@@ -24,11 +25,13 @@ public class Fireball extends Projectile {
     }
 
     private void applyDamage() {
-        gp.getCombatSystem().checkAoEAttack(caster, solidArea, this.damage);
-    }
+        if (caster instanceof CombatableCharacter) {
+            // Ép kiểu caster sang CombatableCharacter trước khi truyền vào phương thức
+            gp.getCombatSystem().checkAoEAttack((CombatableCharacter) caster, solidArea, this.damage);
+        }    }
 
     @Override
-    public void set(int startWorldX, int startWorldY, String direction, Character caster, int damage) {
+    public void set(int startWorldX, int startWorldY, String direction, CombatableCharacter caster, int damage) {
         this.worldX = startWorldX - solidArea.width / 2;   // Căn giữa fireball tại điểm xuất phát
         this.worldY = startWorldY - solidArea.height / 2;
         this.direction = direction;

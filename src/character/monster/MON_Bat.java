@@ -1,6 +1,6 @@
 package character.monster;
 
-import character.Character;
+import character.CombatableCharacter;
 import character.role.Player;
 import main.GamePanel;
 import pathfinder.Node;
@@ -63,7 +63,7 @@ public class MON_Bat extends Monster {
         cip.getImage("/monster", "bat");
     }
 
-    private String getDirectionToTarget(Character target) {
+    private String getDirectionToTarget(CombatableCharacter target) {
         if (target == null || target.getCurrentHealth() <= 0) return this.direction;
         int dx = target.getCenterX() - this.getCenterX();
         int dy = target.getCenterY() - this.getCenterY();
@@ -74,8 +74,7 @@ public class MON_Bat extends Monster {
         return "up";
     }
 
-    @Override
-    protected void onDeath(Character attacker) {
+    protected void onDeath(CombatableCharacter attacker) {
         super.onDeath(attacker);
 
         int i = new Random().nextInt(100) + 1;
