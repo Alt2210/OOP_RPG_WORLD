@@ -22,7 +22,7 @@ public class StellaField extends AreaOfEffect {
     }
 
     // Phương thức set sẽ được gọi từ Skill khi kích hoạt kỹ năng
-    public void set(int worldX, int worldY, CombatableCharacterawd caster, int damage) {
+    public void set(int worldX, int worldY, CombatableCharacter caster, int damage) {
         this.worldX = worldX;
         this.worldY = worldY;
         this.caster = caster;
