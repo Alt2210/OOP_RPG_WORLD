@@ -4,6 +4,7 @@ import character.role.Player;
 import item.Inventory;
 import item.*;
 import main.GamePanel; // Quan trọng: import GamePanel
+import sound.Sound;
 import worldObject.WorldObject;
 
 import javax.imageio.ImageIO;
@@ -84,6 +85,7 @@ public class OBJ_Chest extends WorldObject {
                 if (chestInv.addItem(stackToMove.getItem(), stackToMove.getQuantity())) {
                     playerInv.removeStack(slotIndex);
                     gp.getUi().showMessage("Đã di chuyển " + stackToMove.getItem().getName() + " vào rương.");
+                    gp.playSoundEffect(Sound.SFX_ITEM_TRANSFER);
                     // Đặt isOpened = false nếu rương có thể đóng lại khi có vật phẩm
                     // (hoặc nếu bạn muốn nó tự động đóng nếu nó hoàn toàn trống rỗng sau khi chuyển)
                     // Hiện tại, logic isOpened chỉ được đặt khi rương trống.
@@ -97,6 +99,7 @@ public class OBJ_Chest extends WorldObject {
                 if (playerInv.addItem(stackToMove.getItem(), stackToMove.getQuantity())) {
                     chestInv.removeStack(slotIndex);
                     gp.getUi().showMessage("Đã lấy " + stackToMove.getItem().getName() + " từ rương.");
+                    gp.playSoundEffect(Sound.SFX_ITEM_TRANSFER);
                     // Nếu rương trống rỗng sau khi lấy đồ, đánh dấu là đã mở
                     if (chestInv.getItemStack() == 0) {
                         this.setOpened(true); // Đánh dấu là đã mở (trống rỗng)

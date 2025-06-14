@@ -164,10 +164,10 @@ public class KeyHandler implements KeyListener {
             gp.gameState = GamePanel.playState;
             gp.getUi().setUI(gp.gameState);
         }
-        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) gp.getUi().setSlotRow((gp.getUi().getSlotRow() - 1 + 4) % 4);
-        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) gp.getUi().setSlotRow((gp.getUi().getSlotRow() + 1) % 4);
-        if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) gp.getUi().setSlotCol((gp.getUi().getSlotCol() - 1 + 5) % 5);
-        if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) gp.getUi().setSlotCol((gp.getUi().getSlotCol() + 1) % 5);
+        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {gp.getUi().setSlotRow((gp.getUi().getSlotRow() - 1 + 4) % 4);gp.playSoundEffect(Sound.SFX_CURSOR_MOVE);}
+        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {gp.getUi().setSlotRow((gp.getUi().getSlotRow() + 1) % 4);gp.playSoundEffect(Sound.SFX_CURSOR_MOVE);}
+        if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {gp.getUi().setSlotCol((gp.getUi().getSlotCol() - 1 + 5) % 5);gp.playSoundEffect(Sound.SFX_CURSOR_MOVE);}
+        if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {gp.getUi().setSlotCol((gp.getUi().getSlotCol() + 1) % 5);gp.playSoundEffect(Sound.SFX_CURSOR_MOVE);}
 
         if (code == KeyEvent.VK_ENTER) {
             int itemIndex = gp.getUi().getItemIndexOnSlot();
@@ -212,16 +212,19 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
             if (gp.getUi().getSlotRow() > 0) {
                 gp.getUi().setSlotRow(gp.getUi().getSlotRow() - 1);
+                gp.playSoundEffect(Sound.SFX_CURSOR_MOVE);
             }
         }
         if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
             if (gp.getUi().getCommandNum() == playerPanel) {
                 if (gp.getUi().getSlotRow() < 3) {
                     gp.getUi().setSlotRow(gp.getUi().getSlotRow() + 1);
+                    gp.playSoundEffect(Sound.SFX_CURSOR_MOVE);
                 }
             } else {
                 if (gp.getUi().getSlotRow() < 1) {
                     gp.getUi().setSlotRow(gp.getUi().getSlotRow() + 1);
+                    gp.playSoundEffect(Sound.SFX_CURSOR_MOVE);
                 }
             }
         }
@@ -230,13 +233,16 @@ public class KeyHandler implements KeyListener {
             if (gp.getUi().getCommandNum() == playerPanel) {
                 if (gp.getUi().getSlotCol() > 0) {
                     gp.getUi().setSlotCol(gp.getUi().getSlotCol() - 1);
+                    gp.playSoundEffect(Sound.SFX_CURSOR_MOVE);
                 }
             } else if (gp.getUi().getCommandNum() == chestPanel) {
                 if (gp.getUi().getSlotCol() > 0) {
                     gp.getUi().setSlotCol(gp.getUi().getSlotCol() - 1);
+                    gp.playSoundEffect(Sound.SFX_CURSOR_MOVE);
                 } else {
                     gp.getUi().setSlotCol(4);
                     gp.getUi().setCommandNum(playerPanel);
+                    gp.playSoundEffect(Sound.SFX_CURSOR_MOVE);
                 }
             }
         }
@@ -244,16 +250,20 @@ public class KeyHandler implements KeyListener {
             if (gp.getUi().getCommandNum() == playerPanel) {
                 if (gp.getUi().getSlotCol() < 4) {
                     gp.getUi().setSlotCol(gp.getUi().getSlotCol() + 1);
+                    gp.playSoundEffect(Sound.SFX_CURSOR_MOVE);
                 } else {
                     if (gp.getUi().getSlotRow() >= 2) {
                         gp.getUi().setSlotRow(1);
+                        gp.playSoundEffect(Sound.SFX_CURSOR_MOVE);
                     }
                     gp.getUi().setSlotCol(0);
                     gp.getUi().setCommandNum(chestPanel);
+                    gp.playSoundEffect(Sound.SFX_CURSOR_MOVE);
                 }
             } else if (gp.getUi().getCommandNum() == chestPanel) {
                 if (gp.getUi().getSlotCol() < 4) {
                     gp.getUi().setSlotCol(gp.getUi().getSlotCol() + 1);
+                    gp.playSoundEffect(Sound.SFX_CURSOR_MOVE);
                 }
             }
         }
