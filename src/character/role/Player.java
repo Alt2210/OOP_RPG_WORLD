@@ -414,14 +414,14 @@ public abstract class Player extends CombatableCharacter {
     }
 
     public void equipWeapon(Item_Weapon weapon) {
-        if(weapon instanceof Equippable){
-            this.currentWeapon = weapon;
-            gp.getUi().showMessage("Equipped: " + weapon.getName());
-            // Không cần cập nhật sát thương ở đây vì getAttack() đã tự động tính toán
+        if (this.currentWeapon != null) {
+            unequipWeapon();
         }
-        else {
-            gp.getUi().showMessage("Can not equip " + weapon.getName());
-            return;
+        if (weapon instanceof Equippable) {
+            this.currentWeapon = weapon;
+                this.currentWeapon.specialBuff(this);
+                gp.getUi().showMessage("Equipped: " + weapon.getName());
+                // Không cần cập nhật sát thương ở đây vì getAttack() đã tự động tính toán
         }
     }
 
@@ -431,13 +431,11 @@ public abstract class Player extends CombatableCharacter {
 
     public void unequipWeapon() {
         if (this.currentWeapon != null) {
-            Item equippedItem = (Item) this.currentWeapon;
-            gp.getUi().showMessage("Unequipped: " + equippedItem.getName());
-
+            gp.getUi().showMessage("Unequipped: " + currentWeapon.getName());
+            // Gỡ bỏ buff của vũ khí hiện tại
+            this.currentWeapon.unapplySpecialBuff(this);
+            // Đặt vũ khí về null
             this.currentWeapon = null;
-        } else {
-            // Thông báo nếu không có gì để gỡ
-            gp.getUi().showMessage("No weapon equipped.");
         }
     }
 

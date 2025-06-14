@@ -37,7 +37,6 @@ public class Map1 extends GameMap {
         chest.setWorldY(12 * gp.getTileSize());
         chest.getInventory().addItem(new Item_HealthPotion(gp), 3);
         chest.getInventory().addItem(new Item_ManaPotion(gp), 3);
-        chest.getInventory().addItem(new Item_Key(gp), 3);
         worldObjects.add(chest);
 
         WorldObject obj2 = new OBJ_ReviveStatue(gp);

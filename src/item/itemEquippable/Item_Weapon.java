@@ -26,4 +26,5 @@ public abstract class Item_Weapon extends Item {
     }
 
     public void specialBuff(Player user){   };
+    public void unapplySpecialBuff(Player user) {};
 }

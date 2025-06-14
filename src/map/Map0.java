@@ -43,7 +43,6 @@ public class Map0 extends GameMap{
         chest.getInventory().addItem(new Item_Book(gp), 1);
         chest.getInventory().addItem(new Item_HealthPotion(gp), 3);
         chest.getInventory().addItem(new Item_ManaPotion(gp), 3);
-        chest.getInventory().addItem(new Item_Key(gp),1);
         chest.setWorldX(12 * gp.getTileSize());
         chest.setWorldY(91 * gp.getTileSize());
         worldObjects.add(chest);
