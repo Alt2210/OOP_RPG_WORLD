@@ -4,6 +4,7 @@ import character.role.Player;
 import imageProcessor.SkillImageProcessor;
 import main.GamePanel;
 import skillEffect.areaOfEffect.StellaField; // Import lớp mới của chúng ta
+import sound.Sound;
 
 public class S_StellaField extends Skill {
 
@@ -22,7 +23,7 @@ public class S_StellaField extends Skill {
 
         // 1. Hiển thị thông báo và âm thanh (nếu có)
         gp.getUi().showMessage("Stellar Field!");
-        // gp.playSoundEffect(Sound.SFX_STELLAR_FIELD); // Bạn có thể thêm âm thanh ở đây
+        gp.playSoundEffect(Sound.SFX_SHINE_SOUND);
 
         // 2. Tạo một thực thể StellaField mới
         StellaField field = new StellaField(gp, this.sip);

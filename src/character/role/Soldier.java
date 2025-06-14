@@ -4,6 +4,7 @@ import character.monster.Monster;
 import main.GamePanel;
 import main.KeyHandler;
 import skill.*;
+import sound.Sound;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -39,9 +40,9 @@ public class Soldier extends Player {
 
         setName("sodier");
         loadCharacterSprites();
-
-        addSkill(new S_Explosion(this, gp));
         addSkill(new S_Fireball(this, gp));
+        addSkill(new S_Explosion(this, gp));
+
 
         currentWeapon = null;
 
@@ -66,7 +67,7 @@ public class Soldier extends Player {
         if (cip != null) {
             cip.setNumSprite(6); // Tấn công 6 frame
         }
-
+        gp.playSoundEffect(Sound.SFX_SWORD_SWING);
         System.out.println("Soldier attacks! Direction: " + direction);
     }
     @Override

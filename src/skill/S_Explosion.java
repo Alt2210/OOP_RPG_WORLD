@@ -8,6 +8,7 @@ import main.GamePanel;
 import skillEffect.areaOfEffect.StellaField;
 import skillEffect.projectile.Explosion_projectile;
 import skillEffect.projectile.Fireball;
+import sound.Sound;
 
 public class S_Explosion extends Skill {
 
@@ -22,10 +23,7 @@ public class S_Explosion extends Skill {
     public void activate(Player caster, GamePanel gp) {
         // Đây là logic bạn đã có trong Soldier.castFireball()
         gp.getUi().showMessage("Fireball! -" + this.getManaCost() + " MP");
-//        gp.playSoundEffect(Sound.SFX_FIREBALL_SHOOT);
-
         Explosion_projectile explosion = new Explosion_projectile(gp, this.sip);
-
         // Tính toán vị trí xuất hiện của quả cầu lửa
         int playerSolidCenterX = caster.getWorldX() + caster.getSolidArea().x + caster.getSolidArea().width / 2;
         int playerSolidCenterY = caster.getWorldY() + caster.getSolidArea().y + caster.getSolidArea().height / 2;
@@ -52,5 +50,6 @@ public class S_Explosion extends Skill {
 
         explosion.set(fireballSpawnCenterX, fireballSpawnCenterY, caster.getDirection(), caster, fireballDamage);
         gp.skillEffects.add(explosion);
+        gp.playSoundEffect(Sound.SFX_FIREBALL_EXPLO);
     }
 }

@@ -7,6 +7,7 @@ import main.GamePanel;
 import pathfinder.Node;
 import pathfinder.PathFinder;
 import skillEffect.projectile.GolemArmProjectile;
+import sound.Sound;
 import worldObject.pickableObject.OBJ_HealthPotion;
 import worldObject.pickableObject.OBJ_Key;
 import worldObject.pickableObject.OBJ_ManaPotion;
@@ -212,10 +213,13 @@ public class MON_GolemBoss extends Monster {
         if (isChargingLaser) {
             laserChargeCounter++;
             isFiringLaser = laserChargeCounter >= CHARGING_PHASE_DURATION;
-
+            if (laserChargeCounter == CHARGING_PHASE_DURATION) {
+                gp.playSoundEffect(Sound.SFX_LASER);
+            }
             if (isFiringLaser) {
                 updateLaserHitbox();
                 Player player = gp.getPlayer();
+
                 if (player != null && player.getCurrentHealth() > 0) {
                     Rectangle playerBounds = new Rectangle(
                             player.getWorldX() + player.getSolidArea().x,

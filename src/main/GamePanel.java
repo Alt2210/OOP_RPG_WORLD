@@ -183,8 +183,7 @@ public class GamePanel extends JPanel implements Runnable {
         if (this.currentMap != null) {
             this.currentMap.initialize(); // Gọi initialize để điền các đối tượng mặc định
         }
-
-        playMusic(Sound.MUSIC_BACKGROUND);
+        music.startMusicPlaylist();
         if (player != null) {
             player.setDefaultValues();
             // Ví dụ đặt vị trí khởi đầu cho Player

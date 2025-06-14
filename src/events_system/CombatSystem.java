@@ -37,7 +37,7 @@ public class CombatSystem {
 
             target.receiveDamage(damage, attacker);
             attacker.resetAttackCooldown();
-
+            gp.playSoundEffect(Sound.SFX_HIT);
             System.out.println("    " + attacker.getName() + " cooldown được đặt lại thành: " + attacker.getAttackCooldown());
             gp.getUi().showMessage(attacker.getName() + " gây " + actualDamage + " sát thương cho " + target.getName());
         } else {
@@ -82,7 +82,7 @@ public class CombatSystem {
                             gp.getUi().showMessage(skillEffect.getCaster().getName() + " bắn trúng " +
                                     monster.getName() + " gây " + actualDamageDealt + " sát thương!");
 
-                            gp.playSoundEffect(Sound.SFX_FIREBALL_HIT);
+                            gp.playSoundEffect(Sound.SFX_HIT);
                             skillEffect.setAlive(false); // Vô hiệu hóa skill effect
 
                             // Không cần xóa monster ở đây, GamePanel.update() sẽ làm việc đó
@@ -113,7 +113,7 @@ public class CombatSystem {
                     gp.getUi().showMessage(skillEffect.getCaster().getName() + " bắn trúng bạn gây " +
                             actualDamageDealt + " sát thương!");
 
-                    gp.playSoundEffect(Sound.SFX_FIREBALL_HIT); // Hoặc một âm thanh trúng player riêng
+                    gp.playSoundEffect(Sound.SFX_HIT); // Hoặc một âm thanh trúng player riêng
                     skillEffect.setAlive(false);
 
                     if (player.getCurrentHealth() <= 0) {
@@ -344,7 +344,7 @@ public class CombatSystem {
                     int actualDamageDealt = monster.receiveDamage(projectile.getDamageValue(), projectile.getCaster());
                     gp.getUi().showMessage(projectile.getCaster().getName() + " hits " + monster.getName() + " for " + actualDamageDealt + " damage!");
 
-                    gp.playSoundEffect(Sound.SFX_FIREBALL_HIT);
+                    gp.playSoundEffect(Sound.SFX_HIT);
 
                     if (projectile.isSingleHit()) {
                         projectile.setAlive(false);

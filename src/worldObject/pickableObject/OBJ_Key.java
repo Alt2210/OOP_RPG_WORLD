@@ -27,7 +27,7 @@ public class OBJ_Key extends WorldObject implements Pickable {
         if (player.getInventory().addItem(itemToAdd, 1)) {
             gp.getCurrentMap().getwObjects().remove(i); // Xóa đối tượng khỏi bản đồ
             gp.getUi().showMessage("Picked up a " + name + "!");
-            // gp.playSoundEffect(Sound.SFX_PICKUP_ITEM); // Thêm âm thanh nếu có
+            gp.playSoundEffect(Sound.SFX_PICKUP_KEY);
         } else {
             gp.getUi().showMessage("Inventory is full!");
         }
