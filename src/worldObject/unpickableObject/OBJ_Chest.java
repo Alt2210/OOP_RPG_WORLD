@@ -2,6 +2,7 @@ package worldObject.unpickableObject;
 
 import character.role.Player;
 import item.Inventory;
+import item.*;
 import main.GamePanel; // Quan trọng: import GamePanel
 import worldObject.WorldObject;
 
@@ -49,7 +50,7 @@ public class OBJ_Chest extends WorldObject {
         // Logic tương tác để mở giao diện rương nằm trong KeyHandler,
         // phương thức này có thể để trống hoặc dùng cho mục đích khác.
     }
-    // Ghi đè phương thức draw để chọn ảnh phù hợp
+
     @Override
     public void draw(Graphics2D g2, GamePanel gp) {
         BufferedImage imageToDraw = isOpened ? imageOpened : image;
@@ -65,6 +66,45 @@ public class OBJ_Chest extends WorldObject {
                 worldY - gp.getTileSize() < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()) {
 
             g2.drawImage(imageToDraw, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+        }
+    }
+
+    public void transferItem(Player player, int slotIndex, int commandNum, GamePanel gp) {
+        Inventory playerInv = player.getInventory();
+        Inventory chestInv = this.inventory;
+
+        if (commandNum == 0) { // Player Panel (chuyển từ Player sang Chest)
+            ItemStack stackToMove = playerInv.getItemStack(slotIndex);
+            if (stackToMove != null) {
+                // Không cho phép chuyển vũ khí đang trang bị
+                if (stackToMove.getItem() == player.getCurrentWeapon()) {
+                    gp.getUi().showMessage("Không thể di chuyển vũ khí đang trang bị!");
+                    return;
+                }
+                if (chestInv.addItem(stackToMove.getItem(), stackToMove.getQuantity())) {
+                    playerInv.removeStack(slotIndex);
+                    gp.getUi().showMessage("Đã di chuyển " + stackToMove.getItem().getName() + " vào rương.");
+                    // Đặt isOpened = false nếu rương có thể đóng lại khi có vật phẩm
+                    // (hoặc nếu bạn muốn nó tự động đóng nếu nó hoàn toàn trống rỗng sau khi chuyển)
+                    // Hiện tại, logic isOpened chỉ được đặt khi rương trống.
+                } else {
+                    gp.getUi().showMessage("Rương đã đầy!");
+                }
+            }
+        } else { // Chest Panel (chuyển từ Chest sang Player)
+            ItemStack stackToMove = chestInv.getItemStack(slotIndex);
+            if (stackToMove != null) {
+                if (playerInv.addItem(stackToMove.getItem(), stackToMove.getQuantity())) {
+                    chestInv.removeStack(slotIndex);
+                    gp.getUi().showMessage("Đã lấy " + stackToMove.getItem().getName() + " từ rương.");
+                    // Nếu rương trống rỗng sau khi lấy đồ, đánh dấu là đã mở
+                    if (chestInv.getItemStack() == 0) {
+                        this.setOpened(true); // Đánh dấu là đã mở (trống rỗng)
+                    }
+                } else {
+                    gp.getUi().showMessage("Túi đồ của bạn đã đầy!");
+                }
+            }
         }
     }
 }

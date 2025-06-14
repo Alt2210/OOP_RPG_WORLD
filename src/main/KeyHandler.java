@@ -93,7 +93,6 @@ public class KeyHandler implements KeyListener {
             }
         }
     }
-
     private void handleCharacterSelectStateKeys(int code) {
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
             gp.getUi().setCommandNum((gp.getUi().getCommandNum() + 1) % 2);
@@ -113,7 +112,6 @@ public class KeyHandler implements KeyListener {
             gp.getUi().setUI(gp.gameState);
         }
     }
-
     private void handlePlayStateKeys(int code) {
         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) upPressed = true;
         if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = true;
@@ -135,14 +133,12 @@ public class KeyHandler implements KeyListener {
             gp.getUi().setUI(gp.gameState);
         }
     }
-
     private void handlePauseStateKeys(int code) {
         if (code == KeyEvent.VK_P) {
             gp.gameState = GamePanel.playState;
             gp.getUi().setUI(gp.gameState);
         }
     }
-
     private void handleDialogueStateKeys(int code) {
         // Kiểm tra nếu NPC hiện tại là Merchant
         if (gp.getDialogueManager().getInteractingNPC() instanceof NPC_Merchant) {
@@ -163,7 +159,6 @@ public class KeyHandler implements KeyListener {
             }
         }
     }
-
     private void handleInventoryStateKeys(int code) {
         if (code == KeyEvent.VK_C || code == KeyEvent.VK_ESCAPE) {
             gp.gameState = GamePanel.playState;
@@ -263,10 +258,13 @@ public class KeyHandler implements KeyListener {
         }
 
         if (code == KeyEvent.VK_ENTER) {
-            transferItem();
+            if (gp.getCurrentChest() != null) {
+                int slotIndex = gp.getUi().getItemIndexOnSlot();
+                int commandNum = gp.getUi().getCommandNum(); // Lấy commandNum hiện tại
+                gp.getCurrentChest().transferItem(gp.getPlayer(), slotIndex, commandNum, gp);
+            }
         }
     }
-
     private void handleGameOverStateKeys(int code) {
         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
             gp.getUi().setCommandNum((gp.getUi().getCommandNum() - 1 + 2) % 2);
@@ -293,7 +291,6 @@ public class KeyHandler implements KeyListener {
             }
         }
     }
-
     private void handleVictoryStateKeys(int code) {
         if (code == KeyEvent.VK_ENTER) {
             gp.resetGameForNewSession();
@@ -301,7 +298,6 @@ public class KeyHandler implements KeyListener {
             gp.getUi().setUI(gp.gameState);
         }
     }
-
     private void handleTradeStateKeys(int code) {
         if (code == KeyEvent.VK_C) {
             gp.gameState = GamePanel.playState;
@@ -352,43 +348,6 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_ENTER) {
             if (gp.getCurrentMerchant() != null) {
                 gp.getCurrentMerchant().tradeItem();
-            }
-        }
-    }
-
-    private void transferItem() {
-        if (gp.getCurrentChest() == null) return;
-        int slotIndex = gp.getUi().getItemIndexOnSlot();
-        Inventory playerInv = gp.getPlayer().getInventory();
-        Inventory chestInv = gp.getCurrentChest().getInventory();
-
-        if (gp.getUi().getCommandNum() == 0) {
-            ItemStack stackToMove = playerInv.getItemStack(slotIndex);
-            if (stackToMove != null) {
-                if (stackToMove.getItem() == gp.getPlayer().getCurrentWeapon()) {
-                    gp.getUi().showMessage("Unequip the weapon first!");
-                    return;
-                }
-                if (chestInv.addItem(stackToMove.getItem(), stackToMove.getQuantity())) {
-                    playerInv.removeStack(slotIndex);
-                    gp.getUi().showMessage("Moved " + stackToMove.getItem().getName() + " to chest.");
-                    gp.getCurrentChest().setOpened(false);
-                } else {
-                    gp.getUi().showMessage("Chest is full!");
-                }
-            }
-        } else {
-            ItemStack stackToMove = chestInv.getItemStack(slotIndex);
-            if (stackToMove != null) {
-                if (playerInv.addItem(stackToMove.getItem(), stackToMove.getQuantity())) {
-                    chestInv.removeStack(slotIndex);
-                    gp.getUi().showMessage("Took " + stackToMove.getItem().getName() + " from chest.");
-                    if (chestInv.getItemStack() == 0) {
-                        gp.getCurrentChest().setOpened(true);
-                    }
-                } else {
-                    gp.getUi().showMessage("Your inventory is full!");
-                }
             }
         }
     }
