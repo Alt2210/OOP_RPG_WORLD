@@ -253,6 +253,19 @@ public class GamePanel extends JPanel implements Runnable {
         if (gameState == playState) {
             player.update();
 
+            for (int i = skillEffects.size() - 1; i >= 0; i--) {
+                SkillEffect p = skillEffects.get(i);
+                if (p.isAlive()) {
+                    p.update();
+                    if (p.isAlive()) {
+                        combatSystem.processSkillEffectImpacts(p);
+                    }
+                }
+                if (!p.isAlive()) {
+                    skillEffects.remove(i);
+                }
+            }
+
             // Cập nhật NPC từ currentMap
             for (int i = currentMap.getNpc().size() - 1; i >= 0; i--) { //
                 Character npcChar = currentMap.getNpc().get(i); //
@@ -273,19 +286,6 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 } else {
                     currentMap.getMonster().remove(i); //
-                }
-            }
-
-            for (int i = skillEffects.size() - 1; i >= 0; i--) {
-                SkillEffect p = skillEffects.get(i);
-                if (p.isAlive()) {
-                    p.update();
-                    if (p.isAlive()) {
-                        combatSystem.processSkillEffectImpacts(p);
-                    }
-                }
-                if (!p.isAlive()) {
-                    skillEffects.remove(i);
                 }
             }
 
@@ -325,6 +325,10 @@ public class GamePanel extends JPanel implements Runnable {
         else {
             if (tileM != null) tileM.draw(g2);
 
+            for (SkillEffect p : skillEffects) {
+                if (p != null && p.isAlive()) p.draw(g2);
+            }
+
             // Vẫn vẽ các đối tượng từ currentMap
             if (currentMap != null) {
                 for (WorldObject wObject : currentMap.getwObjects()) { //
@@ -332,9 +336,7 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
-            for (SkillEffect p : skillEffects) {
-                if (p != null && p.isAlive()) p.draw(g2);
-            }
+
 
             // Vẫn vẽ các NPC từ currentMap
             if (currentMap != null) {

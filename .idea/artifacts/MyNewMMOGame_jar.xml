@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="MyNewMMOGame:jar">
+    <output-path>$PROJECT_DIR$/..</output-path>
+    <root id="archive" name="MyNewMMOGame.jar">
+      <element id="module-output" name="MyNewMMOGame" />
+    </root>
+  </artifact>
+</component>
