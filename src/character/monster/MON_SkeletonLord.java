@@ -57,7 +57,7 @@ public class MON_SkeletonLord extends Monster {
         speed = defaultSpeed;
         maxHealth = 250; // Tăng máu
         currentHealth = maxHealth;
-        attack = 15; // Tăng sát thương (phù hợp boss)
+        attack = 50; // Tăng sát thương (phù hợp boss)
         defense = 5; // Tăng phòng thủ (phù hợp boss)
         exp = 100; // Tăng EXP
         coinValue = 1000;

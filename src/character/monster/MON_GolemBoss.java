@@ -60,9 +60,9 @@ public class MON_GolemBoss extends Monster {
         setName("GolemBoss");
         defaultSpeed = 1;
         speed = defaultSpeed;
-        maxHealth = 10;
+        maxHealth = 500;
         currentHealth = maxHealth;
-        attack = 8;
+        attack = 50;
         defense = 2;
         exp = 50;
         coinValue = 1000;

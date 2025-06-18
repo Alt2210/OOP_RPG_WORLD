@@ -91,7 +91,7 @@ public class MON_Bat extends Monster {
         gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
     }
 
-    public void attemptToDash() {
+    public void flyAttack() {
         updateContactDamageCooldown();
         Player player = gp.getPlayer();
         if (player == null || player.getCurrentHealth() <= 0) {
@@ -167,7 +167,7 @@ public class MON_Bat extends Monster {
     public void update() {
         try {
             // 1. Logic quyết định hành động
-            attemptToDash(); // Cập nhật trạng thái lướt, tốc độ và hướng
+            flyAttack(); // Cập nhật trạng thái lướt, tốc độ và hướng
             if (!isDashing) {
                 playerChasing(); // Cập nhật hướng khi đang đuổi theo
             }
