@@ -175,6 +175,18 @@ public class CharacterImageProcessor extends ImageProcessor {
             case "princess":
                 walkSpriteCount = 7;
                 break;
+            case "merchant":
+                BufferedImage img;
+                for(int i = 1; i <= 8; i++){
+                    String path = folder + "/" + characterIdentifier + "_down" + i + ".png";
+                    System.out.println(path);
+                    img = setup(path);
+                    down.add(img);
+                }
+                up.addAll(down);
+                left.addAll(down);
+                right.addAll(down);
+                break;
             case "oldman":
             case "greenslime":
             case "bat":

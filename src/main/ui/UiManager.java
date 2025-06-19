@@ -18,6 +18,7 @@ public class UiManager {
     private final InventoryUI inventoryUI;
     private final ChestUI chestUI;
     private final LoadGameUI loadGameUI;
+    private final UI tradeUI;
     public UiManager(GamePanel gp) {
         this.gp = gp;
 
@@ -31,6 +32,7 @@ public class UiManager {
         this.inventoryUI = new InventoryUI(gp);
         this.chestUI = new ChestUI(gp);
         this.loadGameUI = new LoadGameUI(gp);
+        this.tradeUI = new TradeUI(gp);
         // Thiết lập UI mặc định ban đầu
         this.currentUI = titleUI;
     }
@@ -47,7 +49,7 @@ public class UiManager {
             case GamePanel.gameOverState: currentUI = gameOverUI; break;
             case GamePanel.victoryEndState: currentUI = victoryUI; break;
             case GamePanel.loadGameState: loadGameUI.refreshHistory(); currentUI = loadGameUI;  break;
-
+            case GamePanel.tradeState: currentUI = tradeUI; break;
         }
     }
 
@@ -59,6 +61,11 @@ public class UiManager {
         if (currentUI != null) {
             currentUI.draw(g2);
         }
+
+        if (gp.gameState != GamePanel.titleState && gp.gameState != GamePanel.characterSelectState && playUI != null) {
+            playUI.drawMessage(g2);
+            playUI.drawFloatingText(g2);
+        }
     }
 
     // --- Các phương thức ủy nhiệm (delegate methods) ---
@@ -67,6 +74,7 @@ public class UiManager {
     public void showMessage(String text) {
         playUI.showMessage(text);
     }
+    public void showFloatingText(String text){playUI.showFloatingText(text);}
 
     public void setCurrentDialogue(String text) {
         playUI.setCurrentDialogue(text);
@@ -78,26 +86,35 @@ public class UiManager {
     public int getSlotCol() {
         if(currentUI instanceof InventoryUI) return ((InventoryUI) currentUI).getSlotCol();
         if(currentUI instanceof ChestUI) return ((ChestUI) currentUI).getSlotCol();
+        if(currentUI instanceof TradeUI) return ((TradeUI) currentUI).getSlotCol(); // THÊM DÒNG NÀY
         return 0;
     }
     public void setSlotCol(int col) {
         if(currentUI instanceof ChestUI)  ((ChestUI) currentUI).setSlotCol(col);
         if(currentUI instanceof InventoryUI) ((InventoryUI) currentUI).setSlotCol(col);
+        if(currentUI instanceof TradeUI) ((TradeUI) currentUI).setSlotCol(col); // THÊM DÒNG NÀY
     }
 
     public int getSlotRow() {
         if(currentUI instanceof InventoryUI) return ((InventoryUI) currentUI).getSlotRow();
         if(currentUI instanceof ChestUI) return ((ChestUI) currentUI).getSlotRow();
+        if(currentUI instanceof TradeUI) return ((TradeUI) currentUI).getSlotRow(); // THÊM DÒNG NÀY
         return 0;
     }
     public void setSlotRow(int row) {
         if(currentUI instanceof ChestUI) ((ChestUI) currentUI).setSlotRow(row);
         if(currentUI instanceof InventoryUI) ((InventoryUI) currentUI).setSlotRow(row);
+        if(currentUI instanceof TradeUI) ((TradeUI) currentUI).setSlotRow(row); // THÊM DÒNG NÀY
     }
 
     public int getItemIndexOnSlot() {
         if(currentUI instanceof InventoryUI) return ((InventoryUI) currentUI).getItemIndexOnSlot();
         if(currentUI instanceof ChestUI) return ((ChestUI) currentUI).getItemIndexOnSlot();
+        if(currentUI instanceof TradeUI) return ((TradeUI) currentUI).getItemIndexOnSlot(); // THÊM DÒNG NÀY
         return 0;
+    }
+
+    public boolean hasMoreLinesInCurrentDialogue() {
+        return gp.getDialogueManager().hasMoreLinesInCurrentDialogue();
     }
 }

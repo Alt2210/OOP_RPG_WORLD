@@ -46,6 +46,12 @@ public abstract class Monster extends CombatableCharacter {
 
     @Override
     public void update() {
+        collisionOn = false;
+        gp.getcChecker().checkTile(this);
+        gp.getcChecker().checkItem(this, false); // Quái vật va chạm với vật thể nhưng không nhặt
+        gp.getcChecker().checkEntity(this, gp.getCurrentMap().getNpc()); // Va chạm với NPC
+        gp.getcChecker().checkEntity(this, gp.getCurrentMap().getMonster()); // Va chạm với quái vật khác
+        gp.getcChecker().checkPlayer(this); // Va chạm với người chơi
         super.update(); // Gọi logic update của lớp Character (di chuyển, animation, cooldown)
         updateContactDamageCooldown();
     }
@@ -101,13 +107,12 @@ public abstract class Monster extends CombatableCharacter {
 
     // Phương thức thả vật phẩm tại vị trí của quái vật
     protected void dropItem(WorldObject item) {
-        for (int i = 0; i < gp.getwObjects().length; i++) {
-            if (gp.getwObjects()[i] == null) {
-                gp.getwObjects()[i] = item;
-                item.setWorldX(this.worldX);
-                item.setWorldY(this.worldY);
-                break;
-            }
+        if (gp.getCurrentMap() != null) { // Đảm bảo có map hiện tại
+            gp.getCurrentMap().getwObjects().add(item); // Thêm item vào danh sách của bản đồ
+            item.setWorldX(this.worldX);
+            item.setWorldY(this.worldY);
+        } else {
+            System.err.println("Monster.dropItem: Cannot drop item, currentMap is null.");
         }
     }
     protected void onDeath(CombatableCharacter attacker) {

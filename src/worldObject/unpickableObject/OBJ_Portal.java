@@ -65,9 +65,6 @@ public class OBJ_Portal extends WorldObject {
 
     @Override
     public void interactPlayer(Player player, int worldObjectIndex, GamePanel gpRef) {
-        // portal.collision = false => logic gọi từ Player.pickUpItem()
-        // portal.collision = true, cần một cách khác để kích hoạt ( sau này sẽ thêm key đặc biệt để mở portal)
-
         if (gpRef.gameState == gpRef.playState) {
             Rectangle playerBounds = new Rectangle(player.getWorldX() + player.getSolidArea().x, player.getWorldY() + player.getSolidArea().y, player.getSolidArea().width, player.getSolidArea().height);
             Rectangle portalBounds = new Rectangle(this.worldX + this.solidArea.x, this.worldY + this.solidArea.y, this.solidArea.width, this.solidArea.height);
@@ -75,17 +72,17 @@ public class OBJ_Portal extends WorldObject {
             if (playerBounds.intersects(portalBounds)) {
                 gpRef.getUi().showMessage("Bước qua cổng dịch chuyển đến map " + targetMap + "...");
 
-                gpRef.setCurrentMap(this.targetMap);
-                player.setWorldX(this.playerTargetWorldX_onNewMap);
-                player.setWorldY(this.playerTargetWorldY_onNewMap);
+                gpRef.setCurrentMapIndex(this.targetMap); // Đặt chỉ số bản đồ mới
 
+                // QUAN TRỌNG: Gọi setupMapAssets để khởi tạo bản đồ mới và điền vào gp.currentMap
+                gpRef.getaSetter().setupMapAssets(gpRef.getCurrentMapIndex()); //
+                gpRef.setCurrentMap(gpRef.getaSetter().getMap(gpRef.getCurrentMapIndex())); // Cập nhật tham chiếu currentMap trong GamePanel
+
+                player.setWorldX(this.playerTargetWorldX_onNewMap); //
+                player.setWorldY(this.playerTargetWorldY_onNewMap); //
                 gpRef.getSaveLoadManager().saveGame("Bước vào bản đồ số " + this.targetMap);
 
-                gpRef.clearEntitiesForMapChange();
-                gpRef.getaSetter().setupMapAssets(gpRef.getCurrentMap());
-
                 System.out.println("Player teleported to map: " + gpRef.getCurrentMap() + " at (" + player.getWorldX() + "," + player.getWorldY() + ")");
-
             }
         }
     }

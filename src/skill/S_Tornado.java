@@ -4,6 +4,7 @@ import character.role.Player;
 import imageProcessor.SkillImageProcessor;
 import main.GamePanel;
 import skillEffect.projectile.Tornado;
+import sound.Sound;
 
 public class S_Tornado extends  Skill{
     public S_Tornado(Player caster, GamePanel gp) {
@@ -17,7 +18,7 @@ public class S_Tornado extends  Skill{
     public void activate(Player caster, GamePanel gp) {
         // Đây là logic bạn đã có trong Soldier.castTornado()
         gp.getUi().showMessage("Tornado! -" + this.getManaCost() + " MP");
-//        gp.playSoundEffect(Sound.SFX_SHOOT);
+        gp.playSoundEffect(Sound.SFX_SHOOT);
 
         Tornado tornado = new Tornado(gp, sip);
 

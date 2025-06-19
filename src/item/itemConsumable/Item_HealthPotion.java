@@ -4,6 +4,7 @@ import character.role.Player;
 import imageProcessor.ItemImageProcessor;
 import item.Item;
 import main.GamePanel;
+import sound.Sound;
 
 public class Item_HealthPotion extends Item implements Consumable{
 
@@ -14,6 +15,7 @@ public class Item_HealthPotion extends Item implements Consumable{
         id = 101; // ID duy nhất cho vật phẩm này
         type = "CONSUMABLE"; // Loại vật phẩm là "dùng một lần"
         itp = new ItemImageProcessor(gp);
+        this.buyPrice = 10;
         // Giả sử bạn có ảnh health_potion.png trong res/objects/
         itp.getImage("/objects", "potion_health");
         description = "[" + name + "]\nA magical potion that\nrestores " + healingValue + " HP.";
@@ -23,6 +25,7 @@ public class Item_HealthPotion extends Item implements Consumable{
     public void consumeItem(Player user){
         user.setCurrentHealth(user.getCurrentHealth() + healingValue);
         user.getGp().getUi().showMessage("Healed for " + healingValue + " HP!");
+        user.getGp().playSoundEffect(Sound.SFX_USE_POTION);
     }
 
     @Override

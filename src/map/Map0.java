@@ -2,54 +2,63 @@ package map;
 
 import main.GamePanel;
 import character.monster.*;
-import character.sideCharacter.NPC_OldMan;
-import character.sideCharacter.NPC_Princess;
-import item.Item_Key;
+import character.sideCharacter.*;
 import item.itemConsumable.Item_HealthPotion;
 import item.itemConsumable.Item_ManaPotion;
 import item.itemEquippable.Item_Book;
 import item.itemEquippable.Item_Sword;
+import worldObject.WorldObject; // Thêm import này
 import worldObject.unpickableObject.OBJ_Chest;
 import worldObject.unpickableObject.OBJ_Portal;
 import worldObject.unpickableObject.OBJ_ReviveStatue;
+import character.Character; // Thêm import này
 
-public class Map0 extends GameMap{ // Or implements MapInitializer
+public class Map0 extends GameMap{
     public Map0(GamePanel gp) {
         super(gp);
     }
 
     @Override
     public void initialize() {
+        // Clear old entities to prevent duplicates if map is re-initialized
+        worldObjects.clear();
+        npcs.clear();
+        monsters.clear();
 
         // OBJECTS
-        gp.getwObjects()[1] = new OBJ_ReviveStatue(gp);
-        gp.getwObjects()[1].setWorldX(49 * gp.getTileSize());
-        gp.getwObjects()[1].setWorldY(54 * gp.getTileSize());
+        WorldObject obj1 = new OBJ_ReviveStatue(gp);
+        obj1.setWorldX(49 * gp.getTileSize());
+        obj1.setWorldY(54 * gp.getTileSize());
+        worldObjects.add(obj1); // Thêm vào list của GameMap
 
-        gp.getwObjects()[2] = new OBJ_Portal(gp, 1, 10, 12);
-        gp.getwObjects()[2].setWorldX(67 * gp.getTileSize());
-        gp.getwObjects()[2].setWorldY(40 * gp.getTileSize());
+        WorldObject obj2 = new OBJ_Portal(gp, 1, 10, 12);
+        obj2.setWorldX(67 * gp.getTileSize());
+        obj2.setWorldY(40 * gp.getTileSize());
+        worldObjects.add(obj2);
 
         OBJ_Chest chest = new OBJ_Chest(gp);
         chest.getInventory().addItem(new Item_Sword(gp), 1);
         chest.getInventory().addItem(new Item_Book(gp), 1);
         chest.getInventory().addItem(new Item_HealthPotion(gp), 3);
         chest.getInventory().addItem(new Item_ManaPotion(gp), 3);
-        chest.getInventory().addItem(new Item_Key(gp),1);
-        gp.getwObjects()[3] = chest;
-        gp.getwObjects()[3].setWorldX(12 * gp.getTileSize());
-        gp.getwObjects()[3].setWorldY(91 * gp.getTileSize());
+        chest.setWorldX(12 * gp.getTileSize());
+        chest.setWorldY(91 * gp.getTileSize());
+        worldObjects.add(chest);
 
         // NPCs
-        gp.getNpc()[0] = new NPC_OldMan(gp);
-        gp.getNpc()[0].setWorldX(gp.getTileSize() * 50);
-        gp.getNpc()[0].setWorldY(gp.getTileSize() * 92);
+        Character npc0 = new NPC_OldMan(gp);
+        npc0.setWorldX(gp.getTileSize() * 50);
+        npc0.setWorldY(gp.getTileSize() * 92);
+        npcs.add(npc0);
+
+        Character npc1 = new NPC_Merchant(gp);
+        npc1.setWorldX(gp.getTileSize() * 11);
+        npc1.setWorldY(gp.getTileSize() * 23);
+        npcs.add(npc1);
 
         // MONSTERS
-        gp.getMonster().add(new MON_GreenSlime(gp));
-        gp.getMonster().get(0).setWorldX(43 * gp.getTileSize());
-        gp.getMonster().get(0).setWorldY(86 * gp.getTileSize());
-        // ... (thêm các quái vật khác tương tự)
+        // Sử dụng phương thức spawnMonster mới
+        spawnMonster(new MON_GreenSlime(gp), 43, 86);
         spawnMonster(new MON_GreenSlime(gp), 33, 91);
         spawnMonster(new MON_GreenSlime(gp), 31, 67);
         spawnMonster(new MON_GreenSlime(gp), 44, 63);
@@ -73,9 +82,10 @@ public class Map0 extends GameMap{ // Or implements MapInitializer
         System.out.println("Map 0 Initialized.");
     }
 
+    // Phương thức helper để thêm quái vật vào danh sách của bản đồ
     private void spawnMonster(Monster monster, int tileX, int tileY) {
         monster.setWorldX(gp.getTileSize() * tileX);
         monster.setWorldY(gp.getTileSize() * tileY);
-        gp.getMonster().add(monster);
+        monsters.add(monster); // Thêm vào list của GameMap
     }
 }

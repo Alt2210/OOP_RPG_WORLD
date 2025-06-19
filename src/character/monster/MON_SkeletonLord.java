@@ -6,6 +6,9 @@ import character.role.Player;
 import main.GamePanel;
 import pathfinder.Node;
 import pathfinder.PathFinder; // PathFinder được kế thừa từ lớp Monster
+import worldObject.pickableObject.OBJ_HealthPotion;
+import worldObject.pickableObject.OBJ_Key;
+import worldObject.pickableObject.OBJ_ManaPotion;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -52,9 +55,9 @@ public class MON_SkeletonLord extends Monster {
         setName("Skeleton Lord"); // Đổi tên
         defaultSpeed = 1;
         speed = defaultSpeed;
-        maxHealth = 500; // Tăng máu
+        maxHealth = 250; // Tăng máu
         currentHealth = maxHealth;
-        attack = 15; // Tăng sát thương (phù hợp boss)
+        attack = 50; // Tăng sát thương (phù hợp boss)
         defense = 5; // Tăng phòng thủ (phù hợp boss)
         exp = 100; // Tăng EXP
         coinValue = 1000;
@@ -260,17 +263,16 @@ public class MON_SkeletonLord extends Monster {
     @Override
     protected void onDeath(CombatableCharacter attacker) {
         super.onDeath(attacker);
-    }
-
-    public void checkDrop() {
-        int i = new Random().nextInt(100) + 1;
-        if (i < 30) {
-            gp.getUi().showMessage(getName() + " dropped a rare item!");
-        } else if (i < 70) {
-            gp.getUi().showMessage(getName() + " dropped some Gold!");
-        } else {
-            gp.getUi().showMessage(getName() + " dropped a Health Potion!");
+        int i = new Random().nextInt(100) + 1; // Tạo số ngẫu nhiên từ 1 đến 100
+        // Cấu trúc if - else if để tỉ lệ không bị chồng chéo
+        if (i <= 40) { // Tỉ lệ 40% (số từ 1 đến 40)
+            dropItem(new OBJ_HealthPotion(gp));
+        } else if (i <= 50) { // Tỉ lệ 10% (số từ 41 đến 50)
+            dropItem(new OBJ_ManaPotion(gp));
         }
+        dropItem(new OBJ_HealthPotion(gp));
+        gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!" + "\n"
+                + "Bạn nhận được " + this.coinValue + "vàng!");
     }
 
     // Phần draw() của Skeleton Lord (đã được tối ưu tốt, giữ nguyên)

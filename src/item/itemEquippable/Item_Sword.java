@@ -17,16 +17,14 @@ public class Item_Sword extends Item_Weapon implements Equippable {
         description = "[" + name + "]\nMột thanh kiếm cũ kỹ.\nTăng 5 sát thương tấn công.";
 
         this.attackBonus = 5;
+        this.buyPrice = 20;
         itp = new ItemImageProcessor(gp);
         itp.getImage("/weapon", "sword_normal");
     }
 
     @Override
     public void equipItem(Player user) {
-        if("sodier".equals(user.getCharacterClassIdentifier())){
-            specialBuff(user);
-        }
-        user.equipWeapon(this);
+        useItem(user);
     }
 
     public int getAttackBonus() {
@@ -35,11 +33,19 @@ public class Item_Sword extends Item_Weapon implements Equippable {
 
     @Override
     public void useItem(Player user) {
-        equipItem(user);
+        // Logic chính: kiểm tra và trang bị/tháo ra
+        if (user.getCurrentWeapon() == this) {
+            // Nếu vũ khí này đã được trang bị -> tháo nó ra
+            user.unequipWeapon();
+        } else {
+            // Nếu chưa -> trang bị nó
+            user.equipWeapon(this);
+        }
     }
 
     @Override
     public void specialBuff(Player user) {
         this.attackBonus = 20;
     }
+
 }

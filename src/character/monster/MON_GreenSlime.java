@@ -36,7 +36,7 @@ public class MON_GreenSlime extends Monster {
         setName("Green Slime");
         defaultSpeed = 1;
         speed = defaultSpeed;
-        maxHealth = 40;
+        maxHealth = 80;
         currentHealth = maxHealth;
         attack = 5;
         defense = 0;

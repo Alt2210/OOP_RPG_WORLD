@@ -50,7 +50,12 @@ public abstract class SideCharacter extends Character implements DialogueSpeaker
     public void update() {
         // Gọi setAction() để NPC quyết định hướng di chuyển tiếp theo
         setAction();
-
+        collisionOn = false;
+        gp.getcChecker().checkTile(this);
+        gp.getcChecker().checkItem(this, false); // NPC va chạm với cửa, rương...
+        gp.getcChecker().checkPlayer(this);      // NPC va chạm với người chơi
+        gp.getcChecker().checkEntity(this, gp.getCurrentMap().getMonster()); // NPC va chạm với quái vật
+        gp.getcChecker().checkEntity(this, gp.getCurrentMap().getNpc());     // NPC va chạm với NPC khác
         // Kiểm tra va chạm trước khi di chuyển (logic này đã có trong super.update())
         super.update();
     }

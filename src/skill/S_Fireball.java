@@ -6,6 +6,7 @@ import character.role.Player;
 import imageProcessor.SkillImageProcessor;
 import main.GamePanel;
 import skillEffect.projectile.Fireball;
+import sound.Sound;
 
 public class S_Fireball extends Skill {
 
@@ -22,7 +23,7 @@ public class S_Fireball extends Skill {
     public void activate(Player caster, GamePanel gp) {
         // Đây là logic bạn đã có trong Soldier.castFireball()
         gp.getUi().showMessage("Fireball! -" + this.getManaCost() + " MP");
-//        gp.playSoundEffect(Sound.SFX_FIREBALL_SHOOT);
+        gp.playSoundEffect(Sound.SFX_FIREBALL_WHOOSH);
 
         Fireball fireball = new Fireball(gp, sip);
 

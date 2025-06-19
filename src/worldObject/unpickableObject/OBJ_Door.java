@@ -27,7 +27,7 @@ public class OBJ_Door extends WorldObject {
         // Kiểm tra xem người chơi có Item_Key trong túi đồ không
         if (player.getInventory().hasItem(keyToFind)) {
             // Nếu có, xóa cửa
-            gp.getwObjects()[i] = null;
+            gp.getCurrentMap().getwObjects().remove(i);
 
             // Xóa 1 chìa khóa khỏi túi đồ
             player.getInventory().removeItem(keyToFind, 1);

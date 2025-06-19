@@ -1,18 +1,14 @@
 package character.role;
 
 import character.monster.Monster;
-import item.Item;
-import item.itemEquippable.Equippable;
-import item.itemEquippable.Item_Weapon;
 import main.GamePanel;
 import main.KeyHandler;
-import skill.S_Explosion;
-import skill.S_Fireball;
-import skill.S_StellaField;
+import skill.*;
+import sound.Sound;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Soldier extends Player {
 
@@ -44,9 +40,9 @@ public class Soldier extends Player {
 
         setName("sodier");
         loadCharacterSprites();
-
-        addSkill(new S_Explosion(this, gp));
         addSkill(new S_Fireball(this, gp));
+        addSkill(new S_Explosion(this, gp));
+
 
         currentWeapon = null;
 
@@ -71,7 +67,7 @@ public class Soldier extends Player {
         if (cip != null) {
             cip.setNumSprite(6); // Tấn công 6 frame
         }
-
+        gp.playSoundEffect(Sound.SFX_SWORD_SWING);
         System.out.println("Soldier attacks! Direction: " + direction);
     }
     @Override
@@ -141,7 +137,7 @@ public class Soldier extends Player {
         }
 
         // Lấy danh sách quái vật duy nhất từ GamePanel
-        ArrayList<Monster> monsters = gp.getMonster();
+        List<Monster> monsters =  gp.getCurrentMap().getMonster();
 
         // Lặp qua danh sách quái vật để kiểm tra va chạm
         for (Monster monster : monsters) {

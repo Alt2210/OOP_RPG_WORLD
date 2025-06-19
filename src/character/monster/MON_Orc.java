@@ -6,6 +6,8 @@ import character.role.Player;
 import main.GamePanel;
 import pathfinder.Node;
 import pathfinder.PathFinder; // PathFinder được kế thừa từ lớp Monster
+import worldObject.pickableObject.OBJ_HealthPotion;
+import worldObject.pickableObject.OBJ_ManaPotion;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -37,7 +39,18 @@ public class MON_Orc extends Monster {
     @Override
     protected void onDeath(CombatableCharacter attacker) {
         super.onDeath(attacker);
-        gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
+        int i = new Random().nextInt(100) + 1;
+
+        // SET THE MONSTER DROP
+        if (i < 30) {
+            dropItem(new OBJ_HealthPotion(gp));
+        }
+        // từ 30 ~ 69 không drop ra gì
+        if (i >= 70 && i < 100) {
+            dropItem(new OBJ_ManaPotion(gp));
+        }
+        gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!" + "\n"
+                + "Bạn nhận được " + this.coinValue + "vàng!");
     }
 
     @Override

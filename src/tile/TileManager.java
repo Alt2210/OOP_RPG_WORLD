@@ -212,7 +212,7 @@ public class TileManager {
         int worldCol = 0;
         int worldRow = 0;
 
-        int currentMapIndex = gp.getCurrentMap();
+        int currentMapIndex = gp.getCurrentMapIndex();
         if (currentMapIndex < 0 || currentMapIndex >= gp.getMaxMap()) {
             System.err.println("Lỗi: currentMapIndex (" + currentMapIndex + ") không hợp lệ trong TileManager.draw(). Vẽ map 0 mặc định.");
             currentMapIndex = 0; // Fallback về map 0

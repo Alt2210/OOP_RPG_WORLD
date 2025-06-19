@@ -7,10 +7,14 @@ import main.GamePanel;
 import pathfinder.Node;
 import pathfinder.PathFinder;
 import skillEffect.projectile.GolemArmProjectile;
+import sound.Sound;
+import worldObject.pickableObject.OBJ_HealthPotion;
 import worldObject.pickableObject.OBJ_Key;
+import worldObject.pickableObject.OBJ_ManaPotion;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class MON_GolemBoss extends Monster {
     private PathFinder pathFinder;
@@ -56,9 +60,9 @@ public class MON_GolemBoss extends Monster {
         setName("GolemBoss");
         defaultSpeed = 1;
         speed = defaultSpeed;
-        maxHealth = 10;
+        maxHealth = 500;
         currentHealth = maxHealth;
-        attack = 8;
+        attack = 50;
         defense = 2;
         exp = 50;
         coinValue = 1000;
@@ -96,6 +100,13 @@ public class MON_GolemBoss extends Monster {
 
     protected void onDeath(CombatableCharacter attacker) {
         super.onDeath(attacker);
+        int i = new Random().nextInt(100) + 1; // Tạo số ngẫu nhiên từ 1 đến 100
+        // Cấu trúc if - else if để tỉ lệ không bị chồng chéo
+        if (i <= 40) { // Tỉ lệ 40% (số từ 1 đến 40)
+            dropItem(new OBJ_HealthPotion(gp));
+        } else if (i <= 50) { // Tỉ lệ 10% (số từ 41 đến 50)
+            dropItem(new OBJ_ManaPotion(gp));
+        }
         dropItem(new OBJ_Key(gp));
         gp.getUi().showMessage(attacker.getName() + " đã đánh bại " + getName() + "!");
     }
@@ -202,10 +213,13 @@ public class MON_GolemBoss extends Monster {
         if (isChargingLaser) {
             laserChargeCounter++;
             isFiringLaser = laserChargeCounter >= CHARGING_PHASE_DURATION;
-
+            if (laserChargeCounter == CHARGING_PHASE_DURATION) {
+                gp.playSoundEffect(Sound.SFX_LASER);
+            }
             if (isFiringLaser) {
                 updateLaserHitbox();
                 Player player = gp.getPlayer();
+
                 if (player != null && player.getCurrentHealth() > 0) {
                     Rectangle playerBounds = new Rectangle(
                             player.getWorldX() + player.getSolidArea().x,
@@ -257,6 +271,7 @@ public class MON_GolemBoss extends Monster {
                 }
                 armProjectile.set(startX, startY, direction, this, attack);
                 gp.skillEffects.add(armProjectile); // Thêm vào skillEffects
+                gp.playSoundEffect(Sound.SFX_ARM_SHOT);
                 System.out.println("GolemBoss fired arm projectile at (" + startX + ", " + startY + "), direction: " + direction);
             }
         }

@@ -11,6 +11,7 @@ import item.itemEquippable.Item_Weapon;
 import main.GamePanel;
 import main.KeyHandler;
 import skill.Skill;
+import sound.Sound;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -192,7 +193,6 @@ public abstract class Player extends CombatableCharacter {
             this.skillCooldowns.put(skill, 0); // Ban đầu không có cooldown
         }
     }
-
     public void activateSkill(int skillIndex) {
         if (skillIndex < 0 || skillIndex >= skills.size()) {
             return; // Index không hợp lệ
@@ -283,7 +283,7 @@ public abstract class Player extends CombatableCharacter {
                 }
 
                 if (keyH.isfPressed()) {
-                    interactWithObject();
+                    interact();
                     keyH.setfPressed(false); // Xử lý một lần nhấn để tránh mở/đóng liên tục
                 }
                 // --- 2b. Xử lý Input cho Di chuyển ---
@@ -299,10 +299,10 @@ public abstract class Player extends CombatableCharacter {
                     gp.getcChecker().checkTile(this);
                     int itemIndex = gp.getcChecker().checkItem(this, true);
                     pickUpItem(itemIndex);
-                    int npcIndex = gp.getcChecker().checkEntity(this, gp.getNpc());
+                    int npcIndex = gp.getcChecker().checkEntity(this, gp.getCurrentMap().getNpc());
 
                     if (npcIndex != 999) { // Player đang va chạm với một NPC
-                        Character newlyCollidedNPC = gp.getNpc()[npcIndex];
+                        Character newlyCollidedNPC = gp.getCurrentMap().getNpc().get(npcIndex);
                         this.collisionOn = true; // Player bị chặn bởi NPC này
 
                         if (this.currentlyCollidingNPC != newlyCollidedNPC) {
@@ -311,7 +311,7 @@ public abstract class Player extends CombatableCharacter {
                         }
 
                         if (gp.gameState == gp.playState && this.canInteractWithCurrentNPC && this.currentlyCollidingNPC != null) {
-                            interactWithNPC(npcIndex); // Phương thức này sẽ đặt canInteractWithCurrentNPC = false
+
                         }
                     } else { // Player KHÔNG va chạm với bất kỳ NPC nào
                         if (this.currentlyCollidingNPC != null) {
@@ -378,29 +378,10 @@ public abstract class Player extends CombatableCharacter {
     public String getCharacterClassIdentifier() { return characterClassIdentifier; }
     public int getHasKey() { return hasKey; }
     public void setHasKey(int count) { this.hasKey = Math.max(0, count); }
-    public void incrementKeyCount() { this.hasKey++; }
-    public void decrementKeyCount() { if (this.hasKey > 0) this.hasKey--; }
 
     public void pickUpItem(int i) {
-        if (i != 999 && gp.getwObjects()[i] != null) {
-            gp.getwObjects()[i].interactPlayer(this, i, this.gp);
-        }
-    }
-    public void interactWithNPC(int npcIndex) {
-        if (npcIndex != 999) {
-            if (gp.gameState == gp.playState) {
-                Character npcCharacter = gp.getNpc()[npcIndex];
-
-                if (npcCharacter instanceof DialogueSpeaker) {
-                    ((DialogueSpeaker) npcCharacter).initiateDialogue(gp); // Điều này sẽ chuyển gameState sang dialogueState
-
-                    if (!(npcCharacter instanceof NPC_Princess && gp.gameState == gp.victoryEndState) ) {
-                        this.canInteractWithCurrentNPC = false;
-                    }
-                } else if (npcCharacter instanceof NPC_Princess) {
-                    gp.Victory();
-                }
-            }
+        if (i != 999 && gp.getCurrentMap().getwObjects().get(i) != null) {
+            gp.getCurrentMap().getwObjects().get(i).interactPlayer(this, i, this.gp);
         }
     }
 
@@ -414,30 +395,30 @@ public abstract class Player extends CombatableCharacter {
     }
 
     public void equipWeapon(Item_Weapon weapon) {
-        if(weapon instanceof Equippable){
-            this.currentWeapon = weapon;
-            gp.getUi().showMessage("Equipped: " + weapon.getName());
-            // Không cần cập nhật sát thương ở đây vì getAttack() đã tự động tính toán
+        if (this.currentWeapon != null) {
+            unequipWeapon();
         }
-        else {
-            gp.getUi().showMessage("Can not equip " + weapon.getName());
-            return;
+        if (weapon instanceof Equippable) {
+            this.currentWeapon = weapon;
+                this.currentWeapon.specialBuff(this);
+                gp.getUi().showMessage("Equipped: " + weapon.getName());
+                // Không cần cập nhật sát thương ở đây vì getAttack() đã tự động tính toán
+            gp.playSoundEffect(Sound.SFX_EQUIP_WEAPON);
         }
     }
 
-    public item.itemEquippable.Item_Weapon getCurrentWeapon() {
+    public Item_Weapon getCurrentWeapon() {
         return this.currentWeapon;
     }
 
     public void unequipWeapon() {
         if (this.currentWeapon != null) {
-            Item equippedItem = (Item) this.currentWeapon;
-            gp.getUi().showMessage("Unequipped: " + equippedItem.getName());
-
+            gp.getUi().showMessage("Unequipped: " + currentWeapon.getName());
+            // Gỡ bỏ buff của vũ khí hiện tại
+            this.currentWeapon.unapplySpecialBuff(this);
+            // Đặt vũ khí về null
             this.currentWeapon = null;
-        } else {
-            // Thông báo nếu không có gì để gỡ
-            gp.getUi().showMessage("No weapon equipped.");
+            gp.playSoundEffect(Sound.SFX_EQUIP_WEAPON);
         }
     }
 
@@ -463,7 +444,6 @@ public abstract class Player extends CombatableCharacter {
         this.currentExp += expGained;
         gp.getUi().showMessage("Gained " + expGained + " EXP!");
 
-
         while (currentExp >= expToNextLevel) {
             levelUp();
         }
@@ -471,7 +451,7 @@ public abstract class Player extends CombatableCharacter {
 
     public void gainCoin(int coinGained) {
         this.currentCoin += coinGained;
-        gp.getUi().showMessage("Gained " + coinGained + " COIN!");
+        gp.getUi().showFloatingText("Gained " + coinGained + " COIN!");
     }
 
     protected void setInitLevel(){
@@ -488,38 +468,6 @@ public abstract class Player extends CombatableCharacter {
     protected void setInitLocation(){
         worldX = gp.getTileSize() * 10;
         worldY = gp.getTileSize() * 20;
-    }
-
-    public void interactWithObject() {
-        // Xác định vùng tương tác phía trước người chơi
-        Rectangle interactionArea = new Rectangle(worldX, worldY, solidArea.width, solidArea.height);
-        int interactionDistance = gp.getTileSize() / 2; // Tăng khoảng cách tương tác một chút
-
-        switch(direction) {
-            case "up": interactionArea.y -= interactionDistance; break;
-            case "down": interactionArea.y += interactionDistance; break;
-            case "left": interactionArea.x -= interactionDistance; break;
-            case "right": interactionArea.x += interactionDistance; break;
-        }
-
-        // Kiểm tra xem vùng tương tác có chạm vào rương không
-        for (worldObject.WorldObject obj : gp.getwObjects()) {
-            if (obj instanceof worldObject.unpickableObject.OBJ_Chest) {
-                Rectangle objBounds = new Rectangle(obj.getWorldX() + obj.getSolidArea().x, obj.getWorldY() + obj.getSolidArea().y, obj.getSolidArea().width, obj.getSolidArea().height);
-                if (interactionArea.intersects(objBounds)) {
-                    // Mở rương
-                    gp.currentChest = (worldObject.unpickableObject.OBJ_Chest) obj;
-                    gp.gameState = gp.chestState;
-                    // Reset vị trí con trỏ trong UI
-                    gp.getUi().setUI(gp.gameState);
-                    gp.getUi().setSlotCol(0);
-                    gp.getUi().setSlotRow(0);
-                    gp.getUi().setCommandNum(0); // Bắt đầu ở bảng đồ của Player
-                    // gp.playSoundEffect(...); // Âm thanh mở rương
-                    break; // Dừng lại sau khi tìm thấy rương
-                }
-            }
-        }
     }
 
     private void handleStaminaAndDash() {
@@ -549,7 +497,6 @@ public abstract class Player extends CombatableCharacter {
             speed = defaultSpeed;
         }
     }
-
     private int manaRegenCounter;
     private void handleManaRegeneration() {
 
@@ -566,6 +513,48 @@ public abstract class Player extends CombatableCharacter {
             }
         } else {
             manaRegenCounter = 0; // Reset counter khi mana đầy
+        }
+    }
+
+    public void interact() {
+        // Xác định vùng tương tác phía trước người chơi
+        Rectangle interactionArea = new Rectangle(worldX, worldY, solidArea.width, solidArea.height);; // Dùng hitbox của player làm gốc
+        int interactionDistance = gp.getTileSize(); // Tăng khoảng cách tương tác một chút
+
+        switch(direction) {
+            case "up": interactionArea.y -= interactionDistance; break;
+            case "down": interactionArea.y += interactionDistance; break;
+            case "left": interactionArea.x -= interactionDistance; break;
+            case "right": interactionArea.x += interactionDistance; break;
+        }
+
+        // 1. Kiểm tra tương tác với Rương (Object)
+        for (worldObject.WorldObject obj : gp.getCurrentMap().getwObjects()) {
+            Rectangle objBounds = new Rectangle(obj.getWorldX() + obj.getSolidArea().x, obj.getWorldY() + obj.getSolidArea().y, obj.getSolidArea().width, obj.getSolidArea().height);
+            if (obj instanceof worldObject.unpickableObject.OBJ_Chest) {
+                if (interactionArea.intersects(objBounds)) {
+                    gp.playSoundEffect(Sound.SFX_CHEST_OPEN);
+                    gp.setCurrentChest((worldObject.unpickableObject.OBJ_Chest) obj);
+                    gp.gameState = gp.chestState;
+                    gp.getUi().setUI(gp.gameState);
+                    gp.getUi().setSlotCol(0);
+                    gp.getUi().setSlotRow(0);
+                    gp.getUi().setCommandNum(0);
+                    return; // Tìm thấy và tương tác, không cần kiểm tra thêm
+                }
+            }
+        }
+
+        // 2. Kiểm tra tương tác với NPC
+        for (Character npc : gp.getCurrentMap().getNpc()) {
+            Rectangle npcBounds = new Rectangle(npc.getWorldX() + npc.getSolidArea().x, npc.getWorldY() + npc.getSolidArea().y, npc.getSolidArea().width, npc.getSolidArea().height);
+            if (npc != null && interactionArea.intersects(npcBounds)) {
+                // Nếu là NPC có thể nói chuyện/giao dịch, bắt đầu tương tác
+                if (npc instanceof dialogue.DialogueSpeaker) {
+                    ((dialogue.DialogueSpeaker) npc).initiateDialogue(gp);
+                    return; // Tìm thấy và tương tác, không cần kiểm tra thêm
+                }
+            }
         }
     }
 

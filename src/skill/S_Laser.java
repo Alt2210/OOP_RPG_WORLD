@@ -4,6 +4,7 @@ import character.role.Player;
 import imageProcessor.SkillImageProcessor;
 import main.GamePanel;
 import skillEffect.areaOfEffect.Laser; // Import lớp Laser mới
+import sound.Sound;
 
 public class S_Laser extends Skill {
 
@@ -24,7 +25,7 @@ public class S_Laser extends Skill {
         caster.setActionLockCounter(300);
 
         gp.getUi().showMessage(caster.getName() + " triển khai Static Laser!");
-        // gp.playSoundEffect(...); // Thêm âm thanh nếu có
+        gp.playSoundEffect(Sound.SFX_LASER);
 
         // Tạo một đối tượng Laser mới
         Laser laserEffect = new Laser(gp, sip);

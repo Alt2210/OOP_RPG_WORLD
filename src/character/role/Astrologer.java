@@ -6,6 +6,7 @@ import skill.S_Explosion;
 import skill.S_Laser;
 import skill.S_StellaField;
 import skill.S_Tornado;
+import sound.Sound;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -40,7 +41,7 @@ public class Astrologer extends Player {
         speed = defaultSpeed;
         direction = "down";
         hasKey = 0;
-        maxHealth = 1000;
+        maxHealth = 150;
         currentHealth = maxHealth;
         attack = 40;
         defense = 1;
@@ -125,7 +126,7 @@ public class Astrologer extends Player {
         showNormalAttackEffect = true;
         normalAttackEffectAnimCounter = NORMAL_ATTACK_EFFECT_TOTAL_DURATION;
         normalAttackEffectSpriteNum = 0;
-
+        gp.playSoundEffect(Sound.SFX_WATER_SPLASH);
         System.out.println("Astrologer casts normal attack effect!");
         // Logic gây sát thương thực tế có thể được xử lý bởi CombatSystem trong GamePanel
         // khi nó kiểm tra va chạm của hitbox hiệu ứng với monster.

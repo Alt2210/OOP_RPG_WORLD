@@ -16,6 +16,14 @@ public class AssetSetter {
         // Add more maps here if needed: gameMaps[2] = new Map2(gp);
     }
 
+    public GameMap getMap(int mapIndex) { // Thêm phương thức getter mới
+        if (mapIndex >= 0 && mapIndex < gp.getMaxMap()) {
+            return gameMaps[mapIndex]; //
+        }
+        System.err.println("AssetSetter: Invalid map index requested: " + mapIndex);
+        return null;
+    }
+
     public void setupMapAssets(int mapIndex) {
         System.out.println("AssetSetter: Setting up assets for map " + mapIndex);
 

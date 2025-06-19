@@ -4,6 +4,7 @@ import character.role.Player;
 import imageProcessor.ItemImageProcessor;
 import item.Item;
 import main.GamePanel;
+import sound.Sound;
 
 public class Item_ManaPotion extends Item implements Consumable{
     private final int manaValue = 50; // Lượng máu hồi
@@ -12,6 +13,7 @@ public class Item_ManaPotion extends Item implements Consumable{
         name = "Mana";
         id = 102; // ID duy nhất cho vật phẩm này
         type = "CONSUMABLE"; // Loại vật phẩm là "dùng một lần"
+        this.buyPrice = 10;
         itp = new ItemImageProcessor(gp);
         // Giả sử bạn có ảnh health_potion.png trong res/objects/
         itp.getImage("/objects", "potion_mana");
@@ -22,6 +24,7 @@ public class Item_ManaPotion extends Item implements Consumable{
     public void consumeItem(Player user){
         user.setCurrentMana(user.getCurrentMana() + manaValue);
         user.getGp().getUi().showMessage("Restore for " + manaValue + " Mana!");
+        user.getGp().playSoundEffect(Sound.SFX_USE_POTION);
     }
 
     public void useItem(Player user){
