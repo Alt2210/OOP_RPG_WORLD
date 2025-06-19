@@ -54,10 +54,6 @@ public abstract class Character {
      * Trạng thái tấn công mặc định cho các nhân vật không chiến đấu.
      * @return luôn trả về false.
      */
-    public boolean isAttacking() {
-        return false;
-    }
-
     // --- Các getters và setters cho thuộc tính phi chiến đấu ---
     // (Giữ nguyên các getters/setters cho worldX, worldY, speed, name, direction, solidArea, v.v.)
     public String getName() { return name; }
@@ -77,6 +73,7 @@ public abstract class Character {
     public void setWorldX(int worldX) { this.worldX = worldX; }
     public int getWorldY() { return worldY; }
     public void setWorldY(int worldY) { this.worldY = worldY; }
+    public boolean isAttacking() { return false;}
     public int getSpeed() { return speed; }
     public GamePanel getGp() { return gp; }
 

@@ -1,6 +1,7 @@
 package imageProcessor;
 
 import character.Character;
+import character.CombatableCharacter;
 import character.role.Player;
 import character.monster.MON_GolemBoss;
 

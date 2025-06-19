@@ -43,7 +43,6 @@ public abstract class CombatableCharacter extends Character {
      * Ghi đè phương thức isAttacking từ lớp Character.
      * @return true nếu nhân vật đang trong trạng thái tấn công.
      */
-    @Override
     public boolean isAttacking() {
         return false; // Các lớp con cụ thể (Player, Monster) sẽ ghi đè logic này
     }
