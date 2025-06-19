@@ -159,6 +159,12 @@ public class MON_SkeletonLord extends Monster {
         }
     }
 
+    public void goBerserk() {
+        speed = defaultSpeed + 10;
+        attack = attack + 20;
+        currentHealth = currentHealth + 100;
+    }
+
     // Sao chép logic update từ MON_Orc
     @Override
     public void update() {
@@ -171,9 +177,8 @@ public class MON_SkeletonLord extends Monster {
 
             // Tải lại sprite cho Phase 2 (thông qua CharacterImageProcessor)
             cip.getImage("/monster", "skeletonlord_phase2");
-            // Optionally, increase speed/attack in Phase 2, but for now, we only change images.
-            // speed = defaultSpeed + 1;
-            // attack = attack + 5;
+
+            goBerserk();
         }
 
 

@@ -13,7 +13,7 @@ import worldObject.unpickableObject.OBJ_Portal;
 import worldObject.unpickableObject.OBJ_ReviveStatue;
 import character.Character; // Thêm import này
 
-public class Map0 extends GameMap{
+public class  Map0 extends GameMap{
     public Map0(GamePanel gp) {
         super(gp);
     }

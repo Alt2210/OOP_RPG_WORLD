@@ -43,7 +43,6 @@ public class MON_GolemBoss extends Monster {
         this.pathFinder = new PathFinder(gp);
         cip.setNumSprite(7);
         direction = "down";
-        speed = 1;
         isChargingLaser = false;
         isFiringLaser = false;
         laserChargeCounter = 0;
