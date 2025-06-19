@@ -21,7 +21,6 @@ public class Map1 extends GameMap {
 
     @Override
     public void initialize() {
-        // Clear old entities to prevent duplicates if map is re-initialized
         worldObjects.clear();
         npcs.clear();
         monsters.clear();
