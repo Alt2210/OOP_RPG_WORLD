@@ -22,7 +22,6 @@ public class NPC_Princess extends SideCharacter implements DialogueSpeaker {
         victoryDialogue = new Dialogue();
         victoryDialogue.addLine("Princess", "Ôi, dũng sĩ! Cuối cùng ngài cũng đã đến!");
         victoryDialogue.addLine("Princess", "Ngài đã giải cứu vương quốc chúng ta...");
-        victoryDialogue.addLine("Player", "...");
         victoryDialogue.addLine("Princess", "Xin cảm ơn ngài. Giờ đây, hòa bình sẽ trở lại.");
     }
 
