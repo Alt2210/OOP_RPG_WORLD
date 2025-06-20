@@ -19,6 +19,7 @@ public abstract class GameMap {
         this.npcs = new ArrayList<>(); //
         this.monsters = new ArrayList<>(); //
     }
+
     public abstract void initialize();
 
     public List<WorldObject> getwObjects() {
